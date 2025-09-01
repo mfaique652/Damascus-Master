@@ -1030,6 +1030,27 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, env: process.env.NODE_ENV || process.env.NODE_ENV || 'sandbox', pid: process.pid, ts: Date.now() });
 });
 
+// Debug endpoint to check server functionality
+app.get('/api/debug/info', (req, res) => {
+  const info = {
+    status: 'Server is running',
+    timestamp: new Date().toISOString(),
+    nodeEnv: process.env.NODE_ENV,
+    paypalEnv: process.env.PAYPAL_ENV || 'sandbox',
+    origin: req.get('origin') || 'none',
+    host: req.get('host'),
+    userAgent: req.get('user-agent') || 'none',
+    headers: Object.keys(req.headers),
+    webRoot: path.resolve(__dirname, '..'),
+    staticFiles: {
+      indexExists: fs.existsSync(path.resolve(__dirname, '..', 'index.html')),
+      siteJsExists: fs.existsSync(path.resolve(__dirname, '..', 'site.js')),
+      themeExists: fs.existsSync(path.resolve(__dirname, '..', 'css', 'theme.css'))
+    }
+  };
+  res.json(info);
+});
+
 // ========== EMAIL VERIFICATION ENDPOINTS ==========
 
 // Send verification code

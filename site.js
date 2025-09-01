@@ -1,5 +1,24 @@
 (function(){
+  // Debug logging
+  console.log('=== DAMASCUS MASTER SITE.JS LOADING ===');
+  console.log('Location:', location.href);
+  console.log('Protocol:', location.protocol);
+  console.log('Origin:', location.origin);
+  
   const backendBase = (location.origin && location.origin !== 'null' && location.protocol.startsWith('http')) ? location.origin : 'http://localhost:3025';
+  console.log('Backend Base:', backendBase);
+  
+  // Test API connectivity immediately
+  setTimeout(async () => {
+    try {
+      console.log('Testing API connectivity...');
+      const response = await fetch(backendBase + '/api/debug/info');
+      const data = await response.json();
+      console.log('API Test Success:', data);
+    } catch (error) {
+      console.error('API Test Failed:', error);
+    }
+  }, 1000);
   function absUrl(u){
     const v = String(u||'').trim();
     if (!v) return v;
