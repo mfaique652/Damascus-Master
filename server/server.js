@@ -43,6 +43,11 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3025;
 const app = express();
+
+// Trust proxy for deployment on platforms like Render, Heroku, etc.
+// This enables proper handling of X-Forwarded-For headers for rate limiting and IP detection
+app.set('trust proxy', true);
+
 // Feature: gated debug logging. Set DEBUG=true in env during development to enable verbose logs.
 const DEV_DEBUG = String(process.env.DEBUG || '').toLowerCase() === 'true';
 // Lightweight request logger to aid debugging in dev: logs method, path and content-type when DEBUG=true
