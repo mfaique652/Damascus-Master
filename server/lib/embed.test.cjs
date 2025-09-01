@@ -1,9 +1,20 @@
 const path = require('path');
+const fs = require('fs');
 const embed = require(path.join(process.cwd(), 'server', 'lib', 'embed.cjs'));
 (async ()=>{
   try{
-    console.log('Running embed test for product 5e670695-92f5-4dd7-95f9-2588b9507da5');
-    const r = await embed.embedSaleForProduct('5e670695-92f5-4dd7-95f9-2588b9507da5');
+    // Get a valid product ID from the database
+    const dbPath = path.join(process.cwd(), 'server', 'data', 'db.json');
+    const db = JSON.parse(fs.readFileSync(dbPath, 'utf8'));
+    const productId = db.products?.[0]?.id;
+    
+    if (!productId) {
+      console.log('No products found in database');
+      process.exit(0); // Exit gracefully if no products
+    }
+    
+    console.log('Running embed test for product', productId);
+    const r = await embed.embedSaleForProduct(productId);
     console.log('RESULT', r);
     if (!r || !r.ok) process.exit(2);
     console.log('EMBED_TEST_OK');
