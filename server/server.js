@@ -4341,6 +4341,12 @@ function validateEnv() {
 
 // Bind to 0.0.0.0 to improve localhost reachability on some Windows setups
 validateEnv();
+console.log(`=== SERVER STARTUP DEBUG ===`);
+console.log(`PORT environment variable: ${process.env.PORT}`);
+console.log(`Using PORT: ${PORT}`);
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`Attempting to bind to: 0.0.0.0:${PORT}`);
+
 const serverInstance = app.listen(PORT, '0.0.0.0', () => {
   const addr = serverInstance.address();
   let host = 'localhost';
@@ -4351,7 +4357,10 @@ const serverInstance = app.listen(PORT, '0.0.0.0', () => {
     host = (addr.address === '::' || addr.address === '0.0.0.0') ? 'localhost' : addr.address;
     port = addr.port;
   }
-  console.log(`Server listening on http://${host}:${port} (env=${PAYPAL_ENV})`);
+  console.log(`✅ Server successfully started!`);
+  console.log(`Listening on: http://${host}:${port} (env=${PAYPAL_ENV})`);
+  console.log(`Actual bound port: ${port}`);
+  console.log(`Expected by platform: PORT env variable`);
 
   // Keep-alive mechanism for Render free tier - TEMPORARILY DISABLED FOR DEBUGGING
   /*
