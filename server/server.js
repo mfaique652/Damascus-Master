@@ -4353,7 +4353,8 @@ const serverInstance = app.listen(PORT, '0.0.0.0', () => {
   }
   console.log(`Server listening on http://${host}:${port} (env=${PAYPAL_ENV})`);
 
-  // Keep-alive mechanism for Render free tier
+  // Keep-alive mechanism for Render free tier - TEMPORARILY DISABLED FOR DEBUGGING
+  /*
   if (process.env.NODE_ENV === 'production') {
     const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000; // 14 minutes
     const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 'https://damascus-master.onrender.com';
@@ -4371,6 +4372,7 @@ const serverInstance = app.listen(PORT, '0.0.0.0', () => {
     
     console.log(`Keep-alive enabled: pinging every ${KEEP_ALIVE_INTERVAL / 1000 / 60} minutes`);
   }
+  */
 });
 
 // Log unexpected errors to help diagnose silent exits
