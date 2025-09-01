@@ -12,17 +12,20 @@
     "@vercel/speed-insights": "^1.2.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
-    "stripe": "^11.11.0",
-    "express": "^4.18.2",
+    "stripe": "^11.18.0",
+    "express": "^4.21.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.6.1",
     "node-fetch": "^3.3.2",
-    "multer": "^1.4.5",
+    "multer": "1.4.5-lts.2",
     "jsonwebtoken": "^9.0.2",
-    "uuid": "^9.0.0",
-    "zod": "^3.22.4",
-    "lowdb": "^6.0.1",
-    "nodemailer": "^6.9.8"
+    "uuid": "^9.0.1",
+    "zod": "^3.25.76",
+    "lowdb": "^6.1.1",
+    "nodemailer": "^6.10.1",
+    "helmet": "^8.0.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.4.1"
   },
   "scripts": {
     "start": "NODE_ENV=production node server/server.js",
@@ -31,11 +34,15 @@
     "test:embed": "node server/lib/embed.test.cjs",
     "test": "npm run test:embed",
     "clean": "node cleanup_albums.js",
-    "watch:clean": "nodemon --watch server/data/db.json --exec \"node cleanup_albums.js\""
+    "watch:clean": "nodemon --watch server/data/db.json --exec \"node cleanup_albums.js\"",
+    "lint": "eslint server/**/*.js server/**/*.mjs --ignore-pattern server/node_modules",
+    "lint:fix": "npm run lint -- --fix",
+    "postinstall": "echo 'Dependencies installed successfully'"
   },
   "devDependencies": {
-    "eslint": "^8.45.0",
-    "nodemon": "^3.1.10"
+    "eslint": "^8.57.1",
+    "nodemon": "^3.1.10",
+    "@eslint/js": "^9.15.0"
   },
   "keywords": ["ecommerce", "damascus", "knives", "nodejs", "express"],
   "author": "Damascus Master",

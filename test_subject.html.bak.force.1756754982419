@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Test subject - Product</title>
+  <link rel="stylesheet" href="css/theme.css">
+  <style>
+    html { font-size: 16px; }
+    /* Improved submit button for review form */
+    .submit-btn {
+      background: linear-gradient(180deg,#1b6fbf 0%,#1860a8 100%);
+      color: #fff;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(27,111,191,0.18);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.08s ease;
+      text-align: center;
+      display: inline-block;
+    }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(27,111,191,0.22); }
+    .submit-btn:active { transform: translateY(0); opacity: 0.95; }
+    /* Light / white theme */
+  .wishlist-heart { position: absolute; top: 0.6rem; right: 0.6rem; z-index: 60; background: rgba(0,0,0,0.06); border-radius: 50%; padding: 0.18em; cursor: pointer; transition: background 0.15s; box-shadow: 0 4px 10px rgba(16,24,40,0.06); display: flex; align-items: center; justify-content: center; }
+    .wishlist-heart:hover { background: rgba(0,0,0,0.06); }
+    .wishlist-heart svg.heart-filled path { fill: #e95454; stroke: #e95454; }
+    .wishlist-heart svg { pointer-events: none; }
+    body { font-family: 'Poppins', Arial, sans-serif; background: #ffffff; color: #222222; margin: 0; padding: 0; min-height: 100vh; font-size: 1rem; }
+  .album-container { max-width: 56.25rem; margin: 2.5rem auto; background: #ffffff; border-radius: 1rem; box-shadow: 0 8px 28px rgba(16,24,40,0.06); padding: 2rem; display: flex; flex-direction: row; flex-wrap: nowrap; gap: 1.5rem; position: relative; min-height: 28rem; border: 1px solid #ebeef2; align-items: flex-start; }
+    .album-gallery { flex: 1 1 21.25rem; min-width: 20rem; max-width: 26.25rem; display: flex; flex-direction: column; align-items: center; margin-left: 0.5rem; }
+  .main-img-wrap { position: relative; width: 100%; max-width: 26.25rem; margin: 0 auto; transition: box-shadow 0.18s, transform 0.12s; }
+  /* navigation arrows placed inside container to avoid overlap */
+  .nav-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: var(--bg-secondary); border:none;border-radius:50%;width:2.2em;height:2.2em;cursor:pointer;z-index:55;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.03); color: var(--text-primary); }
+  .nav-arrow.left { left: 0.6rem; }
+  .nav-arrow.right { right: 0.6rem; }
+    .main-img-wrap:hover { box-shadow: 0 12px 32px rgba(3,102,214,0.06); transform: translateY(-2px); }
+    .album-main-img { width: 100%; max-width: 100%; height: auto; border-radius: 0.75rem; box-shadow: 0 6px 20px rgba(16,24,40,0.06); display: block; object-fit: contain; background: #ffffff; }
+  /* Sale ribbon (product-card style: diagonal corner badge) */
+  .sale-ribbon { position:absolute; top:12px; left:-42px; transform:rotate(-45deg); width:160px; padding:6px 0; background: linear-gradient(90deg,#ff5a5a,#ff8a5a); color:#fff; font-weight:800; font-size:0.9rem; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.38); z-index:12; display:none; }
+  .sale-ribbon .sale-pct { display:inline-block; width:100%; color:#fff; }
+  /* keep the hidden price span for accessibility, but don't show visually */
+  .sale-ribbon .sale-price { display:none; }
+    .magnifier-lens { position: absolute; border: 2px solid rgba(0,0,0,0.06); border-radius: 50%; width: 7.5rem; height: 7.5rem; pointer-events: none; display: none; box-shadow: 0 6px 18px rgba(16,24,40,0.06); z-index: 2; }
+  .album-thumbs { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: center; flex-wrap: wrap; z-index: 3; }
+    .album-thumb { width: 3.75rem; height: 3.75rem; object-fit: cover; border-radius: 0.5rem; cursor: pointer; border: 1px solid transparent; transition: border 0.15s, transform 0.12s; background: #fafafa; }
+    .album-thumb:hover { transform: translateY(-2px); }
+    .album-thumb.selected { border: 2px solid #1b6fbf; }
+    .album-info { flex: 1 1 16.25rem; min-width: 16.25rem; display: flex; flex-direction: column; justify-content: flex-start; }
+    .album-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: #222222; letter-spacing: 0.02em; }
+    .album-desc { font-size: 0.92rem; line-height: 1.5; margin-bottom: 0.7rem; color: #333333; background: #fafafa; border-radius: 0.5rem; padding: 0.5rem 0.75rem; }
+  /* Preserve newlines and limit height so long descriptions don't break layout */
+  .album-desc { white-space: pre-wrap; max-height: 9rem; overflow: auto; box-sizing: border-box; }
+    .album-details { font-size: 0.88rem; color: #555555; margin-bottom: 0.7rem; background: #ffffff; border-radius: 0.4rem; padding: 0.45rem 0.7rem; border: 1px solid #f0f2f5; }
+    .quantity-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.1rem; }
+    .quantity-label { font-weight: 600; color: #1b6fbf; font-size: 0.95rem; }
+  .quantity-slider { box-shadow:none; border:1.2px solid #d6dbe1; border-radius:8px; padding:4px 10px; font-size:1.1rem; width:60px; outline:none; background:#ffffff; color:#222222; transition:box-shadow 0.15s; text-align:center; }
+    .quantity-value { min-width: 2ch; display: inline-block; text-align: center; font-size: 0.95rem; color: #222222; }
+  .add-btn { background: linear-gradient(90deg, #1b6fbf 0%, #0b61c6 100%); color: #fff; border: none; border-radius: 0.5rem; padding: 0.7rem 1.5rem; font-size: 1rem; font-weight: 700; cursor: pointer; box-shadow: 0 8px 24px rgba(11,97,198,0.12); letter-spacing: 0.03em; position: relative; overflow: visible; transition: background 0.18s, transform 0.12s, box-shadow 0.18s; z-index: 2; }
+    .add-btn::after { content: ''; position: absolute; left: -75%; top: 0; width: 50%; height: 100%; background: rgba(255,255,255,0.12); transform: skewX(-20deg); transition: left 0.4s; }
+    .add-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(11,97,198,0.12); }
+    .add-btn:hover::after { left: 120%; }
+    .back-link { position: absolute; top: 0.7rem; left: 0.7rem; color: #1b6fbf; text-decoration: none; font-weight: 600; background: linear-gradient(180deg, rgba(27,111,191,0.06), rgba(11,97,198,0.02)); padding: 0.45rem 0.9rem; border-radius: 10px; border: 1px solid rgba(27,111,191,0.08); z-index: 11; font-size: 0.95rem; display:flex;align-items:center;gap:0.45rem;box-shadow:0 6px 18px rgba(11,97,198,0.06);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
+  .back-link-space { height: 2rem; min-width: 1rem; display: block; }
+  /* Header (cream) */
+  .page-header { background: #fff9f0; padding: 10px 1rem; display:flex; align-items:center; justify-content:space-between; max-width:56.25rem; margin: 1.25rem auto 0; border-radius:10px; box-shadow:0 4px 12px rgba(16,24,40,0.04); }
+  .header-left { display:flex; align-items:center; gap:0.5rem; }
+  .header-actions { display:flex; gap:0.6rem; align-items:center; }
+  .action-with-label { display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .action-label { font-size:12px; color:#475569; }
+  .icon-btn { background: #fff; border: 1px solid rgba(16,24,40,0.06); padding:8px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; cursor:pointer; box-shadow:0 6px 16px rgba(16,24,40,0.06); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; }
+  .icon-btn:hover { transform: translateY(-2px); box-shadow:0 10px 26px rgba(16,24,40,0.09); background:#fbfdff; }
+  .icon-btn svg { width:18px; height:18px; display:block; }
+  .icon-btn .count-badge { position:absolute; top:6px; right:6px; background:#ff5a5a; color:#fff; font-size:11px; padding:2px 6px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.08); }
+    .back-link:hover { color: #0b61c6; background: rgba(27,111,191,0.04); }
+  @media (max-width: 700px) {
+      html { font-size: 13px; }
+  .page-header { padding: 8px 10px; margin: 0.6rem auto; }
+  .action-label { font-size:11px; }
+      .album-container { flex-direction: column; gap: 0.5rem; padding: 0.75rem; min-height: unset; max-width: 100vw; }
+      .album-gallery, .album-info { max-width: 100%; min-width: 0; }
+      .album-title { font-size: 1rem; }
+      .album-desc, .album-details { font-size: 0.88rem; }
+      .back-link { top: 0.3rem; left: 0.3rem; padding: 0.25rem 0.5rem; font-size: 0.88rem; }
+      .main-img-wrap { max-width: 100vw; }
+      .album-main-img { max-width: 100vw; height: auto; object-fit: contain; }
+      .back-link-space { height: 1.2rem; min-width: 0; }
+      .album-gallery { margin-top: 0.3rem; margin-left: 0; align-items: center; }
+      .album-thumb { width: 2.5rem; height: 2.5rem; }
+      .magnifier-lens { width: 5rem; height: 5rem; }
+      .add-btn { font-size: 0.92rem; padding: 0.5rem 1rem; }
+      .quantity-label, .quantity-value { font-size: 0.88rem; }
+  /* Reviews form stack on small screens */
+  #review-form { grid-template-columns: 1fr !important; }
+  #review-form button[type="submit"] { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Page header (cream) with navigation and quick actions -->
+  <header class="page-header" role="banner">
+    <div class="header-left">
+      <div class="action-with-label">
+        <button id="go-back" class="icon-btn back-btn" title="Back" aria-label="Go back">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9.2 3.6L3.8 9H17" stroke="#1b6fbf" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="action-label">Back</div>
+      </div>
+    </div>
+    <div class="header-actions" aria-hidden="false">
+      <div class="action-with-label">
+        <button id="open-wishlist" class="icon-btn" title="Wishlist" aria-label="Open wishlist">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-4.35-9-7.2C-0.1 9.8 3.3 5 7.7 6.2 9 6.6 10 7.6 12 9.3c2-1.7 3-2.7 4.3-3.1 4.4-1.2 7.8 3.6 4.7 7.6C19 16.65 12 21 12 21z" stroke="#e95454" stroke-width="0.6" fill="rgba(233,84,84,0.08)"/>
+          </svg>
+        </button>
+        <div class="action-label">Open wishlist</div>
+      </div>
+      <div class="action-with-label">
+        <button id="open-catalogue" class="icon-btn" title="Catalogue" aria-label="Open catalogue">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 3h2l1.6 9.4a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 6H6" stroke="#1b6fbf" stroke-width="1.2" fill="rgba(27,111,191,0.06)"/>
+          <circle cx="10" cy="19" r="1.6" fill="#0b61c6"/><circle cx="17" cy="19" r="1.6" fill="#0b61c6"/></svg>
+        </button>
+        <div class="action-label">Open cart</div>
+      </div>
+    </div>
+  </header>
+
+<div class="album-container">
+  <div class="album-gallery">
+  <!-- top actions moved to page header -->
+    <div class="main-img-wrap">
+  <div id="saleRibbon" class="sale-ribbon u-hidden"><span id="saleRibbonPct" class="sale-pct"></span><span class="sale-price u-hidden" id="saleRibbonPrice"></span></div>
+      <div class="wishlist-heart" class="wishlist-heart" data-wishlist-productid="e6ce503f-f5b1-427c-8573-9bf81b38bec6" data-wishlist-id="Te6" data-wishlist-title="Test subject" data-wishlist-desc="fgvhbjnkm bnvcghftyguhjnbvjgft" data-wishlist-price="145" data-wishlist-img="uploads/1756572278692-kn3.2.png" data-wishlist-album="test_subject.html" data-wishlist-sale="null" title="Wishlist" style="position:absolute;right:0.5rem;top:0.5rem;z-index:3;" data-wishlist-sale='null'>
+        <svg width="28" height="28" viewBox="0 0 24 24" stroke="#ff4d6d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M12 21s-6.5-4.35-9-7.5C1.5 10.5 2.5 7 6 7c2.1 0 3.5 1.5 4 2.5C10.5 8.5 11.9 7 14 7c3.5 0 4.5 3.5 3 6.5-2.5 3.15-9 7.5-9 7.5z"/></svg>
+      </div>
+  <button id="arrowLeft" class="nav-arrow left" aria-label="Previous image">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4fc3f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <img id="mainImg" src="uploads/1756572278692-kn3.2.png" alt="Test subject" class="album-main-img">
+  <button id="arrowRight" class="nav-arrow right" aria-label="Next image">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4fc3f7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div id="magnifierLens" class="magnifier-lens"></div>
+    </div>
+    <div id="albumThumbs" class="album-thumbs"><img class='album-thumb selected' src='uploads/1756572278692-kn3.2.png' data-img='uploads/1756572278692-kn3.2.png' alt='Test subject'>
+        <img class='album-thumb' src='uploads/1756572278692-kn3.1.png' data-img='uploads/1756572278692-kn3.1.png' alt='Test subject'>
+        <img class='album-thumb' src='uploads/1756572278692-kn3.png' data-img='uploads/1756572278692-kn3.png' alt='Test subject'>
+        <img class='album-thumb' src='uploads/1756572278692-kn2.2.png' data-img='uploads/1756572278692-kn2.2.png' alt='Test subject'>
+        <img class='album-thumb' src='uploads/1756572278693-kn2.1.png' data-img='uploads/1756572278693-kn2.1.png' alt='Test subject'>
+        <img class='album-thumb' src='uploads/1756572278694-kn2.png' data-img='uploads/1756572278694-kn2.png' alt='Test subject'>
+        <img class='album-thumb' src='uploads/1756572278695-damascus._.products_455848435_861507225516695_7013610578453100066_n.webp' data-img='uploads/1756572278695-damascus._.products_455848435_861507225516695_7013610578453100066_n.webp' alt='Test subject'></div>
+  </div>
+
+  <div class="album-info">
+    <div class="album-title">Test subject</div>
+    <div class="album-desc">fgvhbjnkm bnvcghftyguhjnbvjgft</div>
+    <div class="album-details" style="margin-top:0.5rem">gvguhionkjb gvfuyghuiokn</div>
+
+    <div class="quantity-row">
+      <label class="quantity-label">Quantity:</label>
+      <input id="qtySlider" type="number" min="1" max="99" value="1" style="width:64px;padding:6px;border-radius:6px;border:1px solid #e6e9ee;">
+      <span id="qtyValue">1</span>
+    </div>
+
+    <div class="price-row">
+      <div style="font-weight:600;color:#ffb347;">Price per item:</div>
+  <div id="unitPrice">$145.00</div>
+      <div style="font-weight:600;color:#4fc3f7;margin-left:1rem;">Total:</div>
+  <div id="totalPrice" style="font-weight:700">$145.00</div>
+    </div>
+
+    <div style="margin-top:1rem">
+      <button id="addToCatalogue" class="add-btn" title="Add to Cart" style="background:#1b6fbf;color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:700;">
+        Add to cart
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Reviews -->
+<section id="reviews" style="max-width:56rem;margin:1rem auto;padding:1rem;border-radius:0.6rem;background:#fbfbfc;border:1px solid #eef2f5;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+    <h2 style="margin:0;font-size:1.05rem;">Reviews</h2>
+    <div id="avg-rating" style="font-weight:600;color:#333"></div>
+  </div>
+  <div id="reviews-list" style="min-height:1rem;color:#444;margin-bottom:0.5rem;">Loading reviews...</div>
+
+  <form id="review-form" style="display:grid;grid-template-columns:1fr 140px;gap:0.6rem;align-items:start;">
+    <div>
+      <input id="reviewer-name" type="text" placeholder="Your name" required maxlength="50" style="width:100%;padding:8px;border:1px solid #e6e9ee;border-radius:6px;margin-bottom:0.4rem;">
+      <textarea id="review-comment" placeholder="Write your review" rows="3" required maxlength="1000" style="width:100%;padding:8px;border:1px solid #e6e9ee;border-radius:6px;resize:vertical;"></textarea>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:0.4rem;">
+        <div id="star-rating" class="star-rating" aria-label="Rating"></div>
+        <div style="color:#6b7280;font-size:13px;">Tap to rate</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;align-items:stretch;">
+      <!-- Honeypot kept as hidden field for spam protection -->
+      <input id="honeypot" name="honeypot" type="hidden" value="">
+      <!-- Removed visible 'Rating' label per UI request -->
+      <button type="submit" class="submit-btn">Submit</button>
+    </div>
+  </form>
+</section>
+
+<!-- Generator placeholders and site JS -->
+  <script>
+  // Safer initializer: rely only on DOM and data-* attributes (no raw template
+  // tokens injected into JS). This prevents parse errors when generator emits
+  // unescaped content. Generator should still populate the DOM attributes.
+  window.__ALBUM_PLACEHOLDERS = (function(){
+    try{
+      const heart = document.querySelector('.wishlist-heart');
+      const pid = (heart && heart.dataset) ? (heart.dataset.wishlistProductid || heart.dataset.productid || '') : '';
+
+      const title = document.querySelector('.album-title')?.textContent?.trim() || (heart && heart.dataset && (heart.dataset.wishlistTitle || heart.dataset.title)) || '';
+      const desc = document.querySelector('.album-desc')?.textContent?.trim() || (heart && heart.dataset && (heart.dataset.wishlistDesc || heart.dataset.desc)) || '';
+      const price = (function(){ try{ const t = document.getElementById('unitPrice')?.textContent || ''; const p = t.replace(/[^0-9.]+/g,''); if(p) return p; }catch(e){} return (heart && heart.dataset && heart.dataset.wishlistPrice) || ''; })();
+      const mainImage = document.getElementById('mainImg')?.src || (heart && heart.dataset && (heart.dataset.wishlistImg || heart.dataset.img)) || '';
+      const imagesHtml = (document.getElementById('albumThumbs')?.innerHTML) || '';
+      const heartId = (heart && heart.dataset) ? (heart.dataset.wishlistId || heart.dataset.id || '') : '';
+      const detailsText = document.querySelector('.album-details')?.textContent || '';
+      let detailsJson;
+      try{ detailsJson = detailsText ? JSON.parse(detailsText) : detailsText; }catch(e){ detailsJson = detailsText; }
+      let sale = null;
+      try{ if (heart && heart.dataset && heart.dataset.wishlistSale) { sale = JSON.parse(heart.dataset.wishlistSale); } }catch(e){ sale = null; }
+
+      const reviewsApi = pid ? ('/api/products/' + pid + '/reviews') : '';
+
+      return {
+        title: title,
+        desc: desc,
+        price: price,
+        mainImage: mainImage,
+        imagesHtml: imagesHtml,
+        heartId: heartId,
+        detailsJson: detailsJson,
+        albumFilename: window.location && window.location.pathname ? window.location.pathname.split('/').pop() : '',
+        productId: pid,
+        sale: sale,
+        reviewsApi: reviewsApi
+      };
+    }catch(e){ return {}; }
+  })();
+  </script>
+  <!-- Shared runtime for album pages (extracted from inline template) -->
+  <script src="scripts/album-runtime.js"></script>
+<script src="site.js"></script>
+
+<script>
+/* Small helper utilities and event wiring for gallery, magnifier, quantity, reviews and add-to-catalogue.
+   This file intentionally keeps behaviour inline so static generator can emit it into build output. */
+(function(){
+  // Back button
+  window.handleBack = function(e){ if(e) e.preventDefault(); try{ const params=new URLSearchParams(window.location.search); const from=params.get('from'); if(from==='gallery'){ if(window.history.length>1){ window.history.back(); return;} window.location.href='index.html'; return; } if(from==='wishlist'){ window.location.href='index.html?open=wishlist'; return;} if(from==='catalogue' || from==='cart'){ window.location.href='index.html?open=catalogue'; return;} if(from==='order'){ window.location.href='order.html'; return;} const ref=document.referrer||''; if(ref.toLowerCase().includes('order.html')){ window.location.href='order.html'; return;} if(window.history.length>1){ window.history.back(); return;} window.location.href='index.html'; }catch(e){ if(window.history.length>1) window.history.back(); else window.location.href='index.html'; }};
+
+  // Top actions: wishlist & catalogue
+  (function(){
+    try{
+      const wishBtn = document.getElementById('open-wishlist');
+      const catBtn = document.getElementById('open-catalogue');
+  const backBtn = document.getElementById('go-back');
+      if(wishBtn) wishBtn.addEventListener('click', function(e){ e.preventDefault(); window.location.href = 'index.html?open=wishlist'; });
+      if(catBtn) catBtn.addEventListener('click', function(e){ e.preventDefault(); window.location.href = 'index.html?open=catalogue'; });
+  if(backBtn) backBtn.addEventListener('click', function(e){ e.preventDefault(); if(typeof window.handleBack === 'function') return window.handleBack(e); window.history.back(); });
+    }catch(e){ console.warn('top action handlers failed', e); }
+  })();
+
+  // Gallery thumbs and selection
+  const mainImg = document.getElementById('mainImg');
+  function updateThumbs(){ const thumbs = Array.from(document.querySelectorAll('.album-thumb')); if(!thumbs.length) return; thumbs.forEach((t,i)=>{ t.addEventListener('click', function(){ thumbs.forEach(x=>x.classList.remove('selected')); this.classList.add('selected'); const src = this.dataset.img || this.src || this.getAttribute('src'); if(mainImg) mainImg.src = src; }); }); }
+  updateThumbs();
+
+  // Simple magnifier
+  const lens = document.getElementById('magnifierLens');
+  if(mainImg && lens){
+    function showLens(){ lens.style.display='block'; }
+    function hideLens(){ lens.style.display='none'; }
+    function moveLens(e){ const rect = mainImg.getBoundingClientRect(); const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left; const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top; const lensSize = lens.offsetWidth/2; let left = x - lensSize; let top = y - lensSize; left = Math.max(0, Math.min(left, mainImg.width - lens.offsetWidth)); top = Math.max(0, Math.min(top, mainImg.height - lens.offsetHeight)); lens.style.left = left + 'px'; lens.style.top = top + 'px'; lens.style.background = 'url('+mainImg.src+') no-repeat'; lens.style.backgroundSize = (mainImg.width*2)+'px '+(mainImg.height*2)+'px'; lens.style.backgroundPosition = '-'+(x*2 - lensSize)+'px -'+(y*2 - lensSize)+'px'; }
+    mainImg.addEventListener('mouseenter', showLens); mainImg.addEventListener('mouseleave', hideLens); mainImg.addEventListener('mousemove', moveLens); mainImg.addEventListener('touchstart', showLens); mainImg.addEventListener('touchmove', moveLens); mainImg.addEventListener('touchend', hideLens);
+  }
+
+  // Quantity and price calculation
+  const qtySlider = document.getElementById('qtySlider');
+  const qtyValue = document.getElementById('qtyValue');
+  const totalPrice = document.getElementById('totalPrice');
+  function parseUnitPrice(){ const el = document.getElementById('unitPrice'); if(!el) return 0; const txt = String(el.textContent||'').replace(/[^0-9.]+/g,''); const n = parseFloat(txt); return isNaN(n)?0:n; }
+  function updateQtyDisplay(){ const qty = Math.max(1, parseInt(qtySlider.value||'1',10)||1); qtyValue.textContent = qty; const unit = parseUnitPrice(); if(totalPrice) totalPrice.textContent = '$' + (qty * unit).toFixed(2); }
+  if(qtySlider){ qtySlider.addEventListener('input', updateQtyDisplay); qtySlider.addEventListener('change', updateQtyDisplay); updateQtyDisplay(); }
+
+  // Add to catalogue
+  const addBtn = document.getElementById('addToCatalogue');
+  if(addBtn){ addBtn.addEventListener('click', function(){ try{ const galleryImages = Array.from(document.querySelectorAll('.album-thumb')).map(t=>t.dataset.img || t.src); const selectedThumb = document.querySelector('.album-thumb.selected'); const mainImage = selectedThumb ? (selectedThumb.dataset.img || selectedThumb.src) : (document.getElementById('mainImg') && document.getElementById('mainImg').src) || ''; const qty = Math.max(1, parseInt(document.getElementById('qtySlider')?.value||'1',10)); const title = document.querySelector('.album-title')?.textContent.trim()||''; const desc = document.querySelector('.album-desc')?.textContent.trim()||''; const unit = parseUnitPrice(); const heartEl = document.querySelector('.wishlist-heart'); const id = heartEl ? (heartEl.dataset.wishlistId || heartEl.dataset.id || ('p-'+Math.random().toString(36).slice(2,9))) : ('p-'+Math.random().toString(36).slice(2,9)); let details=null; try{ details = JSON.parse(document.querySelector('.album-details')?.textContent || null); }catch(e){ details = document.querySelector('.album-details')?.textContent || null; }
+    // Extract sale metadata from dataset (heart) or placeholder so we can persist it
+    let _sale = null;
+    try { if (heartEl && heartEl.dataset && heartEl.dataset.wishlistSale) { _sale = JSON.parse(heartEl.dataset.wishlistSale); } } catch(e){ _sale = null; }
+    if((!_sale || !_sale.active) && typeof window !== 'undefined' && window.__ALBUM_PLACEHOLDERS && window.__ALBUM_PLACEHOLDERS.sale){ _sale = window.__ALBUM_PLACEHOLDERS.sale; }
+
+    const product = { id, title, name:title, desc, price: unit, img: mainImage, images: galleryImages, album: 'test_subject.html' || window.location.pathname.split('/').pop(), details, quantity: qty, sale: _sale };
+    let catalogue = [];
+    try{ catalogue = JSON.parse(localStorage.getItem('catalogue')||'[]'); }catch(e){ catalogue = []; }
+    const idx = catalogue.findIndex(it=>it.id===product.id || (it.title && it.title===product.title));
+    if(idx!==-1){
+      catalogue[idx].quantity = (Number(catalogue[idx].quantity||0)+Number(product.quantity||1));
+      catalogue[idx].price = product.price;
+      catalogue[idx].sale = product.sale || catalogue[idx].sale || null;
+    } else catalogue.push(product);
+    localStorage.setItem('catalogue', JSON.stringify(catalogue));
+    const toast = document.createElement('div'); toast.textContent = idx!==-1 ? 'Updated quantity in catalogue' : 'Added to catalogue'; toast.style.position='fixed'; toast.style.bottom='18px'; toast.style.right='18px'; toast.style.background='#23262f'; toast.style.color='#fff'; toast.style.padding='10px 14px'; toast.style.borderRadius='8px'; toast.style.zIndex=99999; toast.style.boxShadow='0 8px 24px rgba(0,0,0,0.18)'; document.body.appendChild(toast); setTimeout(()=>{ toast.style.opacity='0'; toast.addEventListener('transitionend', ()=> toast.remove()); }, 1600); setTimeout(()=>{ try{ toast.remove(); }catch(e){} }, 3000);
+  }catch(e){ console.error('Add failed',e); } }); }
+
+  // Reviews client + star UI
+  (function(){
+    const productId = window.__ALBUM_PLACEHOLDERS.productId || '';
+    const reviewsApi = window.__ALBUM_PLACEHOLDERS.reviewsApi || (`/api/products/${productId}/reviews`);
+    const reviewsList = document.getElementById('reviews-list');
+    const form = document.getElementById('review-form');
+    const avgEl = document.getElementById('avg-rating');
+    const starContainer = document.getElementById('star-rating');
+    let selectedRating = 5;
+    function esc(s){ return (s||'').replace(/[&<>\"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+    function renderStars(){ if(!starContainer) return; starContainer.innerHTML=''; for(let i=1;i<=5;i++){ const btn=document.createElement('button'); btn.type='button'; btn.className='star'; btn.dataset.value=i; btn.setAttribute('aria-label', i+' star'); btn.innerHTML='☆'; btn.addEventListener('click', ()=>{ selectedRating = i; updateStars(); }); btn.addEventListener('touchstart', ()=>{ selectedRating = i; updateStars(); }, {passive:true}); starContainer.appendChild(btn); } updateStars(); }
+    function updateStars(){ if(!starContainer) return; Array.from(starContainer.children).forEach((el,idx)=>{ const v=idx+1; el.innerHTML = (v<=selectedRating)?'★':'☆'; el.classList.toggle('filled', v<=selectedRating); }); }
+    async function loadReviews(){ if(!reviewsList) return; reviewsList.textContent='Loading reviews...'; try{ const res = await fetch(reviewsApi); if(!res.ok) throw new Error('load failed'); const json = await res.json(); const data = Array.isArray(json) ? json : (Array.isArray(json.reviews)?json.reviews:[]); if(!Array.isArray(data) || data.length===0){ reviewsList.innerHTML='<p style="margin:0;color:#6b7280">No reviews yet. Be the first!</p>'; if(avgEl) avgEl.innerHTML='<span style="color:#6b7280">No ratings</span>'; return; } reviewsList.innerHTML = data.map(r=>`<article style="padding:8px 0;border-bottom:1px solid #eef2f5;margin-bottom:6px;"><div style="display:flex;align-items:center;justify-content:space-between;"><strong style="font-size:0.95rem;color:#111">${esc(r.name)}</strong><span style="color:#ffb347;font-weight:700">${Number(r.rating)||0}/5</span></div><p style="margin:6px 0;color:#333">${esc(r.comment)}</p><div style="font-size:12px;color:#778089">${new Date(r.createdAt||r.ts||Date.now()).toLocaleString()}</div></article>`).join('\n'); const avg = data.reduce((s,x)=>s+(Number(x.rating)||0),0)/data.length; if(avgEl) avgEl.innerHTML = avg>0? ` ${avg.toFixed(1)} (${data.length})` : '<span style="color:#6b7280">No ratings</span>'; }catch(e){ reviewsList.textContent='Unable to load reviews.'; console.error(e); } }
+    if(form){ renderStars(); form.addEventListener('submit', async function(e){ e.preventDefault(); const nameEl = document.getElementById('reviewer-name'); const commentEl = document.getElementById('review-comment'); const submitBtn = form.querySelector('button[type="submit"]'); const name = nameEl?.value.trim()||''; const comment = commentEl?.value.trim()||''; const honeypot = document.getElementById('honeypot')?.value||''; const rating = selectedRating||5; if(!name || !comment){ try{ nameEl && nameEl.focus(); }catch{} return showToast('Please provide name and comment', true); }
+      // basic profanity/blocklist filter (client-side convenience only)
+      const badWords = [ 'fuck','bitch','asshole','shit','cunt','nigger','motherfucker' ];
+      const lc = (comment||'').toLowerCase();
+      if(badWords.some(w => lc.includes(w))){ return showToast('Your review contains disallowed language. Please edit and try again.', true); }
+      // disable UI while submitting
+      if(submitBtn) { submitBtn.disabled = true; submitBtn.dataset.orig = submitBtn.textContent; submitBtn.textContent = 'Submitting...'; }
+      try{
+        const res = await fetch(reviewsApi, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name, rating, comment, honeypot }) });
+        if(!res.ok){ const txt = await res.text().catch(()=>null); throw new Error(txt||'submit failed'); }
+        // Success
+        form.reset(); selectedRating = 5; updateStars(); showToast('Review submitted'); loadReviews();
+      }catch(err){ console.error(err); showToast('Failed to submit review', true); }
+      finally{ if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = submitBtn.dataset.orig || 'Submit'; } }
+    }); }
+
+    // lightweight toast helper
+    function showToast(msg, isError){ try{ const t = document.createElement('div'); t.textContent = msg; t.style.position='fixed'; t.style.bottom='18px'; t.style.left='50%'; t.style.transform='translateX(-50%)'; t.style.background = isError? '#b00020' : '#23262f'; t.style.color='#fff'; t.style.padding='10px 14px'; t.style.borderRadius='8px'; t.style.zIndex=99999; t.style.boxShadow='0 8px 24px rgba(0,0,0,0.18)'; document.body.appendChild(t); setTimeout(()=>{ t.style.opacity='0'; t.addEventListener('transitionend', ()=> t.remove()); }, 1600); setTimeout(()=>{ try{ t.remove(); }catch(e){} }, 3000); }catch(e){ console.warn('toast failed', e); } }
+    loadReviews();
+  })();
+
+})();
+</script>
+
+</body>
+</html>
+
+

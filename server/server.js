@@ -21,6 +21,9 @@ import fetch from 'node-fetch';
 import cors from 'cors';
 import { z } from 'zod';
 import { createRequire } from 'module';
+import helmet from 'helmet';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
 
 // Initialize Stripe via createRequire so this ESM file can load the CJS stripe package
 function getStripe(secretKey) {
@@ -947,6 +950,39 @@ app.use((req, res, next) => {
 
 // CORS for local files and localhost
 app.use(cors({ origin: true }));
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://www.paypal.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://api.stripe.com", "https://api.paypal.com", "https://api-m.sandbox.paypal.com"]
+    }
+  }
+}));
+
+// Compression middleware
+app.use(compression());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { error: 'Too many requests, please try again later.' }
+});
+app.use('/api/', limiter);
+
+// Stricter rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 login attempts per windowMs
+  message: { error: 'Too many authentication attempts, please try again later.' }
+});
+app.use('/api/auth/', authLimiter);
 
 
 
