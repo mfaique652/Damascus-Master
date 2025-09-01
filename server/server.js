@@ -958,16 +958,7 @@ app.use(cors({ origin: true }));
 
 // Security middleware
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://www.paypal.com"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https:", "https://api.stripe.com", "https://api.paypal.com", "https://api-m.sandbox.paypal.com"]
-    }
-  }
+  contentSecurityPolicy: false // Temporarily disabled for debugging
 }));
 
 // Compression middleware
@@ -4349,8 +4340,7 @@ const serverInstance = app.listen(PORT, '0.0.0.0', () => {
     setInterval(async () => {
       try {
         const response = await fetch(`${RENDER_URL}/api/health`, {
-          method: 'GET',
-          timeout: 30000
+          method: 'GET'
         });
         console.log(`Keep-alive ping: ${response.status} at ${new Date().toISOString()}`);
       } catch (error) {
