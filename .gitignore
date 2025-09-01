@@ -24,14 +24,14 @@ logs/
 server-local.log
 server.err.log
 
-# Uploads (keep folder structure but ignore actual files)
-uploads/*
+# Uploads - allowing essential files for deployment
+# uploads/* (commented out to allow deployment)
 !uploads/.gitkeep
 !uploads/avatars/
-uploads/avatars/*
+# uploads/avatars/* (commented out to allow avatars)
 !uploads/avatars/.gitkeep
 !uploads/payments/
-uploads/payments/*
+# uploads/payments/* (commented out to allow payment icons)
 !uploads/payments/.gitkeep
 
 # Backups and temporary HTML files
