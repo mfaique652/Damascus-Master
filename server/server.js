@@ -4429,26 +4429,55 @@ const serverInstance = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Actual bound port: ${port}`);
   console.log(`Expected by platform: PORT env variable`);
 
-  // Keep-alive mechanism for Render free tier - TEMPORARILY DISABLED FOR DEBUGGING
-  /*
-  if (process.env.NODE_ENV === 'production') {
-    const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000; // 14 minutes
+  // Keep-alive mechanism for Render free tier and similar hosting platforms
+  if (process.env.NODE_ENV === 'production' || process.env.ENABLE_KEEPALIVE === 'true') {
+    const KEEP_ALIVE_INTERVAL = 13 * 60 * 1000; // 13 minutes (under 15 min limit)
     const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 'https://damascus-master.onrender.com';
     
-    setInterval(async () => {
+    // Self-ping to prevent sleeping
+    const keepAliveInterval = setInterval(async () => {
       try {
         const response = await fetch(`${RENDER_URL}/api/health`, {
-          method: 'GET'
+          method: 'GET',
+          timeout: 10000, // 10 second timeout
+          headers: {
+            'User-Agent': 'Damascus-Master-KeepAlive/1.0'
+          }
         });
-        console.log(`Keep-alive ping: ${response.status} at ${new Date().toISOString()}`);
+        console.log(`✅ Keep-alive ping successful: ${response.status} at ${new Date().toISOString()}`);
       } catch (error) {
-        console.log(`Keep-alive ping failed: ${error.message} at ${new Date().toISOString()}`);
+        console.log(`⚠️ Keep-alive ping failed: ${error.message} at ${new Date().toISOString()}`);
       }
     }, KEEP_ALIVE_INTERVAL);
     
-    console.log(`Keep-alive enabled: pinging every ${KEEP_ALIVE_INTERVAL / 1000 / 60} minutes`);
+    // Additional external keep-alive services integration
+    const EXTERNAL_KEEPALIVE_INTERVAL = 5 * 60 * 1000; // 5 minutes for external services
+    const externalKeepAliveInterval = setInterval(async () => {
+      // Multiple keep-alive services for redundancy
+      const services = [
+        'https://betterstack.com/better-uptime', // Uptime monitoring
+        'https://uptimerobot.com', // Free uptime monitoring  
+        'https://cronitor.io' // Cron job monitoring
+      ];
+      
+      // Log that external services should ping us
+      console.log(`🌐 External keep-alive reminder: Configure uptime monitoring services to ping ${RENDER_URL}/api/health every 5-10 minutes`);
+    }, EXTERNAL_KEEPALIVE_INTERVAL);
+    
+    console.log(`🚀 Keep-alive enabled: pinging ${RENDER_URL}/api/health every ${KEEP_ALIVE_INTERVAL / 1000 / 60} minutes`);
+    console.log(`📡 External monitoring reminder: Set up services to ping every ${EXTERNAL_KEEPALIVE_INTERVAL / 1000 / 60} minutes`);
+    
+    // Clean shutdown: clear intervals
+    const originalClose = serverInstance.close.bind(serverInstance);
+    serverInstance.close = function(callback) {
+      console.log('🛑 Clearing keep-alive intervals...');
+      clearInterval(keepAliveInterval);
+      clearInterval(externalKeepAliveInterval);
+      return originalClose(callback);
+    };
+  } else {
+    console.log('⏸️ Keep-alive disabled (development mode)');
   }
-  */
 });
 
 // Log unexpected errors to help diagnose silent exits
