@@ -2503,6 +2503,60 @@ async function ensureAdmin() {
 // Only attempt provisioning when env vars are set
 ensureAdmin();
 
+// Temporary admin setup endpoint - REMOVE AFTER FIRST USE
+app.post('/api/setup-admin', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password required' });
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+    
+    await db.read();
+    
+    // Find or create admin user
+    let adminUser = db.data.users.find(u => u.email && u.email.toLowerCase() === email.toLowerCase());
+    
+    const hashedPassword = await bcrypt.hash(password, 12);
+    
+    if (adminUser) {
+      // Update existing user
+      adminUser.email = email;
+      adminUser.password = hashedPassword;
+      adminUser.role = 'admin';
+      adminUser.verified = true;
+    } else {
+      // Create new admin user
+      const newAdmin = {
+        id: uuidv4(),
+        email: email,
+        password: hashedPassword,
+        username: email.split('@')[0].replace(/[^a-zA-Z0-9_.-]/g, ''),
+        role: 'admin',
+        verified: true,
+        createdAt: new Date().toISOString()
+      };
+      db.data.users.push(newAdmin);
+    }
+    
+    await db.write();
+    
+    res.json({ 
+      success: true, 
+      message: `Admin user ${email} created/updated successfully. You can now log in.`,
+      warning: 'Remember to remove this endpoint after setup!'
+    });
+    
+  } catch (error) {
+    console.error('Admin setup error:', error);
+    res.status(500).json({ error: 'Setup failed' });
+  }
+});
+
 // Remove this duplicate - the main auth endpoints are defined earlier in the file
 
 // Admin auth middleware (simplified version)
