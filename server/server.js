@@ -841,6 +841,13 @@ async function sendEmail({ to, subject, html, text }){
     }
 
     const mailOptions = { from: `"Damascus Master" <${db.data.emailUser || EMAIL_USER}>`, to, subject, html, text };
+    
+    // Safety check for transporter
+    if (!transporter) {
+      console.warn('sendEmail: transporter is null, email functionality disabled');
+      return { ok: false, error: 'Email transporter not configured' };
+    }
+    
     const info = await transporter.sendMail(mailOptions);
     return { ok: true, info };
   } catch (e) {
