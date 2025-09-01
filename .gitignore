@@ -24,19 +24,43 @@ logs/
 server-local.log
 server.err.log
 
-# Uploads (optional - you may want to keep some)
+# Uploads (keep folder structure but ignore actual files)
 uploads/*
 !uploads/.gitkeep
+!uploads/avatars/
+uploads/avatars/*
+!uploads/avatars/.gitkeep
+!uploads/payments/
+uploads/payments/*
+!uploads/payments/.gitkeep
 
-# Backups
+# Backups and temporary HTML files
 backups/
 .deleted_albums/
+*.bak.*
+*.backup.*
+*_test_*.html
+top_seller_test_*.html
+
+# Database backups
+server/data/db.json.backup.*
+server/data/db.json.corrupt.*
+server/data/db.json.removed.*
+server/data/db.json.*.movebak.*
 
 # Temporary files
 tmp/
 temp/
 *.tmp
 *.temp
+tmp_*
+tmp-*
+*_inquiries.json
+temp_block.txt
+
+# Text document files
+*.txt.bak
+New Text Document.txt
 
 # OS generated files
 .DS_Store
@@ -74,6 +98,12 @@ ecosystem.config.js
 tmp_*.js
 test_*.html
 *.test.local.*
+
+# Development reports and logs
+*_report_*.json
+*_report_*.txt
+centralize_*.json
+centralize_*.txt
 
 # CSV files that might contain data
 missing_heart_ids.csv
