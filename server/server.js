@@ -971,11 +971,14 @@ app.use(helmet({
 // Compression middleware
 app.use(compression());
 
-// Rate limiting
+// Rate limiting with proper proxy configuration
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: { error: 'Too many requests, please try again later.' }
+  message: { error: 'Too many requests, please try again later.' },
+  trustProxy: true, // Trust proxy headers for IP detection
+  standardHeaders: true, // Return rate limit info in headers
+  legacyHeaders: false // Disable legacy headers
 });
 app.use('/api/', limiter);
 
@@ -983,7 +986,10 @@ app.use('/api/', limiter);
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10, // limit each IP to 10 login attempts per windowMs
-  message: { error: 'Too many authentication attempts, please try again later.' }
+  message: { error: 'Too many authentication attempts, please try again later.' },
+  trustProxy: true, // Trust proxy headers for IP detection
+  standardHeaders: true,
+  legacyHeaders: false
 });
 app.use('/api/auth/', authLimiter);
 
