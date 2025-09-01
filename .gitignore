@@ -12,7 +12,7 @@ yarn-error.log*
 .env.production.local
 
 # Database and data files
-# server/data/db.json (temporarily enabled for deployment)
+server/data/db.json
 server/data/db.json.backup.*
 server/data/db.json.corrupt.*
 *.sqlite
