@@ -1,0 +1,307 @@
+/* Damascus Master - Universal Theme System */
+
+/* Theme Variables */
+:root {
+  /* Light Theme (Default) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #fff9f2; /* warmer off-white */
+  --bg-tertiary: #f6efe6;
+  --text-primary: #222222;
+  --text-secondary: #6b6b6b;
+  --accent-gold: #e0b24a; /* softer gold */
+  --accent-dark-gold: #b07809;
+  --border-color: rgba(212, 175, 55, 0.2);
+  --shadow-color: rgba(0,0,0,0.1);
+  --card-bg: #ffffff;
+  --input-bg: #ffffff;
+  --button-bg: linear-gradient(45deg, #d4af37, #b8860b);
+  --button-text: #ffffff;
+  --header-bg: #d4af37;
+  --header-text: #ffffff;
+  --footer-bg: #2c3e50;
+  --footer-text: #ffffff;
+  
+  /* Legacy variables for compatibility */
+  --primary: #D4AF37;
+  --primary-dark: #B8860B;
+  --accent: #CD853F;
+  --bg: var(--bg-primary);
+  --bg-light: var(--bg-secondary);
+  --text: var(--text-primary);
+  --text-muted: #6c757d;
+  --card: var(--card-bg);
+  --shadow: 0 8px 40px 0 var(--shadow-color);
+  --radius: 1.2rem;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg-primary: #1a1612;
+  --bg-secondary: #2c1810;
+  --bg-tertiary: #3d2415;
+  --text-primary: #f5f6fa;
+  --text-secondary: #d2b48c;
+  --accent-gold: #d4af37;
+  --accent-dark-gold: #b8860b;
+  --border-color: rgba(212, 175, 55, 0.3);
+  --shadow-color: rgba(0,0,0,0.5);
+  --card-bg: rgba(0,0,0,0.7);
+  --input-bg: rgba(26, 22, 18, 0.8);
+  --button-bg: linear-gradient(45deg, #d4af37, #b8860b);
+  --button-text: #1a1612;
+  --header-bg: #2c1810;
+  --header-text: #d4af37;
+  --footer-bg: #1a1612;
+  --footer-text: #f5f6fa;
+  
+  /* Legacy variables for dark theme */
+  --bg: #1A1612;
+  --bg-light: #2D251E;
+  --text: #F5F5DC;
+  --text-muted: #D2B48C;
+  --card: #2F2722;
+  --shadow: 0 8px 40px 0 rgba(0,0,0,0.3);
+}
+
+/* Universal Base Styles */
+body {
+  margin: 0;
+  font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+/* Header Styles */
+header {
+  background: var(--header-bg);
+  color: var(--header-text);
+  box-shadow: 0 2px 10px var(--shadow-color);
+  border-bottom: 2px solid var(--primary);
+}
+
+/* Footer Styles */
+footer {
+  background: var(--footer-bg);
+  color: var(--footer-text);
+  border-top: 3px solid var(--primary);
+}
+
+/* Card Styles */
+.card,
+.account-container,
+.login-container,
+.newsletter-container,
+.support-container {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px var(--shadow-color);
+  border-radius: var(--radius);
+}
+
+/* Input Styles */
+input,
+textarea,
+select {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+/* Placeholder styling: readable by default, uses secondary text color */
+::-webkit-input-placeholder { color: var(--text-secondary); opacity: 0.9; }
+:-ms-input-placeholder { color: var(--text-secondary); opacity: 0.9; }
+::placeholder { color: var(--text-secondary); opacity: 0.9; }
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+/* Button Styles */
+.btn,
+button,
+.submit-btn,
+.support-submit-btn {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn:hover,
+button:hover,
+.submit-btn:hover,
+.support-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Text Color Adjustments */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+}
+
+.section-title {
+  color: var(--accent-gold);
+}
+
+/* Account Dropdown Adjustments */
+.account-dropdown {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+.dropdown-item {
+  color: var(--text-primary);
+}
+
+.dropdown-item:hover {
+  background: var(--bg-secondary);
+}
+
+/* Newsletter Section */
+.newsletter-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+
+/* Support Section */
+.support-section {
+  background: var(--bg-secondary);
+}
+
+/* Hero Section */
+.hero {
+  background: var(--bg-secondary);
+}
+
+.hero-content {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+
+/* Sidebar */
+.sidebar {
+  background: var(--card-bg);
+  border-right: 1px solid var(--border-color);
+}
+
+.sidebar a {
+  color: var(--text-primary);
+}
+
+.sidebar a:hover {
+  background: var(--bg-secondary);
+  color: var(--accent-gold);
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  background: none;
+  border: 2px solid var(--accent-gold);
+  color: var(--accent-gold);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--accent-gold);
+  color: var(--button-text);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .card,
+  .account-container,
+  .login-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+}
+
+/* (Removed responsive price variant helpers: kept prior behaviour to avoid conflicts.) */
+
+/* Ensure icons are visible in light theme */
+.icon,
+.emoji,
+svg {
+  filter: none;
+  opacity: 1;
+}
+
+/* Dark theme icon adjustments */
+[data-theme="dark"] .icon,
+[data-theme="dark"] .emoji {
+  filter: brightness(1.2);
+}
+
+/* Specific adjustments for form elements */
+.password-toggle {
+  color: var(--text-secondary);
+}
+
+.password-toggle:hover {
+  color: var(--accent-gold);
+}
+
+/* Account bubble styles */
+.account-bubble {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+
+/* Navigation menu */
+.nav-menu {
+  background: var(--card-bg);
+}
+
+.nav-menu a {
+  color: var(--text-primary);
+}
+
+.nav-menu a:hover {
+  color: var(--accent-gold);
+  background: var(--bg-secondary);
+}
+
+/* Admin floating bar (controlled by theme variables) */
+#dm-admin-bar {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9999;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: 999px;
+  padding: 6px 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+#dm-admin-bar span {
+  font-weight: 700;
+  color: var(--accent-gold);
+  margin-left: 6px;
+}
+
+/* Top-seller and sale badge rules removed so runtime `site.js` controls product card visuals.
+  If you need static overrides, add them back below intentionally. */
+
+

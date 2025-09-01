@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — Reviews</title>
+  <style>
+    body{font-family:Segoe UI,Arial,sans-serif;margin:24px;background:#f6f7f9;color:#111}
+    .card{background:#fff;padding:16px;border-radius:8px;box-shadow:0 4px 16px rgba(17,24,39,0.06);margin-bottom:12px}
+    .row{display:flex;gap:12px;align-items:center}
+    button{padding:8px 10px;border-radius:6px;border:1px solid #ddd;background:#fff;cursor:pointer}
+    button.primary{background:#0366d6;color:#fff;border-color:transparent}
+    .small{font-size:0.9rem;color:#444}
+    .danger{background:#ff4d4f;color:#fff;border-color:transparent}
+    pre{white-space:pre-wrap;word-break:break-word;background:#fafafa;padding:8px;border-radius:6px}
+    .meta{font-size:0.85rem;color:#666}
+    .controls{display:flex;gap:8px;margin-bottom:12px}
+  </style>
+</head>
+<body>
+  <h2>Admin — Product Reviews</h2>
+  <div class="controls">
+    <button id="btnAuth" class="primary">Set Admin Token</button>
+    <button id="btnRefresh">Refresh</button>
+    <button id="btnClearToken">Clear Token</button>
+    <div id="status" class="small" style="margin-left:12px"></div>
+  </div>
+  <div id="list"></div>
+
+<script>
+const listEl = document.getElementById('list');
+const statusEl = document.getElementById('status');
+function getToken(){ return localStorage.getItem('adminToken') || ''; }
+function setToken(t){ localStorage.setItem('adminToken', t || ''); updateStatus(); }
+function updateStatus(){ statusEl.textContent = getToken() ? 'Authenticated' : 'No token set'; }
+updateStatus();
+
+async function fetchReviews(){
+  listEl.innerHTML = '<div class="small">Loading...</div>';
+  try{
+    const token = getToken();
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const resp = await fetch('/api/admin/reviews', { headers });
+    if (resp.status === 401 || resp.status === 403){ listEl.innerHTML = '<div class="small">Unauthorized — set a valid admin token (click "Set Admin Token")</div>'; return; }
+    const data = await resp.json();
+    render(data);
+  }catch(e){ listEl.innerHTML = '<div class="small">Failed to load reviews</div>'; console.error(e); }
+}
+
+function render(products){
+  if(!Array.isArray(products) || products.length === 0){ listEl.innerHTML = '<div class="small">No reviews found</div>'; return; }
+  const out = [];
+  products.forEach(p => {
+    const reviews = Array.isArray(p.reviews) ? p.reviews : [];
+    if(reviews.length === 0) return;
+    const container = document.createElement('div');
+    container.className = 'card';
+    const header = document.createElement('div'); header.innerHTML = `<strong>${escapeHtml(p.title||p.page||p.productId||'Product')}</strong> <span class="meta">(${p.productId || ''})</span>`;
+    container.appendChild(header);
+    reviews.forEach(r => {
+      const rdiv = document.createElement('div'); rdiv.style.marginTop = '10px';
+      rdiv.innerHTML = `
+        <div class="row">
+          <div style="flex:1">
+            <div><strong>${escapeHtml(r.name||'Anonymous')}</strong> <span class="meta">${escapeHtml(r.createdAt||'')}</span></div>
+            <div class="small">Rating: ${escapeHtml(String(r.rating||0))} ${r.flagged?'<span style="color:#b36"> • FLAGGED</span>':''}</div>
+            <pre>${escapeHtml(r.comment||'')}</pre>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button data-id="${escapeHtml(r.id)}" class="del danger">Delete</button>
+            <button data-id="${escapeHtml(r.id)}" class="copy">Copy ID</button>
+          </div>
+        </div>
+      `;
+      container.appendChild(rdiv);
+    });
+    out.push(container);
+  });
+  listEl.innerHTML = '';
+  out.forEach(n => listEl.appendChild(n));
+  // wire up buttons
+  document.querySelectorAll('button.del').forEach(b => b.addEventListener('click', onDelete));
+  document.querySelectorAll('button.copy').forEach(b => b.addEventListener('click', e => { navigator.clipboard && navigator.clipboard.writeText(e.currentTarget.dataset.id); alert('Copied'); }));
+}
+
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function onDelete(e){
+  if(!confirm('Delete this review?')) return;
+  const id = e.currentTarget.dataset.id;
+  try{
+    const token = getToken();
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const resp = await fetch('/api/admin/reviews/' + encodeURIComponent(id), { method: 'DELETE', headers });
+    if(!resp.ok){ const t = await resp.text(); alert('Delete failed: ' + resp.status + '\n' + t); return; }
+    alert('Deleted');
+    fetchReviews();
+  }catch(err){ console.error(err); alert('Delete failed'); }
+}
+
+document.getElementById('btnRefresh').addEventListener('click', fetchReviews);
+document.getElementById('btnAuth').addEventListener('click', () => {
+  const cur = getToken();
+  const t = prompt('Paste admin Bearer token (JWT):', cur||'');
+  if(t !== null) setToken(t.trim());
+});
+document.getElementById('btnClearToken').addEventListener('click', () => { localStorage.removeItem('adminToken'); updateStatus(); });
+
+fetchReviews();
+</script>
+</body>
+</html>

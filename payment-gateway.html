@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Payment Gateway — Admin</title>
+    <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="card.css">
+    <style>
+      :root{ --bg:#f6fbff; --card:#ffffff; --muted:#6b7280; --accent:#0b5394; --accent-2:#25a87a; --glass: rgba(11,43,74,0.04) }
+      body{ margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,#fbfdff,#eef7ff 45%); color:#072033 }
+      .wrap{ max-width:1100px;margin:36px auto;padding:24px }
+      .topbar{ display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px }
+      .brand{ font-weight:800;color:var(--accent); font-size:18px }
+      .actions{ display:flex;gap:10px }
+      .btn{ background:linear-gradient(90deg,var(--accent),#145ea8);color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700 }
+      .btn.ghost{ background:transparent;color:var(--accent);border:1px solid rgba(15,76,129,0.08) }
+      .grid{ display:grid;grid-template-columns:1fr 420px;gap:22px }
+      .card{ background:var(--card);border-radius:14px;padding:18px;box-shadow:0 10px 30px rgba(11,43,74,0.06);border:1px solid var(--glass) }
+      .card h3{ margin:0 0 12px;color:var(--accent);font-size:16px }
+      .payment-methods{ display:flex;gap:12px;flex-wrap:wrap }
+      .method{ flex:1 1 200px;padding:14px;border-radius:12px;border:1px solid transparent;background:linear-gradient(180deg,#ffffff,#fbfdff);cursor:pointer;display:flex;align-items:center;gap:12px }
+      .method .icon{ width:40px;height:40px;border-radius:8px;background:linear-gradient(180deg,#f0f7ff,#eefbff);display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent) }
+      .method .meta{ display:flex;flex-direction:column }
+      .method .meta strong{ font-size:15px;color:#04263b }
+      .method .meta .desc{ font-size:13px;color:var(--muted) }
+      .method.active{ box-shadow:0 12px 30px rgba(11,43,74,0.08);border-color:rgba(37,168,122,0.12);transform:translateY(-4px) }
+      label.input{ display:block;margin-bottom:6px;color:var(--muted);font-size:13px }
+      input[type=text],input[type=email],select{ width:100%;padding:12px;border-radius:10px;border:1px solid #e9f0fb;background:#fbfeff } 
+      .small{ color:var(--muted);font-size:13px }
+      .muted{ color:var(--muted) }
+      .right-col .section{ margin-bottom:18px }
+      .help{ background:linear-gradient(180deg,#f7fbff,#fff);border-radius:10px;padding:12px;color:#07426b;font-size:13px;border:1px solid #eef7ff }
+      .status { font-size:13px; color:var(--muted); margin-top:8px }
+      .kicker { display:block; font-size:12px; color:var(--muted); margin-bottom:8px }
+      @media(max-width:900px){ .grid{ grid-template-columns:1fr; } .actions{ flex-wrap:wrap } }
+    </style>
+    <script src="tools/admin-auth.js"></script>
+  </head>
+  <body>
+    <!-- Simple login overlay for admin pages -->
+    <div id="login-overlay" style="display:none;position:fixed;inset:0;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:99999;">
+      <div style="background:#fff;padding:20px;border-radius:12px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+        <h3 style="margin:0 0 8px;color:#072033">Admin login</h3>
+        <p style="margin:0 0 12px;color:#6b7280">Sign in to manage payment gateway settings.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <input id="login-email" type="email" placeholder="admin email" style="padding:10px;border-radius:8px;border:1px solid #e6eef9" />
+          <input id="login-pass" type="password" placeholder="password" style="padding:10px;border-radius:8px;border:1px solid #e6eef9" />
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
+            <button id="login-btn" class="btn">Sign in</button>
+          </div>
+          <div id="login-status" class="small muted" style="margin-top:6px"></div>
+        </div>
+      </div>
+    </div>
+    <div class="wrap" id="pg-wrap" style="display:none">
+      <div class="topbar">
+        <div class="brand">Payment Gateway — Admin</div>
+        <div class="actions">
+          <button class="btn ghost" onclick="window.location.href='visual-editor.html'">Editor</button>
+          <button class="btn ghost" onclick="window.location.href='admin-dashboard.html'">Dashboard</button>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+        <script>
+          // Show admin UI only when token verified. Uses tools/admin-auth.js API.
+          (function(){
+            async function init(){
+              try{
+                // if adminAuth not loaded yet, wait a tick
+                if (!window.adminAuth) { setTimeout(init, 50); return; }
+                const loginOverlay = document.getElementById('login-overlay');
+                const wrap = document.getElementById('pg-wrap');
+                const status = document.getElementById('login-status');
+                const emailIn = document.getElementById('login-email');
+                const passIn = document.getElementById('login-pass');
+                const btn = document.getElementById('login-btn');
+                // Verify token
+                const prof = await window.adminAuth.verifyAdminToken();
+                if (prof) {
+                  if (wrap) wrap.style.display = 'block';
+                  if (loginOverlay) loginOverlay.style.display = 'none';
+                  return;
+                }
+                // show overlay and wire login
+                if (wrap) wrap.style.display = 'none';
+                if (loginOverlay) loginOverlay.style.display = 'flex';
+                btn.onclick = async function(e){
+                  e.preventDefault();
+                  if (!emailIn || !passIn) return;
+                  status.textContent = 'Signing in...';
+                  const r = await window.adminAuth.performLogin(emailIn.value, passIn.value);
+                  if (r && r.ok) {
+                    status.textContent = 'Signed in';
+                    if (wrap) wrap.style.display = 'block';
+                    if (loginOverlay) loginOverlay.style.display = 'none';
+                    // trigger any page init that depends on auth
+                    try{ if (typeof window.loadCardConfig === 'function') window.loadCardConfig(); }catch(e){}
+                    try{ if (typeof window.loadAdminCreds === 'function') window.loadAdminCreds(); }catch(e){}
+                    try{ if (typeof window.loadAdmins === 'function') window.loadAdmins(); }catch(e){}
+                  } else {
+                    status.textContent = (r && r.body) ? r.body : 'Login failed';
+                  }
+                };
+              }catch(e){ console.warn('init admin auth overlay failed', e); }
+            }
+            init();
+          })();
+        </script>
+          <div class="card">
+            <h3>Payments</h3>
+            <p class="small muted">Select a test payment method and try a transaction. Saved configs below control live behavior.</p>
+            <div style="height:16px"></div>
+            <div class="payment-methods" id="payment-methods">
+              <div class="method active" data-method="card" role="button" tabindex="0">
+                <div class="icon">💳</div>
+                <div class="meta"><strong>Card</strong><span class="desc">Visa • Mastercard • Amex</span></div>
+              </div>
+              <div class="method" data-method="paypal" role="button" tabindex="0">
+                <div class="icon">🅿️</div>
+                <div class="meta"><strong>PayPal</strong><span class="desc">Redirect to PayPal checkout</span></div>
+              </div>
+            </div>
+
+            <div id="payment-panel" style="margin-top:18px">
+              <div id="card-panel">
+                <div class="kicker">Test charge — uses configured provider</div>
+                <label class="input">Amount (USD)</label>
+                <input id="pg-amount" type="text" placeholder="10.00" />
+                <div style="height:10px"></div>
+                <button id="pg-pay" class="btn">Run Test Payment</button>
+                <div id="card-test-status" class="status"></div>
+              </div>
+              <div id="paypal-panel" style="display:none">
+                <div class="kicker">Initiate PayPal checkout</div>
+                <p class="small muted">PayPal will open in a new window for sandbox/live testing.</p>
+                <label class="input">Amount (USD)</label>
+                <input id="pg-amount-pp" type="text" placeholder="10.00" />
+                <div style="height:10px"></div>
+                <button id="pg-paypal" class="btn">Open PayPal Flow</button>
+                <div id="paypal-test-status" class="status"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:16px">
+            <h3>Email Settings</h3>
+            <p class="small muted">Sender email used for payment notifications.</p>
+            <div style="height:10px"></div>
+            <form id="email-form">
+              <label class="input">Sender Email</label>
+              <input id="pg-sender-email" type="email" />
+              <label class="input">Password / API Key</label>
+              <input id="pg-sender-pass" type="text" />
+              <div style="height:8px"></div>
+              <button class="btn" type="submit">Save Email Settings</button>
+            </form>
+            <div id="email-status" style="margin-top:8px" class="small muted"></div>
+          </div>
+
+          <div class="card" style="margin-top:16px">
+            <h3>Admin Account</h3>
+            <p class="small muted">Change the admin email or password used for logging into the admin panel. This updates the same credentials used by `admin.html`.</p>
+            <div style="height:6px"></div>
+            <div id="current-admin" class="small muted">Currently editing: <span id="current-admin-email"></span></div>
+            <div style="height:10px"></div>
+            <form id="admin-creds-form">
+              <label class="input">Admin Email</label>
+              <input id="admin-email" type="email" readonly />
+              <div style="height:8px"></div>
+              <button id="save-admin-email" class="btn" type="button" disabled>Admin Email locked</button>
+            </form>
+            <div id="admin-creds-status" style="margin-top:8px" class="small muted"></div>
+            <div style="height:12px"></div>
+            <div class="kicker">Change Admin Password</div>
+            <form id="admin-change-pass-form">
+              <label class="input">Current Password</label>
+              <input id="admin-old-pass" type="password" />
+              <label class="input">New Password</label>
+              <input id="admin-new-pass" type="password" />
+              <label class="input">Confirm New Password</label>
+              <input id="admin-new-pass-confirm" type="password" />
+              <div style="height:8px"></div>
+              <button class="btn" type="submit">Change Password</button>
+            </form>
+            <div id="admin-change-pass-status" class="small muted" style="margin-top:8px"></div>
+            <div style="height:12px"></div>
+            <div class="kicker">Administrators</div>
+            <div id="admin-list" style="margin-top:8px">
+              <div class="small muted">Loading admins...</div>
+            </div>
+            <div style="height:8px"></div>
+            <form id="add-admin-form">
+              <label class="input">New Admin Email</label>
+              <input id="new-admin-email" type="email" />
+              <label class="input">New Admin Password</label>
+              <input id="new-admin-pass" type="password" />
+              <div style="height:8px"></div>
+              <button class="btn" type="submit">Add Admin</button>
+            </form>
+            <div id="add-admin-status" class="small muted" style="margin-top:6px"></div>
+          </div>
+        </div>
+
+        <div class="right-col">
+          <div class="card section">
+            <h3>Domain & Integration</h3>
+            <div class="help">Add your domain and ensure DNS points correctly. Required for webhook callbacks and live payments.</div>
+            <div style="height:12px"></div>
+            <label class="input">Site Domain</label>
+            <input id="pg-domain" type="text" placeholder="example.com" />
+            <div style="height:8px"></div>
+            <button id="save-domain" class="btn">Save Domain</button>
+            <div id="domain-status" style="margin-top:8px" class="small muted"></div>
+          </div>
+
+          <div class="card section">
+            <h3>PayPal Configuration</h3>
+            <p class="small muted">Save PayPal credentials for sandbox/live modes.</p>
+            <form id="paypal-config-form">
+              <label class="input">PayPal Email</label>
+              <input id="paypal-email" type="email" />
+              <label class="input">Client ID</label>
+              <input id="paypal-client-id" type="text" />
+              <label class="input">Client Secret</label>
+              <input id="paypal-client-secret" type="text" />
+              <label class="input">Environment</label>
+              <select id="paypal-env"><option value="sandbox">Sandbox</option><option value="live">Live</option></select>
+              <div style="height:8px"></div>
+              <button id="save-paypal" class="btn" type="submit">Save PayPal Config</button>
+              <div id="paypal-config-status" style="margin-top:8px" class="small muted"></div>
+            </form>
+
+            <div style="height:10px"></div>
+            <!-- Payouts removed: PayPal payments redirect to PayPal, card payments handled by card provider -->
+          </div>
+          
+          <div class="card section">
+            <h3>Card Gateway Configuration</h3>
+            <p class="small muted">Add credentials for your card payment provider (Stripe, Braintree, etc.). These credentials are used for processing card payments and verifying webhooks.</p>
+            <label class="input">Provider</label>
+            <select id="card-provider">
+              <option value="stripe">Stripe</option>
+              <option value="braintree">Braintree</option>
+              <option value="adyen">Adyen</option>
+              <option value="other">Other</option>
+            </select>
+            <label class="input">Publishable / Public Key</label>
+            <input id="card-publishable" type="text" placeholder="pk_live_... or publishable key" />
+            <label class="input">Secret / Private Key</label>
+            <input id="card-secret" type="text" placeholder="sk_live_... or secret key" />
+            <label class="input">Webhook Signing Secret</label>
+            <input id="card-webhook-secret" type="text" placeholder="whsec_..." />
+            <label class="input">Mode</label>
+            <select id="card-mode"><option value="test">Test / Sandbox</option><option value="live">Live</option></select>
+            <div style="height:8px"></div>
+            <button id="save-card" class="btn">Save Card Config</button>
+            <div id="card-status" style="margin-top:8px" class="small muted"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD" async></script>
+    <script src="tools/admin-auth.js"></script>
+    <script src="scripts/payment-gateway-admin.js"></script>
+    <script>
+      // Guard page: verify admin token then show UI
+      (async function(){
+        try{
+          if (!window.adminAuth || typeof window.adminAuth.verifyAdminToken !== 'function') { document.getElementById('pg-wrap').style.display = 'block'; return; }
+          const prof = await window.adminAuth.verifyAdminToken();
+          if (!prof) return window.location.href = 'admin.html?redirect=payment-gateway';
+          // show page
+          document.getElementById('pg-wrap').style.display = 'block';
+        }catch(e){ window.location.href = 'admin.html?redirect=payment-gateway'; }
+      })();
+
+      // Small UI wiring for the new layout
+      document.addEventListener('DOMContentLoaded', function(){
+        const methods = document.getElementById('payment-methods');
+        if (methods) methods.addEventListener('click', function(ev){ const m = ev.target.closest('.method'); if (!m) return; document.querySelectorAll('.method').forEach(x=>x.classList.remove('active')); m.classList.add('active'); const method = m.dataset.method; document.getElementById('card-panel').style.display = method==='card' ? '' : 'none'; document.getElementById('paypal-panel').style.display = method==='paypal' ? '' : 'none'; });
+
+        // delegate to existing admin script handlers where present
+        const emailForm = document.getElementById('email-form'); if (emailForm) emailForm.addEventListener('submit', function(ev){ ev.preventDefault(); if (typeof saveEmailSettings === 'function') saveEmailSettings(); else document.getElementById('email-status').textContent = 'Email saved (local demo)'; });
+        const saveDomain = document.getElementById('save-domain'); if (saveDomain) saveDomain.addEventListener('click', function(){ if (typeof saveDomainConfig === 'function') saveDomainConfig(); else document.getElementById('domain-status').textContent = 'Domain saved (local demo)'; });
+        const savePaypal = document.getElementById('save-paypal'); if (savePaypal) savePaypal.addEventListener('click', function(){ if (typeof savePaypalConfig === 'function') savePaypalConfig(); else document.getElementById('paypal-status').textContent = 'PayPal config saved (local demo)'; });
+        const saveCard = document.getElementById('save-card'); if (saveCard) saveCard.addEventListener('click', function(){
+          if (typeof saveCardConfig === 'function') return saveCardConfig();
+          // fallback demo: collect values and show a preview message
+          const provider = document.getElementById('card-provider').value;
+          const pub = document.getElementById('card-publishable').value;
+          const secret = document.getElementById('card-secret').value ? '●●●●' : '';
+          const mode = document.getElementById('card-mode').value;
+          document.getElementById('card-status').textContent = `Saved ${provider} keys (${mode}) — publishable: ${pub} ${secret}`;
+        });
+
+        const payBtn = document.getElementById('pg-pay'); if (payBtn) payBtn.addEventListener('click', function(){ if (typeof runCardTest === 'function') runCardTest(); else alert('Run card payment (demo)'); });
+        const ppBtn = document.getElementById('pg-paypal'); if (ppBtn) ppBtn.addEventListener('click', function(){ if (typeof runPaypalFlow === 'function') runPaypalFlow(); else alert('Open PayPal (demo)'); });
+      });
+    </script>
+  </body>
+</html>

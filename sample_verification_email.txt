@@ -1,0 +1,17 @@
+Subject: Your Damascus Master Registration Code
+
+Hello,
+
+Your security code for Damascus Master registration is: 
+
+----------------------
+184217
+----------------------
+
+Enter this code on the website to complete your registration.
+
+If you did not request this, please ignore this email.
+
+Thank you,
+Damascus Master Team
+    replace PayPal client-id with live credentials and add a backend/webhook for payment confirmation.

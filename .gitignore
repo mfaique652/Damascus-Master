@@ -1,0 +1,88 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Database and data files
+server/data/db.json
+server/data/db.json.backup.*
+server/data/db.json.corrupt.*
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+server-local.log
+server.err.log
+
+# Uploads (optional - you may want to keep some)
+uploads/*
+!uploads/.gitkeep
+
+# Backups
+backups/
+.deleted_albums/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build files
+dist/
+build/
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Miscellaneous
+*.tgz
+*.tar.gz
+.nyc_output
+coverage/
+
+# PM2
+ecosystem.config.js
+
+# Test files that might contain sensitive data
+tmp_*.js
+test_*.html
+*.test.local.*
+
+# CSV files that might contain data
+missing_heart_ids.csv
+orphaned_products.csv
+
+# Temporary PowerShell scripts
+*.ps1
+
+# Local server files
+run_local_server.ps1
+start-server.ps1
+stop_and_backup_db.ps1

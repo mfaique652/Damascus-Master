@@ -1,0 +1,134 @@
+{
+  "scanned": 76,
+  "planned_changes": {
+    "D:\\Damascus Master - Copy (2)\\account.html": [
+      "display_none:4"
+    ],
+    "D:\\Damascus Master - Copy (2)\\admin.html": [
+      "display_none:12"
+    ],
+    "D:\\Damascus Master - Copy (2)\\album_template.html": [
+      "display_none:3"
+    ],
+    "D:\\Damascus Master - Copy (2)\\album_template.html.regen.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\album_template.html.regen.html.regen.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\album_template.html.regen.html.regen.html.regen.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\axe_max.html": [
+      "display_none:3"
+    ],
+    "D:\\Damascus Master - Copy (2)\\axe_max.html.regen.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\Axes.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\account.html": [
+      "display_none:4"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\admin.html": [
+      "display_none:12"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\Axes.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\hunting-knives.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\index.html": [
+      "display_none:6"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\kitchen-knives.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\login.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\order.html": [
+      "display_none:3"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\others.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\payments.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\pocket-knives.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\rings.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\backups\\html_backup_2025-08-22_06_27_13\\swords.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\hand_forged_damascus_steel_5_pcs_rosewood_handle_chef_knife_set.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\hand_forged_damascus_steel_5_pcs_rosewood_handle_chef_knife_set.html.regen.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\hunting-knives.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\hunting_bowie_knife_gift_for_men.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\hunting_bowie_knife_gift_for_men.html.regen.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\index.html": [
+      "display_none:6"
+    ],
+    "D:\\Damascus Master - Copy (2)\\kitchen-knives.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\kitchen_hunter.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\kitchen_hunter.html.regen.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\login.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\node_modules\\eslint\\lib\\cli-engine\\formatters\\html.js": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\order.html": [
+      "display_none:3"
+    ],
+    "D:\\Damascus Master - Copy (2)\\others.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\payments.html": [
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\pocket-knives.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\rings.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\site.js": [
+      "price_container:1",
+      "orig_price:1",
+      "display_none:1"
+    ],
+    "D:\\Damascus Master - Copy (2)\\swords.html": [
+      "display_none:2"
+    ],
+    "D:\\Damascus Master - Copy (2)\\tools\\sync_sales_to_html.js": [
+      "price_container:1",
+      "orig_price:1",
+      "sale_price:1",
+      "display_none:3"
+    ]
+  },
+  "applied": true
+}

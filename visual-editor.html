@@ -1,0 +1,472 @@
+  <!doctype html>
+  <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Visual Editor</title>
+    <style>
+      :root{--bg:#f7f9fb;--panel:#ffffff;--muted:#6b7280;--accent:#2563eb;--good:#27ae60}
+      body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;margin:0;background:var(--bg);color:#111}
+      .ve-shell{max-width:1200px;margin:18px auto;padding:12px}
+      .ve-header{display:flex;gap:12px;align-items:center}
+      .ve-header h1{margin:0;font-size:20px}
+      .ve-actions{margin-left:auto;display:flex;gap:8px}
+      .layout{display:grid;grid-template-columns:1fr 360px;gap:12px;margin-top:12px}
+      .editor-card{background:var(--panel);padding:12px;border-radius:8px;min-height:480px;border:1px solid #edf2f7}
+      .editor-viewport{height:calc(100vh - 220px);border:1px dashed #e6edf3;border-radius:6px;background:#fff;overflow:hidden}
+      .panel{background:var(--panel);padding:12px;border-radius:8px;border:1px solid #edf2f7}
+      .image-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;max-height:180px;overflow:auto}
+      .image-grid img{width:80px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #eef3f7;cursor:pointer}
+      .muted{color:var(--muted);font-size:13px}
+      .btn{padding:8px 12px;border-radius:8px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+      .btn.ghost{background:transparent;color:#111;border:1px solid #e6edf3}
+      .btn.positive{background:var(--good)}
+      .pages-panel{display:none;margin-top:8px;max-height:300px;overflow:auto;border:1px solid #e6e9ee;border-radius:8px;background:var(--panel);padding:8px}
+      .page-item{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;border:1px solid #f4f6f8;margin-bottom:8px;background:#fff}
+      .page-item .meta{display:flex;gap:8px;align-items:center}
+      label.small{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+      select,input[type=text],textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #e6edf3}
+      textarea{min-height:64px}
+      .inspector-section{margin-bottom:12px}
+    </style>
+  </head>
+  <body>
+    <div class="ve-shell">
+      <div class="ve-header">
+        <h1>Visual Editor</h1>
+  <div id="editor-status" style="margin-left:12px;color:#6b7280;font-size:13px;align-self:center">Not loaded</div>
+        <div class="ve-actions">
+          <div style="display:flex;align-items:center;gap:8px">
+            <button id="open-pages" class="page-button btn ghost">Pages</button>
+            <button id="refresh-pages" class="btn ghost">Refresh</button>
+            <button id="undo-change" class="btn ghost" title="Undo last change">Undo</button>
+            <button id="load-default" class="btn ghost" title="Load original page (discard edits)">Load Default</button>
+            <button id="toggle-edit" class="btn">Toggle Edit Mode</button>
+            <button id="edit-html-btn" class="btn ghost">Edit HTML</button>
+            <button id="save-changes" class="btn positive">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pages-panel" id="pages-panel">
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input id="page-search-input" placeholder="filter pages" />
+          <button id="reload-pages" class="btn ghost">Reload</button>
+        </div>
+        <div id="page-list"></div>
+      </div>
+
+      <div class="layout">
+        <div>
+          <div class="editor-card panel">
+            <div id="editor-viewport" class="editor-viewport">Select a page (from Pages) to begin editing</div>
+          </div>
+
+          <div class="panel" style="margin-top:12px">
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="file" id="img-files" multiple />
+              <button id="upload-images" class="btn ghost">Upload</button>
+              <button id="refresh-images" class="btn ghost">Refresh Images</button>
+            </div>
+            <div class="muted" style="margin-top:8px">Click an image to fill the Image URL field in the inspector</div>
+            <div class="image-grid" id="image-grid"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+
+            <!-- Element-level Fonts -->
+            <div class="inspector-section">
+                <h4 style="margin:0">Fonts</h4>
+                <div class="muted">Change font family, size, weight and color for the selected element</div>
+              <label class="small">Family</label>
+              <select id="inspector-font-family">
+                <option value="">(inherit)</option>
+                <option value="'Roboto', sans-serif">Roboto</option>
+                <option value="'Montserrat', sans-serif">Montserrat</option>
+                <option value="'Poppins', sans-serif">Poppins</option>
+                <option value="'Playfair Display', serif">Playfair Display</option>
+              </select>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <input id="inspector-font-size" type="text" placeholder="16px" />
+                <select id="inspector-font-weight" style="width:120px">
+                  <option value="">(inherit)</option>
+                  <option>300</option>
+                  <option>400</option>
+                  <option>600</option>
+                  <option>700</option>
+                </select>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+                <input id="inspector-font-color" type="color" value="#222222" />
+                <button id="inspector-apply-fonts" class="btn" style="margin-left:auto">Apply Fonts</button>
+              </div>
+            </div>
+
+            <div class="inspector-section">
+              <h4 style="margin:0">Text & Styles</h4>
+              <div class="muted">Edit selected element text or inline CSS</div>
+              <label class="small">Text</label>
+              <textarea id="inspector-text"></textarea>
+              <label class="small">Inline CSS</label>
+              <textarea id="inspector-css"></textarea>
+              <div style="display:flex;gap:8px;margin-top:8px">
+                <button id="inspector-apply-text" class="btn">Apply Text</button>
+                <button id="inspector-apply-css" class="btn ghost">Apply CSS</button>
+              </div>
+            </div>
+
+            <div class="inspector-section">
+              <h4 style="margin:0">Images</h4>
+              <div class="muted">Modify image src / alt or upload new image for selected element</div>
+              <label class="small">Image URL</label>
+              <input id="inspector-src" type="text" />
+              <label class="small">Alt Text</label>
+              <input id="inspector-alt" type="text" />
+              <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+                <input type="file" id="inspector-upload" />
+                <button id="inspector-apply-img" class="btn ghost">Apply Image</button>
+                <button id="inspector-upload-and-use" class="btn">Upload & Use</button>
+              </div>
+            </div>
+            <!-- moved Site Font Tools will be inserted below -->
+            <div style="margin-top:8px" class="muted">Selected: <span id="inspector-selected">none</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  <!-- Insert Site Font Tools at the bottom of the inspector for easier access -->
+  <div style="max-width:1200px;margin:8px auto;padding:12px">
+    <div class="panel">
+      <div class="inspector-section">
+        <h4 style="margin:0">Site Font Tools</h4>
+        <div class="muted">Headers / Text font controls and Google Fonts preview (applies to selection or site-wide)</div>
+        <label class="small">Headers Font</label>
+        <select id="sf_headers_font">
+          <option value="">(inherit)</option>
+          <option value="'Montserrat', sans-serif">Montserrat</option>
+          <option value="'Roboto', sans-serif">Roboto</option>
+          <option value="'Open Sans', sans-serif">Open Sans</option>
+          <option value="'Poppins', sans-serif">Poppins</option>
+          <option value="'Playfair Display', serif">Playfair Display</option>
+          <option value="Lora, serif">Lora</option>
+        </select>
+        <label class="small" style="margin-top:8px">Text Font</label>
+        <select id="sf_text_font">
+          <option value="">(inherit)</option>
+          <option value="'Montserrat', sans-serif">Montserrat</option>
+          <option value="'Roboto', sans-serif">Roboto</option>
+          <option value="'Open Sans', sans-serif">Open Sans</option>
+          <option value="'Source Sans Pro', sans-serif">Source Sans Pro</option>
+          <option value="Arial, sans-serif">Arial</option>
+        </select>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <select id="sf_font_weight" style="width:120px">
+            <option value="">(inherit)</option>
+            <option value="300">300</option>
+            <option value="400">400</option>
+            <option value="600">600</option>
+            <option value="700">700</option>
+            <option value="800">800</option>
+          </select>
+          <input id="sf_font_size" type="text" placeholder="16px" style="flex:1" />
+        </div>
+        <label class="small" style="margin-top:8px">Google Fonts Preview</label>
+        <select id="sf_preview_font">
+          <option>Roboto</option>
+          <option>Montserrat</option>
+          <option>Open Sans</option>
+          <option>Poppins</option>
+          <option>Lora</option>
+          <option>Merriweather</option>
+          <option>Source Sans Pro</option>
+          <option>Playfair Display</option>
+        </select>
+        <div id="sf_preview_sample" style="margin-top:6px;font-size:14px;color:#111;opacity:0.95">AaBbCc — Preview</div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button id="sf_apply_selection" class="btn">Apply to selection</button>
+          <button id="sf_apply_site" class="btn ghost">Apply site-wide</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Raw HTML editor modal (hidden) -->
+    <div id="ve-raw-html-modal" style="display:none;position:fixed;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:2147483646;align-items:center;justify-content:center">
+      <div style="max-width:980px;width:94%;max-height:86%;background:#fff;border-radius:8px;padding:12px;box-shadow:0 12px 40px rgba(0,0,0,0.3);overflow:auto;margin:40px auto">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <strong style="flex:1">Raw HTML Editor</strong>
+          <button id="ve-raw-save" class="btn positive">Save</button>
+          <button id="ve-raw-close" class="btn ghost">Close</button>
+        </div>
+        <textarea id="ve-raw-text" style="width:100%;height:60vh;font-family:monospace;font-size:13px;padding:8px;border:1px solid #e6edf3;border-radius:6px"></textarea>
+      </div>
+    </div>
+    <script src="tools/admin-auth.js"></script>
+    <script src="tools/visual-editor.js"></script>
+    <script src="tools/admin-cms.js"></script>
+    <script>
+      (function(){
+        // small helper to safely get elements
+        const $id = (n)=> document.getElementById(n) || null;
+
+        // Pages panel
+        const pageListEl = $id('page-list');
+        const searchInput = $id('page-search-input');
+        const reloadBtn = $id('reload-pages');
+        const openPages = $id('open-pages');
+        const pagesPanel = $id('pages-panel');
+        const saveBtn = $id('save-changes');
+
+        if (saveBtn) saveBtn.disabled = true; // disabled until an iframe/editor is created
+
+        async function fetchPages(){
+          try{ const resp = await fetch('/api/pages'); const data = await resp.json(); return data.files || []; }catch(e){ console.warn('fetchPages', e); return []; }
+        }
+
+        function renderPages(files){
+          if (!pageListEl) return; pageListEl.innerHTML = '';
+          const q = (searchInput && searchInput.value||'').toLowerCase().trim();
+          files.filter(f=> f && f.endsWith('.html')).filter(f=> !q || f.toLowerCase().includes(q)).forEach(f=>{
+            const div = document.createElement('div'); div.className='page-item';
+            const meta = document.createElement('div'); meta.className='meta'; meta.innerHTML = `<div class="name">${f}</div><div class="muted">${f.replace('.html','')}</div>`;
+            const actions = document.createElement('div'); actions.className='page-actions';
+            const edit = document.createElement('button'); edit.className='btn ghost'; edit.textContent='Edit'; edit.onclick = ()=>{ if (pagesPanel) pagesPanel.style.display='none'; ensureIframe(); window.loadPageInEditor ? window.loadPageInEditor(f) : loadDirect(f); };
+            const preview = document.createElement('button'); preview.className='btn ghost'; preview.textContent='Preview'; preview.onclick = ()=>{ window.open('/'+f,'_blank'); };
+            const dup = document.createElement('button'); dup.className='btn ghost'; dup.textContent='Duplicate'; dup.onclick = async ()=>{ if (!confirm('Duplicate '+f+'?')) return; await duplicatePage(f); };
+            actions.appendChild(edit); actions.appendChild(preview); actions.appendChild(dup);
+            div.appendChild(meta); div.appendChild(actions); pageListEl.appendChild(div);
+          });
+        }
+
+        async function duplicatePage(filename){
+          try{
+            const resp = await fetch('/'+filename); if (!resp.ok) throw new Error('fetch failed'); const pageHtml = await resp.text();
+            const base = filename.replace('.html',''); const newName = base + '-copy-' + Date.now() + '.html';
+            const putResp = await fetch('/api/pages/'+encodeURIComponent(newName), { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ content: pageHtml }) });
+            if (!putResp.ok) throw new Error('create failed'); alert('Duplicated to '+newName); loadAndRenderPages();
+          }catch(e){ console.warn(e); alert('Duplicate failed: '+(e&&e.message)); }
+        }
+
+        async function loadAndRenderPages(){ const files = await fetchPages(); renderPages(files || []); }
+        if (searchInput) searchInput.addEventListener('input', ()=>{ loadAndRenderPages(); });
+        if (reloadBtn) reloadBtn.addEventListener('click', ()=>{ loadAndRenderPages(); });
+        if (openPages) openPages.addEventListener('click', ()=>{ if (pagesPanel) pagesPanel.style.display = pagesPanel.style.display === 'block' ? 'none' : 'block'; loadAndRenderPages(); });
+        window.ve_loadAndRenderPages = loadAndRenderPages;
+
+        // Editor iframe helpers
+        const editorViewport = $id('editor-viewport');
+        function ensureIframe(){
+          if (!editorViewport) return;
+          if (!document.getElementById('editor-iframe')){
+            editorViewport.innerHTML='';
+            const iframe = document.createElement('iframe');
+            iframe.id='editor-iframe'; iframe.style.width='100%'; iframe.style.height='100%'; iframe.style.border='0';
+            editorViewport.appendChild(iframe);
+            // enable save now that iframe exists
+            if (saveBtn) saveBtn.disabled = false;
+          }
+        }
+
+        async function loadDirect(f){ try{ const resp = await fetch('/'+f); const html = await resp.text(); ensureIframe(); const iframe = document.getElementById('editor-iframe'); if (!iframe) return; iframe.contentWindow.document.open(); iframe.contentWindow.document.write(html); iframe.contentWindow.document.close(); }catch(e){ console.warn(e); } }
+
+        // Images
+        async function loadImages(){
+          try{
+            if (typeof window.loadSiteImages === 'function') await window.loadSiteImages();
+            const grid = $id('image-grid'); if (!grid) return; grid.innerHTML='';
+            const imgs = (window.visualEditorState && window.visualEditorState.siteImages && window.visualEditorState.siteImages.length) ? window.visualEditorState.siteImages.slice() : [];
+            if (!imgs.length){ try{ const resp = await fetch('/api/images'); if (resp && resp.ok){ const data = await resp.json(); imgs.push(...(data.files || data.images || [])); } }catch(_){ /* ignore */ } }
+            imgs.forEach(u=>{ try{ const i = document.createElement('img'); const src = u && u.toString ? u.toString() : ''; i.src = src; i.addEventListener('click', ()=>{ const ins = $id('inspector-src'); if (ins) ins.value = src; }); grid.appendChild(i); }catch(_){ } });
+          }catch(e){ console.warn('loadImages', e); }
+        }
+        const refreshImagesBtn = $id('refresh-images'); if (refreshImagesBtn) refreshImagesBtn.addEventListener('click', loadImages);
+    const uploadImagesBtn = $id('upload-images'); if (uploadImagesBtn) uploadImagesBtn.addEventListener('click', async ()=>{
+          try{
+            const fi = $id('img-files'); if (!fi || !fi.files || !fi.files.length) return alert('Pick files to upload');
+            const form = new FormData(); for(const f of fi.files) form.append('files', f);
+      const token = localStorage.getItem('adm_token');
+      const headers = token ? { Authorization: 'Bearer ' + token } : {};
+      const resp = await fetch('/api/uploads', { method:'POST', body: form, headers });
+            if (!resp) return alert('Upload failed (no response)');
+            if (!resp.ok){ const txt = await resp.text().catch(()=>resp.statusText||''); return alert('Upload failed: ' + (txt || resp.status)); }
+            // try to parse JSON; tolerate different shapes
+            let data = {};
+            try{ data = await resp.json(); }catch(_){ }
+            // update visualEditorState if server returned paths
+            const returned = data.files || data.images || data.uploads || [];
+            if (returned && returned.length){ window.visualEditorState.siteImages = (window.visualEditorState.siteImages||[]).concat(returned); }
+            await loadImages(); alert('Uploaded');
+          }catch(e){ console.warn('uploadImages failed', e); alert('Upload failed: ' + (e && e.message)); }
+        });
+
+        // Inspector wiring - event-driven
+        const selDisplay = $id('inspector-selected');
+        function applySelectionDetail(detail){ try{ if (!selDisplay) return; if (!detail){ selDisplay.textContent='none'; const t=$id('inspector-text'); const s=$id('inspector-src'); const a=$id('inspector-alt'); const c=$id('inspector-css'); if (t) t.value=''; if (s) s.value=''; if (a) a.value=''; if (c) c.value=''; return; } selDisplay.textContent = `<${(detail.tagName||'').toLowerCase()}>`; const t=$id('inspector-text'); const c=$id('inspector-css'); if (t) t.value = detail.text || ''; if (c) c.value = detail.css || ''; if ((detail.tagName||'').toLowerCase()==='img'){ const s=$id('inspector-src'); const a=$id('inspector-alt'); if (s) s.value = detail.src || ''; if (a) a.value = detail.alt || ''; } else { const s=$id('inspector-src'); const a=$id('inspector-alt'); if (s) s.value=''; if (a) a.value=''; } }catch(e){ console.warn(e); } }
+        window.addEventListener('ve:selection', (ev)=>{ try{ applySelectionDetail(ev.detail); }catch(e){ console.warn(e); } });
+
+        // Site Font Tools handlers (non-floating toolbar)
+        try{
+          const sfApplySel = $id('sf_apply_selection');
+          const sfApplySite = $id('sf_apply_site');
+          const sfPreview = $id('sf_preview_font');
+          const sfPreviewSample = $id('sf_preview_sample');
+          if (sfApplySel) sfApplySel.addEventListener('click', ()=>{
+            try{
+              const hf = ($id('sf_headers_font') && $id('sf_headers_font').value) || '';
+              const tf = ($id('sf_text_font') && $id('sf_text_font').value) || '';
+              const weight = ($id('sf_font_weight') && $id('sf_font_weight').value) || '';
+              const size = ($id('sf_font_size') && $id('sf_font_size').value) || '';
+              const sel = window.visualEditorState && window.visualEditorState.currentEditingElement;
+              if (!sel) return alert('Select an element in the editor first');
+              const fam = (sel.tagName && /h[1-6]/i.test(sel.tagName) && hf) ? hf : (tf || hf);
+              if (typeof window.setSelectedElementFont === 'function') window.setSelectedElementFont(fam, { weight: weight, size: size });
+            }catch(e){ console.warn(e); }
+          });
+          if (sfApplySite) sfApplySite.addEventListener('click', ()=>{
+            try{
+              const hf = ($id('sf_headers_font') && $id('sf_headers_font').value) || '';
+              const tf = ($id('sf_text_font') && $id('sf_text_font').value) || '';
+              const weight = ($id('sf_font_weight') && $id('sf_font_weight').value) || '';
+              const size = ($id('sf_font_size') && $id('sf_font_size').value) || '';
+              if (typeof window.setSiteFonts === 'function') window.setSiteFonts(hf, tf, true, { weight: weight, size: size });
+            }catch(e){ console.warn(e); }
+          });
+          if (sfPreview) sfPreview.addEventListener('change', ()=>{ try{ const choice = sfPreview.value; if (typeof window.ensureGoogleFontLoadedInIframe === 'function') window.ensureGoogleFontLoadedInIframe(choice); if (sfPreviewSample) sfPreviewSample.style.fontFamily = choice; }catch(e){ console.warn(e); } });
+        }catch(e){ /* ignore */ }
+
+        // Apply fonts
+        const applyFontsBtn = $id('inspector-apply-fonts');
+    if (applyFontsBtn) applyFontsBtn.addEventListener('click', ()=>{
+          try{
+      try{ if (typeof window.pushVeUndoForCurrentElement === 'function') window.pushVeUndoForCurrentElement('apply-fonts'); }catch(_){ }
+            const family = ($id('inspector-font-family') && $id('inspector-font-family').value) || '';
+            const size = ($id('inspector-font-size') && $id('inspector-font-size').value) || '';
+            const weight = ($id('inspector-font-weight') && $id('inspector-font-weight').value) || '';
+            const color = ($id('inspector-font-color') && $id('inspector-font-color').value) || '';
+            const el = window.visualEditorState && window.visualEditorState.currentEditingElement;
+            if (!el) return alert('Select an element first');
+            // Use setProperty with priority to override site CSS that may use !important
+            try{
+              if (family) el.style.setProperty('font-family', family, 'important'); else el.style.removeProperty('font-family');
+            }catch(_){ if (family) el.style.fontFamily = family; else el.style.removeProperty('font-family'); }
+            try{
+              if (size) el.style.setProperty('font-size', size, 'important'); else el.style.removeProperty('font-size');
+            }catch(_){ if (size) el.style.fontSize = size; else el.style.removeProperty('font-size'); }
+            try{
+              if (weight) el.style.setProperty('font-weight', weight, 'important'); else el.style.removeProperty('font-weight');
+            }catch(_){ if (weight) el.style.fontWeight = weight; else el.style.removeProperty('font-weight'); }
+            try{
+              if (color) el.style.setProperty('color', color, 'important'); else el.style.removeProperty('color');
+            }catch(_){ if (color) el.style.color = color; else el.style.removeProperty('color'); }
+            try{ el.setAttribute('data-ve-modified','true'); }catch(_){ }
+          }catch(e){ console.warn(e); }
+        });
+
+        // Apply text/css
+  const applyTextBtn = $id('inspector-apply-text'); if (applyTextBtn) applyTextBtn.addEventListener('click', ()=>{ try{ if (typeof window.pushVeUndoForCurrentElement === 'function') window.pushVeUndoForCurrentElement('apply-text'); }catch(_){ } const v = ($id('inspector-text') && $id('inspector-text').value) || ''; const st = window.visualEditorState || {}; if (st.currentEditingElement) st.currentEditingElement.textContent = v; });
+  const applyCssBtn = $id('inspector-apply-css'); if (applyCssBtn) applyCssBtn.addEventListener('click', ()=>{ try{ if (typeof window.pushVeUndoForCurrentElement === 'function') window.pushVeUndoForCurrentElement('apply-css'); }catch(_){ } const v = ($id('inspector-css') && $id('inspector-css').value) || ''; const st = window.visualEditorState || {}; if (st.currentEditingElement) st.currentEditingElement.style.cssText = v; });
+
+        // Apply / upload image
+  const applyImgBtn = $id('inspector-apply-img'); if (applyImgBtn) applyImgBtn.addEventListener('click', ()=>{ try{ if (typeof window.pushVeUndoForCurrentElement === 'function') window.pushVeUndoForCurrentElement('apply-image'); }catch(_){ } const src = ($id('inspector-src') && $id('inspector-src').value) || ''; const alt = ($id('inspector-alt') && $id('inspector-alt').value) || ''; const st = window.visualEditorState || {}; if (st.currentEditingElement && st.currentEditingElement.tagName && st.currentEditingElement.tagName.toLowerCase()==='img'){ st.currentEditingElement.src = src; st.currentEditingElement.alt = alt; } else alert('Select an <img> element first'); });
+    const uploadAndUseBtn = $id('inspector-upload-and-use');
+    if (uploadAndUseBtn) uploadAndUseBtn.addEventListener('click', async ()=>{
+          try{
+      try{ if (typeof window.pushVeUndoForCurrentElement === 'function') window.pushVeUndoForCurrentElement('upload-and-use'); }catch(_){ }
+            const fi = $id('inspector-upload'); if (!fi || !fi.files || !fi.files.length) return alert('Pick a file to upload');
+            const form = new FormData(); form.append('files', fi.files[0]);
+      const token = localStorage.getItem('adm_token');
+      const headers = token ? { Authorization: 'Bearer ' + token } : {};
+      const resp = await fetch('/api/uploads', { method:'POST', body: form, headers });
+      if (!resp) return alert('Upload failed (no response)');
+      if (!resp.ok) { const txt = await resp.text().catch(()=>resp.statusText||''); return alert('Upload failed: ' + (txt || resp.status)); }
+            let data = {};
+            try{ data = await resp.json(); }catch(_){ }
+            // server may return { files: [{ url: '...'}] } or { uploads: ['path'] } or { images: [...] }
+            let url = null;
+            if (data.files && data.files[0]) url = data.files[0].url || data.files[0].path || data.files[0].src;
+            if (!url && Array.isArray(data.uploads) && data.uploads[0]) url = data.uploads[0];
+            if (!url && Array.isArray(data.images) && data.images[0]) url = data.images[0];
+            if (!url && data.files && typeof data.files[0] === 'string') url = data.files[0];
+            if (!url) return alert('No URL returned from upload');
+            const st = window.visualEditorState || {};
+            if (st.currentEditingElement && st.currentEditingElement.tagName && st.currentEditingElement.tagName.toLowerCase()==='img'){
+              st.currentEditingElement.src = url;
+              st.currentEditingElement.alt = ($id('inspector-alt') && $id('inspector-alt').value) || '';
+            }
+            // add to state/images list
+            try{ window.visualEditorState.siteImages = window.visualEditorState.siteImages || []; window.visualEditorState.siteImages.push(url); }catch(_){ }
+            await loadImages();
+            alert('Uploaded and applied');
+          }catch(e){ console.warn('inspector upload failed', e); alert('Upload failed: ' + (e && e.message)); }
+        });
+
+  // Undo / Load Default buttons
+  const undoBtn = $id('undo-change'); if (undoBtn) undoBtn.addEventListener('click', ()=>{ try{ if (typeof window.veUndo === 'function') return window.veUndo(); alert('Undo helper not available'); }catch(e){ console.warn(e); alert('Undo failed'); } });
+  const loadDefaultBtn = $id('load-default'); if (loadDefaultBtn) loadDefaultBtn.addEventListener('click', ()=>{ try{ if (typeof window.veLoadDefault === 'function') return window.veLoadDefault(); alert('Load default helper not available'); }catch(e){ console.warn(e); alert('Load default failed'); } });
+
+        // Selection: if no event arrives, try to read from visualEditorState change (compat)
+        setInterval(()=>{ try{ const st = window.visualEditorState || {}; const el = st.currentEditingElement; if (el && el.__ve_lastSeen !== true){ applySelectionDetail({ tagName: el.tagName, text: el.textContent, css: el.style.cssText, src: el.src, alt: el.alt }); el.__ve_lastSeen = true; } }catch(e){} }, 1500);
+
+        // Save / toggle - delegate to helpers if present
+        if (saveBtn) saveBtn.addEventListener('click', async ()=>{ if (typeof window.savePageChanges === 'function'){ try{ await window.savePageChanges(); alert('Saved'); }catch(e){ console.warn('save failed', e); alert('Save failed: '+(e&&e.message)); } } else alert('No save helper available'); });
+        const toggleBtn = $id('toggle-edit'); if (toggleBtn) toggleBtn.addEventListener('click', ()=>{ if (typeof window.toggleIframeEditMode === 'function') return window.toggleIframeEditMode(); alert('Toggle edit helper not found'); });
+
+        // Raw HTML editor modal wiring
+        const editHtmlBtn = $id('edit-html-btn');
+        const rawModal = $id('ve-raw-html-modal');
+        const rawText = $id('ve-raw-text');
+        const rawSave = $id('ve-raw-save');
+        const rawClose = $id('ve-raw-close');
+        function currentEditorFilename(){ return (window.visualEditorState && window.visualEditorState.currentPageUrl) ? window.visualEditorState.currentPageUrl : null; }
+        if (editHtmlBtn && rawModal && rawText){
+          editHtmlBtn.addEventListener('click', async ()=>{
+            const fname = currentEditorFilename();
+            if (!fname){ return alert('No page loaded in editor. Open a page from Pages first.'); }
+            try{
+              const resp = await fetch('/' + fname + '?_raw=1');
+              if (!resp.ok) return alert('Failed to load page: ' + resp.status);
+              const txt = await resp.text();
+              rawText.value = txt;
+              rawModal.style.display = 'flex';
+            }catch(e){ console.warn('load raw html failed', e); alert('Failed to load HTML: ' + (e && e.message)); }
+          });
+        }
+        if (rawClose) rawClose.addEventListener('click', ()=>{ try{ rawModal.style.display='none'; }catch(_){ } });
+        if (rawSave) rawSave.addEventListener('click', async ()=>{
+          const fname = currentEditorFilename(); if (!fname) return alert('No page loaded');
+          try{
+            const token = localStorage.getItem('adm_token');
+            const headers = token ? { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+            const putResp = await fetch('/api/pages/' + encodeURIComponent(fname), { method: 'PUT', headers, body: JSON.stringify({ content: rawText.value }) });
+            if (!putResp || !putResp.ok){ const txt = await (putResp && putResp.text && putResp.text().catch(()=>'')) || ''; return alert('Save failed: ' + (txt || (putResp && putResp.status))); }
+            alert('Saved'); rawModal.style.display='none'; try{ if (typeof window.loadPageInEditor === 'function') window.loadPageInEditor(fname); }catch(_){ }
+          }catch(e){ console.warn('save raw failed', e); alert('Save failed: ' + (e && e.message)); }
+        });
+
+        // Require admin auth before enabling the visual editor. If no valid admin token,
+        // redirect to the admin login page so the same login flow is used as other admin pages.
+        (function initGuard(){
+          async function _check(){
+            try{
+              if (!window.adminAuth || typeof window.adminAuth.verifyAdminToken !== 'function') { setTimeout(initGuard, 50); return; }
+              const prof = await window.adminAuth.verifyAdminToken();
+              if (!prof) {
+                try{ localStorage.removeItem('adm_token'); }catch(_){ }
+                window.location.href = 'admin.html?redirect=visual-editor';
+                return;
+              }
+              // authenticated: initialize editor helpers and load images
+              try{ if (typeof window.initVisualEditor === 'function') window.initVisualEditor(); }catch(e){ console.warn(e); }
+              loadImages();
+            }catch(e){ console.error('visual editor auth check failed', e); window.location.href = 'admin.html?redirect=visual-editor'; }
+          }
+          _check();
+        })();
+
+      })();
+    </script>
+  </body>
+  </html>

@@ -1,0 +1,3340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Damascus Master</title>
+  <!-- Google Fonts for modern, premium look -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <style>
+    /* === ROOT VARIABLES === */
+    :root {
+      --primary: #ffb347;
+      --primary-dark: #ff8800;
+      --accent: #00e6d0;
+      --bg: #181a20;
+      --bg-light: #23262f;
+      --text: #f5f6fa;
+      --text-muted: #b0b3b8;
+      --card: #23262f;
+      --shadow: 0 0.25rem 2rem 0 rgba(0,0,0,0.18);
+      --radius: 1.2rem;
+      --header-h: 64px;
+      --container-max: min(1200px, 94vw);
+    }
+
+    /* === GLOBAL RESET === */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    
+    body {
+      margin: 0;
+      font-family: 'Montserrat', 'Roboto', Arial, sans-serif;
+      background: #fff !important;
+      color: #111 !important;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+      scroll-behavior: smooth;
+    }
+
+    /* Global responsive images */
+    img, video { 
+      max-width: 100%; 
+      height: auto; 
+    }
+
+    /* Universal text color enforcement */
+    h1, h2, h3, h4, h5, h6 {
+      color: #333333 !important;
+    }
+    
+    /* === FLUID TYPOGRAPHY === */
+    h1 { font-size: clamp(1.25rem, 2.5vw + 1rem, 2.25rem); }
+    h2 { font-size: clamp(1.1rem, 2vw + 0.9rem, 2rem); }
+    h3 { font-size: clamp(1rem, 1.6vw + 0.6rem, 1.4rem); }
+
+    /* === CONTAINERS === */
+    .container, .top-sellers-section, .hero-content { 
+      max-width: var(--container-max); 
+      margin-inline: auto; 
+    }
+
+    /* === WISHLIST HEART STYLING === */
+    .wishlist-heart {
+      position: absolute;
+      top: 0.7em;
+      right: 0.7em;
+      z-index: 2;
+      background: rgba(24,28,35,0.85);
+      border-radius: 50%;
+      padding: 0.18em;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px #0005;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .wishlist-heart:hover {
+      background: #ff4d6d22;
+    }
+    
+    .wishlist-heart svg.heart-filled path {
+      fill: #ff4d6d;
+      stroke: #ff4d6d;
+    }
+
+    /* === WISHLIST MODERN ITEMS === */
+    .liked-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+      justify-content: flex-start;
+    }
+    
+    .wishlist-modern-item {
+      background: #23262f;
+      border-radius: 1.2rem;
+      box-shadow: 0 0.25rem 1rem rgba(0,0,0,0.13);
+      padding: 1.1rem 1.1rem 1.3rem 1.1rem;
+      min-width: 13.75rem;
+      max-width: 16.875rem;
+      flex: 1 1 13.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      margin-bottom: 0.5rem;
+      transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+    }
+    
+    .wishlist-modern-price {
+      color: #00ff99;
+      font-size: 1.08rem;
+      font-weight: 700;
+      margin-bottom: 0.1rem;
+    }
+    
+    .wishlist-modern-meta {
+      font-size: 0.85em;
+      color: #aaa;
+      margin-bottom: 0.3rem;
+      width: 100%;
+      word-break: break-all;
+    }
+    
+    .wishlist-modern-details {
+      width: 100%;
+      background: #1e2129;
+      color: #cfd3dc;
+      border-radius: 0.7rem;
+      padding: 0.5rem 0.6rem;
+      margin-top: 0.2rem;
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+    
+    .wishlist-modern-details b { 
+      color: #ffcc00; 
+      font-weight: 600; 
+    }
+    
+    .wishlist-modern-thumbs {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.45rem;
+      width: 100%;
+      overflow-x: auto;
+    }
+    
+    .wishlist-modern-thumbs img {
+      width: 2.875rem;
+      height: 2.875rem;
+      object-fit: cover;
+      border-radius: 0.4rem;
+      background: #181a20;
+      box-shadow: 0 0.0625rem 0.375rem rgba(0,0,0,0.25);
+      flex: 0 0 auto;
+    }
+    
+    .wishlist-modern-add {
+      width: 100%;
+      background: linear-gradient(90deg, #ffb347 60%, #ff8800 100%);
+      color: #23262f;
+      border: none;
+      border-radius: 0.7rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      padding: 0.5em 0;
+      margin-top: 0.2em;
+      cursor: pointer;
+      box-shadow: 0 0.125rem 0.5rem #0002;
+      transition: background 0.2s, color 0.2s;
+    }
+    
+    .wishlist-modern-add:hover {
+      background: linear-gradient(90deg, #ffcc00 60%, #ffb347 100%);
+      color: #181a20;
+    }
+    
+    .wishlist-modern-remove {
+      position: absolute;
+      top: 0.7em;
+      right: 0.7em;
+      background: none;
+      border: none;
+      color: #ff4444;
+      font-size: 1.3em;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 2;
+      transition: color 0.2s;
+    }
+    
+    .wishlist-modern-remove:hover {
+      color: #ff0000;
+      text-shadow: 0 0 0.25rem #fff;
+    }
+
+    /* === HEADER STYLING === */
+    .site-header { 
+      padding: clamp(0.5rem, 1.5vw, 1.2rem) clamp(0.8rem, 2vw, 2.5rem); 
+      margin-bottom: 0; 
+      display: grid; 
+      grid-template-columns: auto 1fr auto; 
+      align-items: center; 
+      gap: 1rem; 
+      background: #FFFDD0; 
+      border-bottom: 1px solid #e7dfc6; 
+    }
+    
+    .header-left { 
+      display: flex; 
+      align-items: center; 
+    }
+    
+    .header-center { 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+    }
+    
+    .header-center .logo { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+    }
+    
+    .header-right { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.75rem; 
+      justify-content: flex-end; 
+      position: relative; 
+    }
+
+    .logo img {
+      height: 3.125rem;
+      margin-right: 0.625rem;
+    }
+    
+    .logo h1 {
+      color: #333333;
+      font-size: 2.1rem;
+      font-family: 'Montserrat', Arial, sans-serif;
+      letter-spacing: 0.18rem;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      margin: 0;
+    }
+
+    .brand { 
+      display: inline-flex; 
+      flex-wrap: nowrap; 
+      gap: 0.25rem; 
+      align-items: baseline; 
+    }
+    
+    .brand-top, .brand-bottom { 
+      display: inline; 
+    }
+
+    /* === MENU ICON === */
+    .menu-icon {
+      width: 2.1875rem;
+      height: 2.1875rem;
+      cursor: pointer;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23000"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>') no-repeat center;
+      background-size: contain;
+    }
+
+    /* === SIDEBAR STYLING === */
+    .sidebar {
+      position: fixed;
+      top: calc(var(--header-h) + 8px);
+      left: -22rem;
+      width: 20rem;
+      max-height: calc(100vh - 6rem);
+      background: #ffffff;
+      color: #333;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      border-radius: 12px;
+      padding: 1rem 1rem 1.25rem 1rem;
+      transition: left 0.25s ease;
+      z-index: 2101;
+      overflow-y: auto;
+    }
+    
+    .sidebar.open { 
+      left: 0; 
+    }
+    
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    .sidebar-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .sidebar a {
+      display: block;
+      color: #333;
+      padding: 0.7rem 1rem;
+      text-decoration: none;
+      font-size: 1.08rem;
+      border-bottom: 0.0625rem solid #eee;
+      transition: background 0.2s, color 0.2s;
+      font-weight: 500;
+    }
+    
+    .sidebar a:hover {
+      background: #f5f5f5;
+      color: #009688;
+    }
+    
+    .sidebar .has-sub {
+      position: relative;
+      cursor: pointer;
+    }
+    
+    .sidebar .sub-menu {
+      background: #f7f7f7;
+      padding-left: 0.75rem;
+      border-left: 2px solid #e9ecef;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+    }
+    
+    .sidebar .sub-link {
+      display: block;
+      color: #333;
+      padding: 0.55rem 0 0.55rem 0.5rem;
+      font-size: 1rem;
+      text-decoration: none;
+      border-bottom: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    
+    .sidebar .sub-link:hover { 
+      color: #111; 
+      background: #eee; 
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 1.875rem;
+      height: 1.875rem;
+      cursor: pointer;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333"><path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>') no-repeat center;
+      background-size: contain;
+    }
+
+    /* === HERO SECTION === */
+    .hero {
+  text-align: center;
+  padding: clamp(1.2rem, 3vw, 3rem) 1rem;
+  margin-bottom: 0;
+  background: linear-gradient(180deg, #111, #222);
+    }
+    
+    .hero h2 {
+      font-size: 2.8rem;
+      color: #ffcc00;
+      margin-bottom: 0.625rem;
+    }
+    
+    .hero-content { 
+      padding: clamp(0.8rem, 2vw, 1.5rem) clamp(0.6rem, 2vw, 1.5rem) !important; 
+    }
+
+    /* === SLIDER STYLING === */
+    .slider {
+      position: relative;
+      width: 100%;
+      max-width: 120rem;
+      height: auto !important;
+      aspect-ratio: 16 / 9;
+      margin: 0 auto !important;
+      overflow: hidden;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    
+    .slides {
+      display: flex;
+      width: 100%;
+      height: 100% !important;
+      transition: transform 0.5s ease-in-out;
+      align-items: stretch;
+      background: transparent;
+    }
+    
+    .slides img {
+      width: 100%;
+      height: 100% !important;
+      object-fit: contain;
+      flex-shrink: 0;
+      display: block;
+      flex-basis: 100%;
+    }
+    
+    .dots {
+      position: absolute;
+      left: 50%;
+      bottom: 0.75rem;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      width: auto;
+      z-index: 2;
+    }
+    
+    .dot {
+      height: 0.9375rem;
+      width: 0.9375rem;
+      margin: 0 0.3125rem;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .active {
+      background-color: #ffcc00;
+    }
+
+    /* === SECTIONS === */
+    .section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3.75rem 2.5rem;
+      --cat-bg: #fff; 
+      --cat-accent: #111; 
+      --cat-accent2: #999;
+      background: var(--cat-bg);
+    }
+    
+    .section:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+    
+    .section img {
+      max-width: 40%;
+      border-radius: 0.75rem;
+      box-shadow: 0 0.375rem 1.25rem rgba(0,0,0,0.6);
+      width: 100%;
+      height: auto;
+    }
+    
+    .section-content {
+      flex: 1;
+      min-width: 0;
+      margin-left: 2rem;
+    }
+    
+    .section:nth-child(even) .section-content {
+      margin-left: 0;
+      margin-right: 2rem;
+    }
+    
+    .section-content h3 {
+      font-size: 2rem;
+      color: var(--cat-accent);
+    }
+    
+    .section-content p {
+      color: #333;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    /* === CATEGORY SPECIFIC COLORS === */
+    .section.kitchen-knives { 
+      --cat-bg: #F3FAF5; 
+      --cat-accent: #2E7D32; 
+      --cat-accent2: #81C784; 
+    }
+    
+    .section.hunting-knives { 
+      --cat-bg: #F7F8F3; 
+      --cat-accent: #556B2F; 
+      --cat-accent2: #A3B18A; 
+    }
+    
+    .section.pocket-knives { 
+      --cat-bg: #F3F7FB; 
+      --cat-accent: #1E3A8A; 
+      --cat-accent2: #60A5FA; 
+    }
+    
+    .section.swords { 
+      --cat-bg: #F4F8FB; 
+      --cat-accent: #0D47A1; 
+      --cat-accent2: #64B5F6; 
+    }
+    
+    .section.axes { 
+      --cat-bg: #F5F7FA; 
+      --cat-accent: #37474F; 
+      --cat-accent2: #90A4AE; 
+    }
+    
+    .section.rings { 
+      --cat-bg: #F4F8FB; 
+      --cat-accent: #0D47A1; 
+      --cat-accent2: #64B5F6; 
+    }
+    
+    .section.custom { 
+      --cat-bg: #F2FAFA; 
+      --cat-accent: #0F766E; 
+      --cat-accent2: #5EEAD4; 
+    }
+
+    /* === EXPLORE BUTTONS === */
+    .explore-btn {
+      border: 2px solid transparent;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      min-width: 160px;
+      border-color: transparent;
+    }
+    
+    /* Light button categories */
+    .section.kitchen-knives .explore-btn,
+    .section.pocket-knives .explore-btn,
+    .section.axes .explore-btn,
+    .section.custom .explore-btn {
+      background: #ffffff;
+      color: #232323;
+      border-color: #ffffff;
+    }
+    
+    .section.kitchen-knives .explore-btn {
+      box-shadow: 0 4px 15px rgba(46,125,50,0.15);
+    }
+    
+    .section.kitchen-knives .explore-btn:hover {
+      background: #f0f5f1;
+      border-color: var(--cat-accent);
+      color: #232323;
+    }
+    
+    .section.pocket-knives .explore-btn {
+      box-shadow: 0 4px 15px rgba(30,58,138,0.15);
+    }
+    
+    .section.pocket-knives .explore-btn:hover {
+      background: #eef3fb;
+      border-color: var(--cat-accent);
+    }
+    
+    .section.axes .explore-btn {
+      box-shadow: 0 4px 15px rgba(55,71,79,0.15);
+    }
+    
+    .section.axes .explore-btn:hover {
+      background: #f0f3f6;
+      border-color: var(--cat-accent);
+    }
+    
+    .section.custom .explore-btn {
+      box-shadow: 0 4px 15px rgba(15,118,110,0.15);
+    }
+    
+    .section.custom .explore-btn:hover {
+      background: #ecf8f8;
+      border-color: var(--cat-accent);
+    }
+    
+    /* Dark button categories */
+    .section.hunting-knives .explore-btn,
+    .section.swords .explore-btn,
+    .section.rings .explore-btn {
+      background: #232323;
+      color: #ffffff;
+      border-color: #232323;
+    }
+    
+    .section.hunting-knives .explore-btn {
+      box-shadow: 0 4px 15px rgba(85,107,47,0.15);
+    }
+    
+    .section.hunting-knives .explore-btn:hover {
+      background: #111;
+      border-color: var(--cat-accent);
+    }
+    
+    .section.swords .explore-btn {
+      box-shadow: 0 4px 15px rgba(13,71,161,0.15);
+    }
+    
+    .section.swords .explore-btn:hover {
+      background: #111;
+      border-color: var(--cat-accent);
+    }
+    
+    .section.rings .explore-btn {
+      box-shadow: 0 4px 15px rgba(106,27,154,0.15);
+    }
+    
+    .section.rings .explore-btn:hover {
+      background: #111;
+      border-color: var(--cat-accent2);
+    }
+    
+    .explore-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .explore-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* === CATALOG ICON === */
+    .catalog-icon {
+      position: static;
+      margin-left: 1.875rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.5"/><circle cx="19" cy="21" r="1.5"/><path d="M2.5 6h2l1.5 12h13l1.5-8h-16z"/></svg>') no-repeat center;
+      background-size: 60% 60%;
+      background-color: transparent;
+      border-radius: 0.5rem;
+      box-shadow: 0.125rem 0 0.5rem rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 2102;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s;
+    }
+
+    /* === CATALOGUE STYLING === */
+    .catalogue {
+      position: fixed;
+      top: calc(var(--header-h) + 8px);
+      right: -22rem;
+      width: 20rem;
+      max-height: calc(100vh - 6rem);
+      background: #ffffff;
+      color: #333;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      border-radius: 12px;
+      padding: 1rem 1rem 1.25rem 1rem;
+      transition: right 0.25s ease;
+      z-index: 2101;
+      overflow-y: auto;
+    }
+    
+    .catalogue.open {
+      right: 0;
+    }
+    
+    .catalogue .close-catalogue {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 1.875rem;
+      height: 1.875rem;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333"><path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>') no-repeat center;
+      background-size: contain;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .catalogue h3 {
+      margin: 0 0 0.75rem 0;
+      color: #333;
+      text-align: left;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .catalogue-list {
+      margin: 1.25rem 0;
+      padding: 0;
+      list-style: none;
+    }
+    
+    .catalogue-list li {
+      background: #f7f7f7;
+      margin-bottom: 0.9375rem;
+      padding: 0.9375rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    
+    .catalogue-list .product-title {
+      font-weight: 700;
+      color: #333;
+    }
+    
+    .catalogue-list .product-desc {
+      font-size: 0.95rem;
+      margin: 0.3125rem 0;
+    }
+    
+    .catalogue-list .product-price {
+      color: #111;
+      font-weight: bold;
+    }
+    
+    .catalogue-thumbs {
+      display: flex;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+      overflow-x: auto;
+    }
+    
+    .catalogue-thumbs img {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 0.35rem;
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      flex: 0 0 auto;
+    }
+    
+    .catalogue-list .remove-product {
+      float: right;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: #ff4444;
+      transition: color 0.3s ease;
+    }
+    
+    .catalogue-list .remove-product:hover {
+      color: #ff0000;
+      text-shadow: none;
+    }
+    
+    .catalogue .order-btn {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      background: #232323;
+      color: #ffffff;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: background 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .catalogue .order-btn:hover {
+      background: #111;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    /* === TOP SELLERS SECTION === */
+    .top-sellers-section {
+      margin: 0 auto 2rem auto !important;
+      max-width: 1200px;
+      padding: 0 1rem;
+    }
+
+    /* Keep Top Sellers heading centered on laptop/desktop: override .section row layout */
+    @media (min-width: 900px) {
+      .top-sellers-section.section {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+      }
+      .top-sellers-section .top-sellers-row {
+        width: 100%;
+        margin-top: 1.25rem;
+      }
+    }
+    
+    .top-sellers-heading {
+      color: #ffb347;
+      font-size: 2.1rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.04em;
+    }
+    
+    .top-sellers-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    
+    .album-item {
+      background: #23262f;
+      border-radius: 1.5rem;
+      box-shadow: 0 0.25rem 1rem rgba(0,0,0,0.18);
+      padding: 1.2rem 0.7rem 0.7rem 0.7rem;
+      flex: 1 1 16%;
+      min-width: 160px;
+      max-width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+    
+    .album-item:hover {
+      background: #282b36;
+      box-shadow: 0 0.5rem 1.5rem rgba(255,204,0,0.13);
+      transform: translateY(-0.2rem) scale(1.04);
+    }
+    
+    .album-img-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: #181a20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      box-shadow: 0 0.1rem 0.5rem rgba(0,0,0,0.13);
+      margin-bottom: 0.7rem;
+    }
+    
+    .album-img-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    
+    .album-title {
+      color: #ffcc00;
+      font-size: 1.08rem;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    /* === PRODUCT GALLERY === */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .item {
+      position: relative;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .item img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .item .title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0.5rem 0;
+      color: #333;
+    }
+
+    .item .price {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 1rem;
+      color: #ff5722;
+      font-weight: bold;
+    }
+
+    .item .heart-icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .item .heart-icon:hover {
+      background: rgba(255, 87, 34, 0.8);
+    }
+
+    /* === LIKED SIDEBAR === */
+    .liked-sidebar {
+      position: fixed;
+      top: calc(var(--header-h) + 8px);
+      right: -22rem;
+      width: 20rem;
+      max-height: calc(100vh - 6rem);
+      background: #ffffff;
+      color: #333;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      border-radius: 12px;
+      padding: 1rem 1rem 1.25rem 1rem;
+      overflow-y: auto;
+      transition: right 0.25s ease;
+      z-index: 2102;
+    }
+    
+    .liked-sidebar.open { 
+      right: 0; 
+    }
+    
+    .liked-sidebar .close-liked {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 1.875rem;
+      height: 1.875rem;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23333"><path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>') no-repeat center;
+      background-size: contain;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .liked-sidebar h3 {
+      margin: 0 0 0.75rem 0;
+      color: #333;
+      text-align: left;
+      font-weight: 700;
+      font-size: 1.05rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .liked-sidebar .wishlist-modern-item {
+      background: #f7f7f7;
+      color: #333;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+    }
+    
+    .liked-sidebar .wishlist-modern-details {
+      background: #ffffff;
+      color: #555;
+    }
+    
+    .liked-sidebar .wishlist-modern-price { 
+      color: #111; 
+    }
+    
+    .liked-sidebar .wishlist-modern-thumbs img {
+      background: #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    }
+    
+    .liked-list .add-to-catalogue {
+      background: #ffcc00;
+      color: #232323;
+      border: none;
+      border-radius: 0.3rem;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.93rem;
+      font-weight: 500;
+      cursor: pointer;
+
+    /* Mobile responsiveness for wishlist sidebar and items */
+    @media (max-width: 700px) {
+      .liked-sidebar {
+        /* act like a full-width bottom sheet on mobile */
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        bottom: 0;
+        width: 100vw !important;
+        max-height: 85vh;
+        border-radius: 12px 12px 0 0;
+        padding: 0.75rem 0.75rem 1rem 0.75rem;
+        display: block;
+      }
+
+      .liked-sidebar.open { right: 0; }
+
+      .liked-sidebar .close-liked {
+        right: 0.6rem;
+        top: 0.45rem;
+      }
+
+      .liked-sidebar h3 { text-align: center; font-size: 1rem; }
+
+      /* Make wishlist list stack vertically and full width */
+      .liked-list { display: flex; flex-direction: column; gap: 0.6rem; }
+
+      .wishlist-modern-item {
+        flex: 1 1 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        flex-direction: row;
+        align-items: center;
+        padding: 0.6rem;
+        gap: 0.6rem;
+      }
+
+      .wishlist-modern-img-wrap { flex: 0 0 72px; }
+
+      .wishlist-modern-img { width: 72px; height: 72px; border-radius: 8px; }
+
+      .wishlist-modern-info { flex: 1 1 auto; text-align: left; }
+
+      .wishlist-modern-title { font-size: 1rem; font-weight: 600; color: #222; }
+
+      .wishlist-modern-desc { font-size: 0.85rem; color: #666; }
+
+      .wishlist-modern-details { display: none; }
+
+      .wishlist-modern-thumbs { display: none; }
+
+      .wishlist-modern-add { width: 120px; align-self: flex-end; padding: 0.45rem; font-size: 0.95rem; }
+
+      .wishlist-modern-remove { top: 0.45rem; right: 0.45rem; }
+
+      /* Ensure scrollable area fits inside bottom sheet */
+      .liked-sidebar { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    }
+      margin-top: 0.2rem;
+      transition: background 0.2s;
+    }
+    
+    .liked-list .add-to-catalogue:hover {
+      background: #ffd700;
+    }
+    
+    .liked-list .remove-liked {
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #ff4444;
+      background: none;
+      border: none;
+      margin-top: 0.2rem;
+      transition: color 0.3s ease;
+    }
+    
+    .liked-list .remove-liked:hover { 
+      color: #ff0000; 
+      text-shadow: none; 
+    }
+
+    /* === FOOTER === */
+    footer {
+      background: #1c1c1c;
+      color: #f0f0f0;
+      padding: 2.5rem;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      gap: 1rem;
+    }
+    
+    .footer-column {
+      max-width: 15.625rem;
+      margin: 0.625rem;
+    }
+    
+    .footer-column h4 {
+      color: #ff0000;
+      margin-bottom: 0.625rem;
+    }
+    
+    .footer-column a {
+      display: block;
+      color: #f0f0f0;
+      text-decoration: none;
+      margin-bottom: 0.3125rem;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-column a:hover {
+      color: #ffcc00;
+    }
+    
+    .social-icons a {
+      display: inline-block;
+      margin: 0.3125rem;
+      color: #f0f0f0;
+      font-size: 1.4rem;
+    }
+
+    /* === HOVER EFFECTS === */
+    .menu-icon:hover,
+    .catalog-icon:hover,
+    .account-icon:hover {
+      filter: brightness(0.7) drop-shadow(0 0.125rem 0.5rem #3333);
+    }
+
+    .menu-icon:hover {
+      transform: translateY(-0.125rem) scale(1.03);
+      z-index: 10;
+    }
+
+    .liked-icon:hover {
+      filter: brightness(0.7) drop-shadow(0 0.125rem 0.5rem #ff4d6d33);
+    }
+
+    /* === RESPONSIVE DESIGN === */
+    
+    /* Mobile Header */
+    @media (max-width: 768px) {
+      .site-header { 
+        grid-template-columns: auto 1fr auto; 
+        /* reduce overall header gaps on small screens so logo and menu sit closer */
+        gap: 0.35rem;
+        padding-left: 0.4rem;
+        padding-right: 0.4rem;
+      }
+      
+      .header-center { 
+        min-width: 0; 
+      }
+
+      /* tighten spacing between the left menu and the logo */
+      .header-left {
+        gap: 0.2rem;
+        align-items: center;
+      }
+
+      /* slightly reduce logo image right margin on mobile so it sits closer to the menu */
+      .header-center .logo img {
+        height: 2.5rem;
+        margin-right: 0.35rem;
+      }
+
+      /* increase menu icon size on small screens for easier tapping */
+      .menu-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+      
+      .header-center .logo { 
+        min-width: 0; 
+      }
+      
+      .header-center .logo h1 { 
+        white-space: nowrap; 
+        overflow: visible; 
+        text-overflow: clip; 
+      }
+      
+      .header-right { 
+        /* reduce gap to avoid crowding the title on small screens */
+        gap: 0.35rem;
+        align-items: center;
+      }
+      
+      .header-right .liked-icon span { 
+        display: none; 
+      }
+      
+      .header-right svg { 
+  /* match other header icons size */
+  width: 28px; 
+  height: 28px; 
+    }
+      /* Ensure account/avatar in header also scales down on small screens */
+    .account-icon svg,
+    .account-icon img,
+    #account-logo-wrap img {
+  width: 28px !important;
+  height: 28px !important;
+    }
+
+    /* Keep the account bubble hidden unless explicitly opened. Use the
+       `open` class to show the bubble (toggled by JS when the account icon
+       is clicked). This prevents the bubble from appearing unexpectedly. */
+    .account-bubble { display: none; }
+    .account-bubble.open { display: block; }
+
+      /* reduce extra margin on the catalogue/cart icon so logo moves closer to menu */
+      .catalog-icon {
+        margin-left: 0.4rem;
+        width: 2.4rem;
+        height: 2.4rem;
+        background-size: 72% 72%;
+      }
+
+      .sidebar { 
+        width: 80vw; 
+        left: -80vw; 
+        padding-top: 3rem; 
+      }
+      
+      .sidebar.open { 
+        left: 0; 
+      }
+
+      .menu-icon:hover,
+      .catalog-icon:hover,
+      .account-icon:hover,
+      .liked-icon:hover {
+        transform: none;
+        filter: none;
+        box-shadow: none;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .dot {
+        height: 1rem;
+        width: 1rem;
+        margin: 0 0.4rem;
+      }
+
+      .section-content p.truncate {
+        max-height: 2.7em;
+        overflow: hidden;
+        position: relative;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        margin-bottom: 0.5em;
+      }
+      
+      .read-more-btn {
+        display: inline-block;
+        font-size: 0.95em;
+        color: #ffb347;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0 0.2em;
+        margin-left: 0.2em;
+        text-decoration: underline;
+      }
+      
+      .hero-desc .hero-short { 
+        display: inline; 
+      }
+      
+      .hero-desc .hero-full { 
+        display: none; 
+      }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 700px) {
+      .wishlist-modern-item {
+        min-width: 90vw;
+        max-width: 98vw;
+        padding: 0.7rem 0.3rem 1.1rem 0.3rem;
+      }
+      
+      .wishlist-modern-img-wrap {
+        width: 4.375rem;
+        height: 4.375rem;
+      }
+    }
+
+    /* Small Mobile */
+    @media (max-width: 600px) {
+      .site-header { 
+        grid-template-columns: auto 1fr auto; 
+        gap: 0.5rem; 
+      }
+      
+      .header-center .logo h1 { 
+        font-size: 1rem !important; 
+        letter-spacing: 0.05rem !important; 
+        white-space: nowrap; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+      }
+      
+      .header-center .logo img { 
+        height: 1.6rem !important; 
+      }
+      
+      .header-right { 
+        /* tighter spacing between icons to free space for the title */
+        gap: 0.35rem; 
+      }
+    .account-icon svg,
+    .account-icon img,
+    #account-logo-wrap img {
+  width: 28px !important;
+  height: 28px !important;
+    }
+      
+      .catalog-icon {
+        margin-left: 0.5rem;
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+
+      .explore-btn {
+        font-size: 0.85rem !important;
+        padding: 0.4em 0.8em !important;
+        border-radius: 0.5em !important;
+      }
+
+      .brand { 
+        display: inline-grid; 
+        grid-auto-flow: row; 
+        line-height: 1; 
+      }
+      
+      .brand-top { 
+        display: block; 
+      }
+      
+      .brand-bottom { 
+        display: block; 
+        margin-top: 0.1rem; 
+      }
+
+      .top-sellers-row {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      
+      .album-item {
+        min-width: 45vw;
+        max-width: 48vw;
+        margin-bottom: 0.7rem;
+      }
+      
+      .album-item img {
+        max-width: 100%;
+        height: 50px;
+      }
+    }
+
+    /* Medium screens */
+    @media (max-width: 1200px) {
+      .section {
+        flex-direction: column !important;
+        padding: 2.5rem 1.25rem;
+        text-align: center;
+      }
+      
+      .section img {
+        max-width: 80vw;
+        margin-bottom: 1.5rem;
+      }
+      
+      .section-content {
+        max-width: 100%;
+        padding: 0 1rem;
+      }
+      
+      .section-content h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+      }
+      
+      .section-content p {
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+    }
+
+    /* Small screens */
+    @media (max-width: 800px) {
+      .slider { 
+        aspect-ratio: 16 / 9; 
+      }
+
+      .section {
+        flex-direction: column;
+        padding: 2rem 4vw;
+        text-align: center;
+      }
+      
+      .section img {
+        max-width: 85vw;
+        margin-bottom: 1.5rem;
+        border-radius: 0.5rem;
+      }
+      
+      .section-content h3 {
+        font-size: 1.6rem;
+        margin-bottom: 0.8rem;
+      }
+      
+      .section-content p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        padding: 0 0.5rem;
+      }
+      
+      .hero {
+        padding: 2.5rem 1rem;
+      }
+      
+      .hero h2 {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+      }
+      
+      .hero-content {
+        max-width: 95vw !important;
+        padding: 1.5rem 1rem !important;
+        border-radius: 0.5rem !important;
+      }
+      
+      .sidebar {
+        width: 75vw;
+        min-width: 12rem;
+        padding-top: 3rem;
+      }
+      
+      .footer-column {
+        max-width: 100vw;
+        margin: 0.8rem 0;
+      }
+      
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem 1rem;
+      }
+
+      .top-sellers-row {
+        gap: 0.7rem;
+      }
+      
+      .album-item {
+        min-width: 120px;
+        max-width: 150px;
+        padding: 0.7rem 0.3rem 0.5rem 0.3rem;
+      }
+      
+      .album-item img {
+        max-width: 80px;
+        height: 60px;
+      }
+    }
+
+    /* Very small screens */
+    @media (max-width: 500px) {
+      .slider { 
+        aspect-ratio: 4 / 3; 
+        border-radius: 0.25rem;
+        margin: 0.8rem auto;
+      }
+
+      .hero {
+        padding: 2rem 0.8rem;
+      }
+      
+      .hero h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.8rem;
+        line-height: 1.2;
+      }
+      
+      .hero-content {
+        max-width: 98vw !important;
+        padding: 1.2rem 0.8rem !important;
+        border-radius: 0.4rem !important;
+      }
+      
+      .hero-content p {
+        font-size: 0.95rem !important;
+        line-height: 1.5 !important;
+        margin-bottom: 0.8rem !important;
+      }
+      
+      .section {
+        padding: 1.5rem 3vw;
+      }
+      
+      .section img {
+        max-width: 90vw;
+        border-radius: 0.4rem;
+        margin-bottom: 1.2rem;
+      }
+      
+      .section-content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 0.6rem;
+      }
+      
+      .section-content p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        padding: 0;
+      }
+      
+      .logo img {
+        height: 1.8rem;
+        margin-right: 0.4rem;
+      }
+      
+      .logo h1 {
+        font-size: 1rem;
+        letter-spacing: 0.05rem;
+      }
+      
+      header {
+        padding: 0.6rem 0.8rem;
+      }
+      
+      .menu-icon {
+        /* slightly smaller tap targets to preserve title space */
+        width: 1.6rem;
+        height: 1.6rem;
+      }
+      
+      .catalog-icon {
+        width: 1.4rem;
+        height: 1.4rem;
+        margin-left: 0.4rem;
+      }
+    .account-icon svg,
+    .account-icon img,
+    #account-logo-wrap img {
+  width: 28px !important;
+  height: 28px !important;
+    }
+      
+      .sidebar {
+        width: 85vw;
+        min-width: 16rem;
+        padding-top: 3.5rem;
+        left: -90vw;
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.open {
+        left: 0;
+        transform: translateX(0);
+      }
+      
+      .sidebar a {
+        padding: 0.8rem 1rem;
+        font-size: 1.1rem;
+      }
+      
+      .footer-column h4 {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .footer-column {
+        margin: 0.6rem 0;
+      }
+      
+      .footer-column p {
+        font-size: 0.85rem;
+        line-height: 1.4;
+      }
+      
+      footer {
+        padding: 1.2rem 0.8rem;
+      }
+      
+      .catalogue {
+        width: 88vw;
+        max-width: 20rem;
+        right: -92vw;
+        top: 4.25rem;
+        padding: 0.75rem 0.75rem 1rem 0.75rem;
+        border-radius: 10px;
+      }
+      
+      .catalogue.open { 
+        right: 0; 
+      }
+      
+      .catalogue h3 { 
+        font-size: 1.05rem; 
+      }
+      
+      .catalogue-list li { 
+        padding: 0.75rem; 
+        margin-bottom: 0.75rem; 
+        font-size: 0.9rem; 
+      }
+    }
+
+    /* Extra small screens */
+    @media (max-width: 360px) {
+      .slider { 
+        aspect-ratio: 1 / 1; 
+      }
+
+      .hero h2 {
+        font-size: 1.5rem;
+      }
+      
+      .hero-content p {
+        font-size: 0.85rem !important;
+      }
+      
+      .section-content h3 {
+        font-size: 1.2rem;
+      }
+      
+      .section-content p {
+        font-size: 0.8rem;
+      }
+      
+      .logo h1 {
+        font-size: 0.9rem;
+      }
+      
+      .section {
+        padding: 1.2rem 2vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-left">
+      <div class="menu-icon" onclick="openMenu()"></div>
+    </div>
+    <div class="header-center">
+      <div class="logo">
+        <img src="logo.png" alt="Damascus Master Logo" class="">
+        <h1 class="brand"><span class="brand-top">Damascus</span> <span class="brand-bottom">Master</span></h1>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="account-icon" title="Login or Signup" aria-label="Login or Signup" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;">
+        <span id="account-logo-wrap" class="">
+          <!-- Small inline logo removed to avoid duplicate branding next to account icon.
+               The default SVG (fallback) will be used when JS inserts it via updateAccountLogo(). -->
+          <svg id="default-account-svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffe066" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"  class="u-hidden"><circle cx="12" cy="8.5" r="4.2" fill="#ffe066"></circle><path d="M3.5 20c0-3.5 4.5-5.5 8.5-5.5s8.5 2 8.5 5.5" stroke="#ffe066"></path></svg>
+        </span>
+      </button>
+      <div id="account-bubble" class="account-bubble u-hidden" >
+        <div id="account-bubble-content" class=""></div>
+      </div>
+      <button class="liked-icon" title="Liked Products" aria-label="Liked Products" onclick="openLikedSidebar()" style="background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;">
+        <div style="display:flex;flex-direction:column;align-items:center;" class="">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff4d6d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-4.35-9-7.5C1.5 10.5 2.5 7 6 7c2.1 0 3.5 1.5 4 2.5C10.5 8.5 11.9 7 14 7c3.5 0 4.5 3.5 3 6.5-2.5 3.15-9 7.5-9 7.5z" fill="#ff4d6d"></path></svg>
+          <span style="font-size:0.78rem;color:#ffb347;margin-top:0.1em;" class="">Wish list</span>
+        </div>
+      </button>
+      <div class="catalog-icon" onclick="openCatalogue()" title="Open Catalogue"></div>
+    </div>
+
+  <div class="liked-sidebar" id="likedSidebar">
+    <button class="close-liked" onclick="closeLikedSidebar()" title="Close Wishlist"></button>
+    <h3 class="">Wishlist</h3>
+    <ul class="liked-list" id="likedList">
+      <!-- Wishlist products will be injected here -->
+    </ul>
+  </div>
+
+  <script>
+    // DEMO RESET: minimal no-op reset for demo state (keeps account code scope clean)
+    (function resetDemoCustomer() {
+      try {
+        // remove demo flags if present
+        try { localStorage.removeItem('demo_reset'); } catch(e){}
+      } catch (err) { /* ignore */ }
+    })();
+      function updateAccountLogo() {
+        const logoWrap = document.getElementById('account-logo-wrap');
+        if (!logoWrap) return;
+
+        // Resolve current profile from localStorage (robust like showAccountBubble)
+        let profile = null;
+        try {
+          const current = localStorage.getItem('currentUser');
+          let users = {};
+          try { users = (typeof getUsersMap === 'function') ? getUsersMap() : JSON.parse(localStorage.getItem('users') || '{}'); } catch (e) { users = {}; }
+          if (current) {
+            try {
+              const p = JSON.parse(current);
+              if (p && typeof p === 'object') profile = (p.email && users[p.email.toLowerCase()]) ? users[p.email.toLowerCase()] : p;
+            } catch (e) {
+              profile = users[String(current).toLowerCase()] || null;
+            }
+          }
+        } catch (e) { profile = null; }
+
+        function renderDefaultIcon() {
+          const def = document.getElementById('default-account-svg');
+          if (def) {
+            const clone = def.cloneNode(true);
+            clone.style.display = 'inline-block';
+            // clear and append
+            logoWrap.innerHTML = '';
+            logoWrap.appendChild(clone);
+            return;
+          }
+          // fallback: if default SVG isn't present, insert a minimal neutral circle SVG
+          logoWrap.innerHTML = '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" fill="#ddd"/></svg>';
+        }
+
+        // If we have a profile and it has a logo, prefer showing it
+        if (profile && profile.logo) {
+          try {
+            const resolved = (typeof resolveAvatarUrl === 'function') ? resolveAvatarUrl(profile.logo) : profile.logo;
+            const src = resolved && String(resolved).trim() ? resolved : profile.logo;
+            // create img element with safe onerror fallback to default icon
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = 'avatar';
+            img.style.width = '28px'; img.style.height = '28px'; img.style.borderRadius = '50%'; img.style.objectFit = 'cover';
+            // if avatar fails to load, show default icon
+            img.addEventListener('error', function(){ renderDefaultIcon(); });
+            logoWrap.innerHTML = '';
+            logoWrap.appendChild(img);
+          } catch (e) {
+            renderDefaultIcon();
+          }
+        } else {
+          // No profile or no avatar — always show the default account icon
+          renderDefaultIcon();
+        }
+      }
+    // Update on load and after login/logout
+    document.addEventListener('DOMContentLoaded', updateAccountLogo);
+    window.updateAccountLogo = updateAccountLogo;
+    // Listen for profile updates from other tabs/pages (account page writes profileUpdatedAt)
+    window.addEventListener('storage', function(e) {
+      try {
+        if (!e) return;
+        if (e.key === 'profileUpdatedAt' || e.key === 'users' || e.key === 'currentUser') {
+          // Small timeout to allow storage to settle
+          setTimeout(updateAccountLogo, 10);
+        }
+      } catch (err) { console.warn('storage listener failed', err); }
+    });
+
+    // Small HTML escape helper (available globally)
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+    // Example: Render wishlist items (clean, safe implementation)
+    function renderWishlist() {
+  const wishlist = (typeof getWishlist === 'function') ? getWishlist() : JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const likedList = document.getElementById('likedList');
+      if (!likedList) return;
+      likedList.innerHTML = '';
+
+      // small helper to escape HTML in user-provided strings
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      if (!wishlist || wishlist.length === 0) {
+        likedList.innerHTML = `
+          <li>
+            <div style="background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.12);">
+              <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:#f4f6f8;margin-bottom:12px;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="#ff4d6d" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-6.5-4.35-9-7.5C1.5 10.5 2.5 7 6 7c2.1 0 3.5 1.5 4 2.5C10.5 8.5 11.9 7 14 7c3.5 0 4.5 3.5 3 6.5-2.5 3.15-9 7.5-9 7.5z"/></svg>
+              </div>
+              <div style="font-weight:700;color:#333;margin-bottom:6px;">Your Wishlist is Empty</div>
+              <div style="color:#777;font-size:0.95rem;">Browse our collections and add items you love!</div>
+            </div>
+          </li>`;
+        return;
+      }
+
+      wishlist.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'wishlist-modern-item';
+
+        const id = item.id || '';
+        const title = (typeof item.title === 'string' && item.title.trim()) ? item.title : (item.name || 'No title');
+  const price = item.price || 0;
+  const quantity = item.quantity || 1;
+  // Render sale-aware price: prefer item.sale when active
+  let priceHtml = '';
+        try {
+          if (item && item.sale && item.sale.active && Number(item.sale.price) > 0) {
+            const orig = (item.sale.prevPrice && Number(item.sale.prevPrice) > 0) ? Number(item.sale.prevPrice) : Number(price || 0);
+            const sale = Number(item.sale.price || 0);
+            priceHtml = `<div class="wishlist-modern-price"><span style="text-decoration:line-through;color:#9aa3af;margin-right:0.5rem">$${(orig).toFixed(2)}</span><span style="background:#fff;color:#000;padding:0.15em 0.45em;border-radius:0.35em;font-weight:800">$${(sale).toFixed(2)}</span>${quantity>1?` <span style='color:#ffcc00;font-size:0.95em;'>&times; ${escapeHtml(quantity)}</span>`:''}</div>`;
+          } else {
+            priceHtml = `<div class="wishlist-modern-price">$${escapeHtml(price)}${quantity>1?` <span style='color:#ffcc00;font-size:0.95em;'>&times; ${escapeHtml(quantity)}</span>`:''}</div>`;
+          }
+        } catch (e) {
+          priceHtml = `<div class="wishlist-modern-price">$${escapeHtml(price)}${quantity>1?` <span style='color:#ffcc00;font-size:0.95em;'>&times; ${escapeHtml(quantity)}</span>`:''}</div>`;
+        }
+        const img = item.img || item.mainImage || '';
+        const thumbs = item.thumbnails || item.galleryImages || [];
+        const details = item.details || item.specs || '';
+
+        // normalize album URL and ensure .html when appropriate
+        let albumUrl = item.album || item.page || '';
+        if (albumUrl && !/\.html(?:$|\?)/i.test(albumUrl)) {
+          albumUrl = albumUrl + '.html';
+        }
+        if (!albumUrl && id) {
+          albumUrl = 'album_template.html?id=' + encodeURIComponent(id);
+        }
+
+        const thumbsHtml = (Array.isArray(thumbs) && thumbs.length)
+          ? '<div class="wishlist-modern-thumbs">' + thumbs.slice(0,6).map(s => `<img src="${escapeHtml(s)}" alt="thumb">`).join('') + '</div>'
+          : '';
+
+        const detailsHtml = details ? `<div class="wishlist-modern-details">${escapeHtml(details)}</div>` : '';
+
+        const linkHref = albumUrl ? (albumUrl + (albumUrl.includes('?') ? '&' : '?') + 'from=wishlist') : '#';
+
+        li.innerHTML = `
+          <a href="${escapeHtml(linkHref)}" style="color:inherit;text-decoration:none;display:block">
+            <div class="wishlist-modern-img-wrap">
+              <img class="wishlist-modern-img" src="${escapeHtml(img)}" alt="${escapeHtml(title)}">
+            </div>
+            <div class="wishlist-modern-info">
+              <div class="wishlist-modern-title">${escapeHtml(title)}</div>
+              <div class="wishlist-modern-desc">${escapeHtml(title)}</div>
+              ${priceHtml}
+              ${detailsHtml}
+              ${thumbsHtml}
+            </div>
+          </a>
+          <button class="wishlist-modern-add" onclick="event.preventDefault(); event.stopPropagation(); addToCatalogueFromWishlist(${idx})">Add to Cart</button>
+          <button class="wishlist-modern-remove" onclick="event.preventDefault(); event.stopPropagation(); removeFromWishlist(${idx})" title="Remove">&#10006;</button>
+        `;
+
+        // Ensure click navigates when user clicks outside the control buttons (anchor already covers most cases)
+        li.addEventListener('click', function(e){
+          if (e.target && e.target.closest && e.target.closest('button')) return; // clicked a control
+          const a = li.querySelector('a');
+          if (a && a.href && a.getAttribute('href') !== '#') {
+            window.location.href = a.href;
+          }
+        });
+
+        // Keyboard accessibility
+        li.tabIndex = 0;
+        li.addEventListener('keydown', function(e){ if (e.key === 'Enter') { const a = li.querySelector('a'); if (a) window.location.href = a.href; } });
+
+        likedList.appendChild(li);
+      });
+    }
+
+    function addToCatalogueFromWishlist(idx) {
+  const wishlist = (typeof getWishlist === 'function') ? getWishlist() : JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const item = wishlist[idx] || {};
+      // Build a full product object carrying image, description, price, album, and details
+      // Always include album URL for navigation from catalogue
+      let albumUrl = item.album || item.page || '';
+      if (albumUrl && !/\.html(?:$|\?)/i.test(albumUrl)) {
+        albumUrl = albumUrl + '.html';
+      }
+      const product = {
+        id: item.id,
+        name: item.title || item.name,
+        title: item.title || item.name,
+        desc: item.desc || '',
+        price: item.price || 0,
+  // carry sale metadata if present so catalogue/order prefer sale.price
+  sale: item.sale || null,
+        mainImage: item.mainImage || item.img || '',
+        img: item.img || item.mainImage || '',
+        album: albumUrl,
+        details: item.details || item.specs || null,
+        galleryImages: item.galleryImages || item.thumbnails || null,
+        quantity: item.quantity && item.quantity > 0 ? Number(item.quantity) : 1
+      };
+      // Push to catalogue
+        let catalogue = JSON.parse(localStorage.getItem('catalogue') || '[]');
+        const existingIdx = catalogue.findIndex(p => p.id === product.id && p.mainImage === product.mainImage);
+        if (existingIdx > -1) {
+          catalogue[existingIdx].quantity = (Number(catalogue[existingIdx].quantity || 0) + Number(product.quantity || 1));
+          catalogue[existingIdx].price = product.price;
+          catalogue[existingIdx].sale = product.sale || null;
+        } else {
+          catalogue.push(product);
+        }
+        localStorage.setItem('catalogue', JSON.stringify(catalogue));
+      // Remove from wishlist
+      wishlist.splice(idx, 1);
+    if (typeof setWishlist === 'function') setWishlist(wishlist); else localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    try { notifyWishlistChanged(); } catch(e) {}
+      // Refresh UI
+      renderWishlist();
+      renderCatalogue();
+      alert('Moved to catalogue!');
+    }
+
+    function removeFromWishlist(idx) {
+  let wishlist = (typeof getWishlist === 'function') ? getWishlist() : JSON.parse(localStorage.getItem('wishlist') || '[]');
+  wishlist.splice(idx, 1);
+  if (typeof setWishlist === 'function') setWishlist(wishlist); else localStorage.setItem('wishlist', JSON.stringify(wishlist));
+  try { notifyWishlistChanged(); } catch(e) {}
+      renderWishlist();
+    }
+
+    // Re-render wishlist when sidebar opens
+    function openLikedSidebar() {
+      document.getElementById('likedSidebar').classList.add('open');
+      document.querySelector('.catalog-icon').style.zIndex = -1; // Hide catalogue icon behind
+      renderWishlist();
+    }
+    function closeLikedSidebar() {
+      document.getElementById('likedSidebar').classList.remove('open');
+      document.querySelector('.catalog-icon').style.zIndex = 2102; // Restore catalogue icon
+    }
+    // Render catalogue panel if not present
+    function renderCatalogue() {
+      try {
+        const catEl = document.querySelector('.catalogue');
+        if (!catEl) return; // no catalogue panel in this build
+        const list = JSON.parse(localStorage.getItem('catalogue') || '[]');
+        const listEl = catEl.querySelector('.catalogue-list');
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        // helper to ensure album links have .html when needed
+        function normalizeAlbumUrl(u) {
+          if (!u) return '';
+          let s = String(u).trim();
+          if (!s) return '';
+          if (!/^(https?:)?\/\//i.test(s) && s.indexOf('.html') === -1 && !s.includes('?')) {
+            s = s + (s.endsWith('/') ? '' : '.html');
+          }
+          return s;
+        }
+        list.forEach((item, idx) => {
+          const li = document.createElement('li');
+          const title = item.title || item.name || 'Product';
+          const desc = (item.desc||'').substring(0,80);
+          const img = item.img || item.mainImage || '';
+          const albumRaw = item.album || '';
+          const albumUrl = normalizeAlbumUrl(albumRaw) || (item.page || ('album_template.html?id=' + encodeURIComponent(item.id || title)));
+          const href = albumUrl ? (albumUrl + (albumUrl.includes('?') ? '&' : '?') + 'from=catalogue') : '#';
+
+          li.innerHTML = `
+            <a href="${href}" style="color:inherit;text-decoration:none;display:block">
+              <div style="display:flex;gap:8px;align-items:center">
+                <img src="${img}" style="width:48px;height:48px;object-fit:cover;border-radius:6px">
+                <div style="flex:1">
+                  <div class="product-title">${title}</div>
+                  <div class="product-desc">${desc}</div>
+                  <div class="product-price">$${item.price || 0}</div>
+                </div>
+              </div>
+            </a>`;
+
+          // Accessibility & keyboard navigation
+          li.tabIndex = 0;
+          li.addEventListener('keydown', function(e){ if (e.key === 'Enter') { const a = li.querySelector('a'); if (a) window.location.href = a.href; } });
+
+          listEl.appendChild(li);
+        });
+      } catch(e) { console.warn('renderCatalogue failed', e); }
+    }
+
+    // Auto-open panels based on ?open= query when page loads
+    document.addEventListener('DOMContentLoaded', function(){
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const open = params.get('open');
+        if (open === 'wishlist') { openLikedSidebar(); }
+        if (open === 'catalogue' || open === 'cart') { const el = document.querySelector('.catalogue'); if (el) { el.classList.add('open'); renderCatalogue(); } }
+        // If we auto-opened a panel via query param, clear it from the URL so refresh doesn't re-open
+        if (open) {
+          try { history.replaceState(null, document.title, window.location.pathname + window.location.hash); } catch (e) {}
+        }
+      } catch(e) {}
+  });
+  </script>
+  </header>
+  <style>
+    .header-right { position: relative; }
+    .account-bubble {
+      position: absolute;
+      top: 3.5rem;
+      right: 0;
+      background: #23262f;
+      color: #ffe066;
+      border-radius: 0.8rem;
+      box-shadow: 0 4px 24px #0007;
+      min-width: 170px;
+      padding: 1rem 1.2rem 1rem 1.2rem;
+      z-index: 3000;
+      /* Hidden by default; shown when `.open` class is toggled by JS */
+      display: none;
+      flex-direction: column;
+      align-items: flex-start;
+      font-family: 'Montserrat', Arial, sans-serif;
+      animation: fadeInBubble 0.18s;
+    }
+    /* Show bubble when the open class is set */
+    .account-bubble.open { display: flex; }
+    @keyframes fadeInBubble {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .account-bubble-btn {
+      background: linear-gradient(90deg, #ffffff 60%, #ffffff 100%);
+      color: #23262f;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      padding: 0.5em 1.2em;
+      margin-top: 0.2em;
+      margin-bottom: 0.2em;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 2px 8px #0002;
+      transition: background 0.2s, color 0.2s;
+      text-align: left;
+    }
+    .account-bubble-btn:hover {
+      background: linear-gradient(90deg, #b3b3b3 60%, #a5a5a5 100%);
+      color: #181a20;
+    }
+  </style>
+  <script>
+    // Simple login state using localStorage for demo
+    function isLoggedIn() {
+      // Robustly detect login state: check explicit flag, authToken, or currentUser/users entry
+      try {
+        if (localStorage.getItem('userLoggedIn')) return true;
+        if (localStorage.getItem('authToken')) return true;
+        const cur = localStorage.getItem('currentUser');
+        if (cur) {
+          // If currentUser is JSON stringified user object with email -> logged in
+          try {
+            const parsed = JSON.parse(cur);
+            if (parsed && (parsed.email || parsed.username)) return true;
+          } catch (e) {
+            // Not JSON, treat as key and check users map
+            try {
+              const users = (typeof getUsersMap === 'function') ? getUsersMap() : JSON.parse(localStorage.getItem('users') || '{}');
+              if (users && users[String(cur).toLowerCase()]) return true;
+            } catch (_) {}
+          }
+        }
+        return false;
+      } catch (e) { return false; }
+    }
+
+    function showAccountBubble() {
+      const bubble = document.getElementById('account-bubble');
+      const content = document.getElementById('account-bubble-content');
+      if (!bubble || !content) return;
+      if (isLoggedIn()) {
+        // Try to read public profile from localStorage
+        let users = {};
+  try { users = (typeof getUsersMap === 'function') ? getUsersMap() : JSON.parse(localStorage.getItem('users') || '{}'); } catch (e) { users = {}; }
+        const current = localStorage.getItem('currentUser');
+        const profile = (function(){
+          if (!current) return null;
+          try { const p = JSON.parse(current); if (p && typeof p === 'object') return (p.email && users[p.email.toLowerCase()]) ? users[p.email.toLowerCase()] : p; } catch(e) {}
+          try { return users[String(current).toLowerCase()] || null; } catch(e) { return null; }
+        })();
+        const displayName = (profile && (profile.name || profile.email)) ? (profile.name || profile.email) : 'Account';
+
+        if (profile) {
+          content.innerHTML = `
+            <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.6rem;width:100%;">
+              <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex:0 0 44px;">
+                ${ (profile.logo) ? `<img src="${profile.logo}" alt="avatar" style="width:44px;height:44px;object-fit:cover;display:block">` : document.getElementById('default-account-svg').outerHTML }
+              </div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:700;color:#ffe066;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(displayName)}</div>
+                <div style="font-size:0.86rem;color:#ffd;opacity:0.9;">${escapeHtml(profile.email || '')}</div>
+              </div>
+            </div>
+            <button class='account-bubble-btn' onclick="window.location.href='account.html'">Manage account</button>
+            <button class='account-bubble-btn' onclick="window.location.href='order.html'">My orders</button>
+            <button class='account-bubble-btn' onclick="openLikedSidebar();hideAccountBubble();">Wishlist</button>
+            <button class='account-bubble-btn' onclick='logoutUser()'>Log out</button>
+          `;
+        } else {
+          // We have an authenticated state, but no profile object — show minimal logged-in menu
+          content.innerHTML = `
+            <div style='margin-bottom:0.6rem;font-weight:700;color:#ffe066;'>Account</div>
+            <button class='account-bubble-btn' onclick="window.location.href='account.html'">Manage account</button>
+            <button class='account-bubble-btn' onclick='logoutUser()'>Log out</button>
+          `;
+        }
+      } else {
+        content.innerHTML = `<button class='account-bubble-btn' onclick='loginUser()'>Login</button><button class='account-bubble-btn' onclick='signupUser()'>Sign up</button>`;
+      }
+      bubble.classList.add('open');
+      // allow keyboard/mouse handlers to attach after render
+      setTimeout(() => {
+        document.addEventListener('mousedown', hideBubbleOnClick, { once: true });
+      }, 0);
+    }
+
+    function hideAccountBubble() {
+      const bubble = document.getElementById('account-bubble');
+      if (bubble) bubble.classList.remove('open');
+    }
+
+    function hideBubbleOnClick(e) {
+      const bubble = document.getElementById('account-bubble');
+      const icon = document.querySelector('.account-icon');
+      if (!bubble || !icon) return;
+      // If click is outside both the bubble and the account icon, hide the bubble
+      if (!bubble.contains(e.target) && !icon.contains(e.target)) {
+        hideAccountBubble();
+      }
+      // otherwise do nothing (click inside should keep bubble open)
+    }
+
+    // Wire up the clickable account icon
+    const _acctIcon = document.querySelector('.account-icon');
+    if (_acctIcon) {
+      _acctIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const bubble = document.getElementById('account-bubble');
+        if (!bubble) return;
+        if (bubble.classList.contains('open')) {
+          hideAccountBubble();
+        } else {
+          showAccountBubble();
+          // Attach a one-time listener to close when clicking anywhere outside
+          setTimeout(() => document.addEventListener('mousedown', hideBubbleOnClick, { once: true }), 0);
+        }
+      });
+    }
+    function loginUser() {
+  window.location.href = 'login.html';
+    }
+    function signupUser() {
+  window.location.href = 'register.html';
+    }
+    function logoutUser() {
+      try {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userLoggedIn');
+        localStorage.removeItem('currentUser');
+        // notify other tabs/pages
+        localStorage.setItem('profileUpdatedAt', String(Date.now()));
+      } catch (e) { console.warn('logout cleanup failed', e); }
+      hideAccountBubble();
+      updateAccountLogo();
+      // Optionally reload to clear any in-memory state
+      // location.reload();
+      alert('Logged out!');
+    }
+  </script>
+
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeMenu()"></div>
+  
+  <div class="sidebar" id="sidebar">
+    <div class="close-btn" onclick="closeMenu()"></div>
+    <a href="#" class="has-sub" onclick="toggleSubMenu(event, 'knives-sub')">Knives ▾</a>
+    <div class="sub-menu u-hidden" id="knives-sub" >
+      <a href="kitchen-knives.html" class="sub-link">Kitchen Set</a>
+      <a href="hunting-knives.html" class="sub-link">Hunting Knives</a>
+      <a href="pocket-knives.html" class="sub-link">Pocket Knives</a>
+    </div>
+    <a href="Swords.html" class="">Swords</a>
+    <a href="Axes.html" class="">Axes</a>
+    <a href="Rings.html" class="">Rings</a>
+    <a href="Others.html" class="">Other Products</a>
+  </div>
+
+  <section class="hero section card-like" style="background: #fff; color: #111;">
+    <h2 class="">Premium Damascus Blades</h2>
+  <div class="hero-content" style="max-width: min(118.75rem, 94vw); margin: 0 auto; text-align: left; background: #fff; color: #111; border-radius: 0.75rem; padding: 1.875rem 1.5rem 1.5rem 1.5rem; box-shadow: 0 0.25rem 1.5rem rgba(0,0,0,0.08);">
+      <p class="hero-desc" style="font-size:1.15rem; line-height:1.6; margin-bottom: 1.125rem; text-align: justify;">
+        <span class="hero-short">Discover the exquisite craftsmanship of Damascus steel and handmade products that blend beauty and functionality. Our curated collection features stunning knives, tools, and art pieces, each crafted with precision and passion by skilled artisans.</span>
+        <span class="hero-full u-hidden" > At <span style="color:#ffcc00;font-weight:bold;" class="">Premium Damascus Blades</span>, we celebrate the rich history of Damascus steel, known for its unique patterns and unparalleled strength. Whether you're a culinary enthusiast, outdoor adventurer, or collector, you'll find the perfect piece for your needs. Explore our commitment to quality, sustainability, and authenticity. Shop with us today and bring home a piece of history.</span>
+        <button class="read-more-btn" onclick="toggleHeroReadMore(this)">Read more</button>
+      </p>
+    </div>
+  </section>
+
+  <div class="slider " id="slider">
+    <div class="slides" id="slides" style="transform: translateX(-300%);">
+      <img src="pic1.png" alt="Product 1" class="">
+      <img src="pic2.png" alt="Product 2" class="">
+      <img src="pic3.png" alt="Product 3" class="">
+      <img src="pic4.png" alt="Product 4" class="">
+      <img src="pic5.png" alt="Product 5" class="">
+    </div>
+    <div class="dots">
+      <span class="dot" onclick="currentSlide(0)"></span>
+      <span class="dot" onclick="currentSlide(1)"></span>
+      <span class="dot" onclick="currentSlide(2)"></span>
+      <span class="dot active" onclick="currentSlide(3)"></span>
+      <span class="dot" onclick="currentSlide(4)"></span>
+    </div>
+  </div>
+
+<section class="top-sellers-section section card-like">
+  <h2 class="top-sellers-heading">Top Sellers</h2>
+    <div class="top-sellers-row" id="topSellersGallery"></div>
+  <script>
+  // Top sellers source; replaced by backend fetch at runtime
+  let topSellers = [];
+
+  // Wishlist actions are centralized in site.js. The page keeps a tiny helper for checks.
+  function isInWishlist(id) {
+  try { const w = (typeof getWishlist === 'function') ? getWishlist() : (JSON.parse(localStorage.getItem('wishlist') || '[]') || []); return (Array.isArray(w) ? w.some(item => item.id === id || item.gallery === id) : false); } catch { return false }
+  }
+  
+  // Toggle wishlist helper used by compact cards (top sellers)
+  function toggleWishlist(id) {
+    try {
+      // immediate UI feedback: toggle any matching heart button
+      try {
+        const btn = document.querySelector('.wishlist-heart[data-wishlist-id="' + id + '"]');
+        if (btn) {
+          const willFill = !btn.classList.contains('filled');
+          if (willFill) btn.classList.add('filled'); else btn.classList.remove('filled');
+          btn.setAttribute('aria-pressed', willFill ? 'true' : 'false');
+        }
+      } catch(e){}
+      let wishlist = (typeof getWishlist === 'function') ? getWishlist() : JSON.parse(localStorage.getItem('wishlist') || '[]');
+      wishlist = Array.isArray(wishlist) ? wishlist : [];
+      const idx = wishlist.findIndex(it => it.id === id || it.displayId === id || it.gallery === id);
+      if (idx >= 0) {
+        wishlist.splice(idx, 1);
+      } else {
+        // Try to find the product in the in-memory topSellers list so we can save full metadata
+        try {
+          const prod = Array.isArray(topSellers) ? topSellers.find(p => (p.displayId || p.id) === id || p.id === id || p.gallery === id) : null;
+          if (prod) {
+            const onSale = prod.sale && prod.sale.active && Number(prod.sale.price) > 0;
+            wishlist.push({
+              id: id,
+              displayId: prod.displayId || undefined,
+              title: prod.title || '',
+              quantity: 1,
+              price: onSale ? Number(prod.sale.price) : (Number(prod.price) || 0),
+              img: prod.img || '',
+              album: prod.album || prod.page || prod.gallery || id,
+              page: prod.page || prod.album || null,
+              gallery: prod.gallery || null,
+              sale: prod.sale ? Object.assign({}, prod.sale) : null
+            });
+          } else {
+            // Minimal placeholder item; full data will be fetched when needed
+            wishlist.push({ id: id, title: '', quantity: 1, price: 0, img: '', gallery: id });
+          }
+        } catch (e) {
+          wishlist.push({ id: id, title: '', quantity: 1, price: 0, img: '', gallery: id });
+        }
+      }
+      if (typeof setWishlist === 'function') setWishlist(wishlist); else localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      // Re-render wishlist and top sellers heart states
+      if (typeof renderWishlist === 'function') renderWishlist();
+      if (typeof renderTopSellers === 'function') renderTopSellers();
+    } catch (e) { console.warn('toggleWishlist failed', e); }
+  }
+  
+  // Notify other components that wishlist changed
+  function notifyWishlistChanged() {
+    try {
+      if (typeof renderTopSellers === 'function') renderTopSellers();
+      // emit custom event for other listeners
+      const ev = new CustomEvent('wishlist:changed', { detail: { time: Date.now() } });
+      window.dispatchEvent(ev);
+    } catch (e) { console.warn('notifyWishlistChanged failed', e); }
+  }
+  function renderTopSellers() {
+    try {
+      console.debug && console.debug('renderTopSellers called, topSellers.length=', (window.topSellers && window.topSellers.length) || 0);
+      const gallery = document.getElementById('topSellersGallery');
+      if (!gallery) { console.warn && console.warn('renderTopSellers: topSellersGallery element not found'); return; }
+      gallery.innerHTML = '';
+      topSellers.forEach((prod) => {
+        const heartId = prod.displayId || prod.id;
+        const inWish = isInWishlist(heartId);
+        const div = document.createElement('div');
+        div.className = 'product-card top-seller-product';
+        const onSale = prod.sale && prod.sale.active && Number(prod.sale && prod.sale.price) > 0;
+        // build price HTML with a small separator bar between original and sale price
+        // Build price HTML (single formatted price; sale shows original and sale prices)
+        const priceNum = onSale && prod.sale && Number(prod.sale.price) > 0 ? Number(prod.sale.price) : Number(prod.price || 0);
+        const fullPrice = '$' + (Number(priceNum) || 0).toFixed(2);
+        if (onSale) {
+          const origNum = (prod.sale && prod.sale.prevPrice && Number(prod.sale.prevPrice) > 0) ? Number(prod.sale.prevPrice) : Number(prod.price || 0);
+          const fullOrig = '$' + (Number(origNum) || 0).toFixed(2);
+          priceHtml = `<div class="price-wrap"><span class="orig-price">${fullOrig}</span><span class="price-sep" aria-hidden="true"></span><span class="sale-price">${fullPrice}</span></div>`;
+        } else {
+          priceHtml = `<div class="price-wrap"><span class="product-price">${fullPrice}</span></div>`;
+        }
+
+        div.innerHTML = `
+          <div class="product-card-inner" style="position:relative;" onclick="if (!event.target.closest('.wishlist-heart')) window.location.href='${prod.album}'">
+            <button class="wishlist-heart ${inWish ? 'filled' : ''}" data-wishlist-id="${heartId}" aria-pressed="${inWish? 'true':'false'}" title="Add to wishlist" onclick="event.stopPropagation(); toggleWishlist('${heartId}');">
+              <svg width="22" height="22" viewBox="0 0 24 24" stroke="#ff4d6d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M12 21s-6.5-4.35-9-7.5C1.5 10.5 2.5 7 6 7c2.1 0 3.5 1.5 4 2.5C10.5 8.5 11.9 7 14 7c3.5 0 4.5 3.5 3 6.5-2.5 3.15-9 7.5-9 7.5z"/></svg>
+            </button>
+            <div class="product-img-wrap" role="link" tabindex="0" onclick="event.stopPropagation(); window.location.href='${prod.album}'" onkeydown="if(event.key==='Enter') { event.stopPropagation(); window.location.href='${prod.album}'; }">
+              <img src="${prod.img}" alt="${prod.title}">
+            </div>
+            <div class="product-title">${prod.title}</div>
+          </div>
+        `;
+        // append product-info as a sibling so it's positioned relative to .top-seller-product and not clipped
+        try {
+          const info = document.createElement('div');
+          info.className = 'product-info ' + (onSale ? 'sale-active' : '');
+          // keep only the price block here; ribbon will be a separate element placed above it
+          info.innerHTML = priceHtml;
+          div.appendChild(info);
+        } catch(e) { div.innerHTML += `<div class="product-info ${onSale ? 'sale-active' : ''}">${priceHtml}</div>`; }
+        // Instead of the big ribbon, add a small transparent 'Sale' icon at top-left of the card
+        if (onSale) {
+          try {
+            const inner = div.querySelector('.product-card-inner');
+            if (inner) {
+              const saleIcon = document.createElement('span');
+              saleIcon.className = 'top-seller-sale-icon';
+              saleIcon.setAttribute('aria-hidden', 'true');
+              saleIcon.textContent = 'Sale';
+              inner.appendChild(saleIcon);
+            }
+          } catch (e) { /* ignore */ }
+        }
+        gallery.appendChild(div);
+      });
+      try { gallery.dataset.count = String(topSellers.length || 0); } catch(e){}
+      try { if (window.enhanceTopSellers) window.enhanceTopSellers(); } catch (e) { console.warn('enhanceTopSellers failed', e); }
+    } catch (err) { console.error && console.error('renderTopSellers error', err); }
+    return;
+  }
+  async function fetchTopSellers() {
+    try {
+      const originOk = (location.origin && location.origin !== 'null' && location.protocol.startsWith('http'));
+      const base = originOk ? location.origin : 'http://localhost:3025';
+      const r = await fetch(base + '/api/products?topSeller=true');
+      if (!r.ok) throw new Error('Failed to load top sellers');
+      const arr = await r.json();
+      // Map backend products to the minimal shape expected by renderer
+      topSellers = (arr || []).map(p => ({
+        id: p.id || p.title,
+        displayId: (p.details && p.details.displayId) ? String(p.details.displayId) : (p.id || p.title),
+        title: p.title,
+        // If sale is active and prevPrice is provided, use that as the original price so UI shows correct old price
+        price: (p.sale && p.sale.active && p.sale.prevPrice && Number(p.sale.prevPrice) > 0) ? Number(p.sale.prevPrice) : Number(p.price || 0),
+        sale: p.sale || null,
+        img: (Array.isArray(p.images) && p.images.length ? p.images[0] : ''),
+        album: p.page || p.album || '#'
+      }));
+
+      // Post-pass: if any sale items still have price <= 0 (missing prevPrice), fetch their full product record
+      // and repair prevPrice when available. Top sellers list is usually small so this is cheap.
+      const needFix = topSellers.filter(ts => ts.sale && ts.sale.active && (!ts.price || Number(ts.price) <= 0));
+      if (needFix.length > 0) {
+        await Promise.all(needFix.map(async (ts) => {
+          try {
+            const rr = await fetch(base + '/api/products/' + encodeURIComponent(ts.id));
+            if (!rr.ok) return;
+            const full = await rr.json();
+            if (full && full.sale && full.sale.prevPrice && Number(full.sale.prevPrice) > 0) {
+              // update the entry in place
+              const match = topSellers.find(x => x.id === ts.id);
+              if (match) {
+                match.sale = full.sale;
+                match.price = Number(full.sale.prevPrice);
+              }
+            }
+          } catch (e) { /* ignore per-item failures */ }
+        }));
+      }
+    } catch (e) {
+      // Keep empty list on failure; UI will just render nothing
+      topSellers = [];
+      console.warn('Top sellers fetch failed:', e.message || e);
+    }
+    renderTopSellers();
+  }
+  document.addEventListener('DOMContentLoaded', fetchTopSellers);
+  // Refresh top sellers when products change elsewhere (admin actions)
+  try { window.addEventListener('products:changed', function(ev){ try { fetchTopSellers().then(function(){ try{ if (window.enhanceTopSellers) window.enhanceTopSellers(); }catch(e){} }); } catch(e){} }); } catch(e){}
+  </script>
+  <style>
+  .top-sellers-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .top-seller-product {
+  background: #fff !important;
+  color: #111 !important;
+    border-radius: 1rem;
+    box-shadow: 0 0.25rem 1rem rgba(0,0,0,0.18);
+  padding: 0.6rem 0.6rem 0.6rem 0.6rem;
+    min-width: 160px;
+    max-width: 220px;
+    flex: 1 1 18%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+  /* reduced card height to make cards more compact */
+  height: 250px;
+    box-sizing: border-box;
+    justify-content: flex-start;
+  overflow: visible; /* allow ribbon and price badges to be visible */
+  }
+  .top-seller-product:hover {
+    background: #282b36;
+    box-shadow: 0 0.5rem 1.5rem rgba(255,204,0,0.13);
+    transform: translateY(-0.2rem) scale(1.04);
+  }
+  .product-card-inner {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+  justify-content: flex-start;
+  /* increased bottom padding so the price area has room and won't be clipped */
+  padding-bottom: 3.6rem;
+  }
+  .product-img-wrap {
+  width: 120px;
+  height: 120px;
+    border-radius: 12px;
+    background: linear-gradient(180deg,#ffffff,#f7f7f7); /* light neutral background to hide dark edges */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  overflow: hidden; /* keep image contained */
+  position: relative;
+    box-shadow: 0 6px 18px rgba(16,24,32,0.06);
+    border: 1px solid #eee;
+  margin-bottom: 0.5rem;
+  }
+  .product-img-wrap img {
+   display: block;
+   /* Use height-based sizing and contain so tall (portrait) images are shown fully
+     while preserving the thumbnail box size. This avoids cropping. */
+   width: auto;
+   height: 100%;
+   max-width: 100%;
+   max-height: 100%;
+   object-fit: contain;
+   object-position: center center;
+   border-radius: 8px;
+   background-color: #fff; /* prevents dark bleed-through if image has transparency */
+  }
+  /* wishlist heart inside top-seller cards */
+  .top-seller-product .wishlist-heart {
+  position: absolute;
+  top: -10px; /* lift it slightly above the image so it doesn't overlap */
+  right: 10px; /* offset from image corner */
+  transform: translateY(0);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.06);
+  cursor: pointer;
+  z-index: 60; /* ensure sits above image but below admin overlays */
+  }
+  .top-seller-product .wishlist-heart svg { display:block; }
+
+  /* Move ribbon to the card level so it sits on the card, not the image */
+  .top-seller-product > .top-seller-sale-ribbon {
+  position: absolute;
+  width: 84px;
+  height: 34px;
+  overflow: visible;
+  bottom: 8px; /* place ribbon near the bottom so it overlays price block */
+  right: calc(50% - 42px); /* center over the card bottom */
+  pointer-events: none;
+  z-index: 210; /* sit above product-info */
+  transform: translateZ(0) rotate(-12deg);
+  display: none; /* hide legacy large ribbon when small icon is used */
+  }
+  .top-seller-product > .top-seller-sale-ribbon::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 110px;
+  height: 32px;
+  background: linear-gradient(180deg,#ff4b4b,#d93636);
+  transform: rotate(-30deg) translate(-6px, -4px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+  z-index: 1;
+  border-radius: 4px;
+  }
+  .top-seller-product > .top-seller-sale-ribbon .ribbon-text {
+    position: absolute;
+    left: 50%;
+    top: 48%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  color: #fff;
+  font-weight: 900;
+  font-size: 0.92rem;
+  line-height: 1;
+  width: 120px;
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+  }
+  /* Ensure card content uses black text on white blocks for title and price */
+  .top-seller-product .product-info,
+  .top-seller-product .product-info .product-price,
+  .top-seller-product .product-info .sale-price {
+    color: #000 !important;
+    background: #fff !important;
+  }
+  .top-seller-product .product-title { padding: 0.15rem 0.4rem; border-radius: 6px; font-weight:700 }
+
+  /* Filled heart state */
+  .top-seller-product .wishlist-heart.filled { background: #ff4d6d; }
+
+  /* Make sale price white bg with black text (inline price containers already use this style for sale) */
+  .top-seller-product .product-info .sale-price {
+    background: #fff;
+    color: #000;
+    padding: 0.12em 0.45em;
+    border-radius: 0.35em;
+    font-weight: 900;
+    font-size: 1.12rem; /* slightly larger to draw attention */
+    line-height: 1;
+  }
+  /* Fix price container to the bottom-left of the card so all cards have consistent price position */
+  .top-seller-product .product-info {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    width: calc(100% - 20px);
+    display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* allow price/title to wrap when space is tight */
+    justify-content: flex-start;
+    gap: 0.4rem;
+  z-index: 100; /* sit under the ribbon */
+    box-sizing: border-box;
+    padding: 0.25rem 0.5rem; /* small inner padding so text doesn't butt against card edge */
+    overflow: visible; /* allow price children to render fully without clipping */
+    /* subtle white backdrop with soft border to guarantee contrast over images */
+    background: rgba(255,255,255,0.97);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(16,24,32,0.04);
+    backdrop-filter: blur(4px);
+  }
+
+  /* prominent sale pill placed at top-left of the card */
+  .top-seller-product .top-seller-sale-icon {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.9rem;
+    font-weight: 900;
+    color: #fff;
+    padding: 0.18rem 0.5rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg,#ff5a5a,#e63939);
+    border: 2px solid rgba(255,255,255,0.85);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.14);
+    z-index: 220;
+    pointer-events: none;
+    transform: rotate(-8deg);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  /* small vertical separator between orig and sale price */
+  .top-seller-product .product-info .price-sep {
+    display: inline-block;
+    width: 1px;
+    height: 18px;
+    background: rgba(0,0,0,0.08);
+    margin: 0 0.35rem;
+    border-radius: 1px;
+    align-self: center;
+  }
+
+  /* Ensure the price elements can shrink and wrap properly in tight spaces */
+  .top-seller-product .product-info .price-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0; /* allow flex children to shrink */
+  overflow: visible;
+  }
+  /* For sale-active top-seller cards, place price at bottom-right and show sale label beside it */
+  .top-seller-product .product-info.sale-active {
+    left: auto;
+    right: 10px;
+    justify-content: flex-end;
+  }
+  .top-seller-sale-label {
+    display: inline-block;
+    background: #ff4b4b;
+    color: #fff;
+    font-weight: 800;
+    padding: 0.12em 0.4em;
+    border-radius: 0.35em;
+    margin-left: 0.4rem;
+    font-size: 0.82rem;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  }
+  /* Bubble / wishlist heart container smoothing (image attached shows dark bubble) */
+  .top-seller-product .wishlist-heart {
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(3px);
+  }
+  .product-price {
+    color: #000; /* black for strong contrast */
+    font-size: 1.02rem;
+    font-weight: 800;
+    margin-left: 0.12rem;
+    margin-bottom: 0.1rem; /* small nudge down */
+  display: inline-block;
+  white-space: normal; /* allow wrapping on small cards */
+  overflow-wrap: anywhere;
+  max-width: 60%; /* prevent overflowing the price container */
+  }
+
+  /* Small strike-through (original) price styling and ensure it doesn't get clipped */
+  .product-info .orig-price {
+    color: #777;
+    text-decoration: line-through;
+    display: inline-block;
+    margin-right: 0.28rem; /* bring old price a bit closer to sale price */
+  white-space: normal; /* allow wrapping if space is tight */
+    font-size: 0.86rem;
+    line-height: 1;
+  }
+  /* Small-screen adjustments for product-info spacing */
+  @media (max-width: 480px) {
+    .product-info { padding: 0.15rem 0.4rem; border-radius: 6px; }
+    .product-info .price-sep { display: none; }
+    .product-info .orig-price { font-size: 0.78rem; }
+  }
+  @media (max-width: 600px) {
+  .product-price { font-size: 0.9rem; max-width: 55%; }
+    .top-seller-product .product-info { bottom: 8px; left: 8px; right: 8px; }
+    .top-seller-product .wishlist-heart { top: 6px; right: 8px; }
+  }
+  @media (max-width: 420px) {
+    .product-price { font-size: 0.86rem; max-width: 100%; }
+    .top-seller-product .product-info { padding: 0.12rem 0.32rem; gap: 0.25rem; }
+    .top-seller-product .product-info .price-wrap { gap: 0.28rem; }
+  }
+  .wishlist-btn {
+    position: relative;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    z-index: 2;
+    background: none;
+    border: none;
+    padding: 0;
+    transition: filter 0.2s;
+  }
+  .wishlist-btn svg {
+    display: block;
+    pointer-events: none;
+  }
+  .product-title {
+  color: #111;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 0.28rem;
+    width: 100%;
+    word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  /* standard property for newer browsers */
+  line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (max-width: 900px) {
+    .product-img-wrap {
+      width: 70px;
+      height: 70px;
+    }
+    .top-seller-product {
+      min-width: 120px;
+      max-width: 150px;
+      padding: 0.7rem 0.3rem 0.5rem 0.3rem;
+      height: 240px;
+    }
+  }
+  @media (max-width: 600px) {
+    /* Ensure exactly 2 per row */
+    .top-sellers-row { justify-content: center; gap: 0.6rem; }
+    .top-seller-product {
+      flex: 0 1 calc(50% - 0.6rem);
+      max-width: calc(50% - 0.6rem);
+      min-width: calc(50% - 0.6rem);
+      margin-bottom: 0.7rem;
+      height: auto; /* allow taller cards on very small screens */
+    }
+    /* Center the last (5th) card on its own row */
+    .top-sellers-row .top-seller-product:last-child { margin-left: auto; margin-right: auto; }
+    .product-img-wrap {
+      width: 50vw;
+      height: 50vw;
+      max-width: 110px;
+      max-height: 110px;
+    }
+  }
+  /* Ensure other card types also have price fixed at bottom-left for visual consistency */
+  .product-card .product-info,
+  .knife-item .knife-price {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    z-index: 30;
+  }
+  .knife-item { position: relative; padding-bottom: 2.4rem; }
+  </style>
+  </section>
+
+  <section class="section kitchen-knives section--alt card-like" id="Kitchen knives">
+    <img src="kitchenknife.png" alt="Kitchen Knives" class="">
+    <div class="section-content">
+      <h3 class="">Damascus Kitchen set</h3>
+      <p class="truncate">Professional kitchen knife sets with superior cutting performance and traditional Damascus patterns.</p>
+      <a href="kitchen-knives.html" class="explore-btn">Explore Collection</a>
+    </div>
+  </section>
+
+  <section class="section hunting-knives card-like" id="Hunting knives">
+    <img src="huntingknife.png" alt="Hunting Knives" class="">
+    <div class="section-content">
+  <h3 class="">Damascus Hunting knives</h3>
+  <p class="truncate">Durable hunting knives designed for outdoor adventures and field dressing.</p>
+  <a href="hunting-knives.html" class="explore-btn">Explore Collection</a>
+    </div>
+  </section>
+
+  <section class="section pocket-knives section--alt card-like" id="Pocket knives">
+    <img src="pocketknife.png" alt="Pocket Knives" class="">
+    <div class="section-content">
+  <h3 class="">Damascus Pocket Knives</h3>
+  <p class="truncate">Compact and versatile pocket knives perfect for everyday carry and utility tasks.</p>
+  <a href="pocket-knives.html" class="explore-btn">Explore Collection</a>
+    </div>
+  </section>
+
+  <section class="section swords card-like" id="swords">
+    <img src="swords.png" alt="Swords" class="">
+    <div class="section-content">
+  <h3 class="">Damascus Swords</h3>
+  <p class="truncate">Elegant, strong, and sharp swords forged for collectors and warriors alike.</p>
+  <a href="Swords.html" class="explore-btn">Explore Collection</a>
+    </div>
+  </section>
+
+  <section class="section axes section--alt card-like" id="axes">
+    <img src="axes.png" alt="Axes" class="">
+    <div class="section-content">
+  <h3 class="">Damascus Axes</h3>
+  <p class="truncate">Durable and decorative axes, perfect for outdoor use and display.</p>
+  <a href="Axes.html" class="explore-btn">Explore Collection</a>
+    </div>
+  </section>
+
+  <section class="section rings card-like" id="rings">
+    <img src="rings.png" alt="Rings" class="">
+    <div class="section-content">
+  <h3 class="">Damascus Rings</h3>
+  <p class="truncate">Stylish rings made with Damascus steel, perfect for unique fashion statements.</p>
+  <a href="Rings.html" class="explore-btn">Explore Collection</a>
+    </div>
+  </section>
+
+  <section class="section custom section--alt card-like" id="custom">
+    <img src="custom.png" alt="Custom Products" class="">
+    <div class="section-content">
+  <h3 class="">Custom Products</h3>
+  <p class="truncate">Personalized Damascus steel products crafted according to your design.</p>
+  <a href="Others.html" class="explore-btn">Explore Collection</a>
+    </div>
+  </section>
+  <script>
+    function toggleReadMore(btn) {
+      var p = btn.parentElement;
+      if (p.classList.contains('truncate')) {
+        p.classList.remove('truncate');
+        btn.textContent = 'Show less';
+      } else {
+        p.classList.add('truncate');
+        btn.textContent = 'Read more';
+      }
+    }
+
+    function toggleHeroReadMore(btn) {
+      var p = btn.parentElement;
+      var shortSpan = p.querySelector('.hero-short');
+      var fullSpan = p.querySelector('.hero-full');
+      if (fullSpan.style.display === 'none') {
+        fullSpan.style.display = 'inline';
+        btn.textContent = 'Show less';
+      } else {
+        fullSpan.style.display = 'none';
+        btn.textContent = 'Read more';
+      }
+    }
+  </script>
+  <div class="catalogue" id="catalogue">
+    <button class="close-catalogue" onclick="closeCatalogue()" title="Close Catalogue"></button>
+  <h3 class="">Shopping Cart</h3>
+  <ul class="catalogue-list" id="catalogueList">
+      <li style="list-style:none;">
+        <div style="background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.12);" class="">
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:#f4f6f8;margin-bottom:12px;" class="">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1.5"></circle>
+              <circle cx="19" cy="21" r="1.5"></circle>
+              <path d="M2.5 6h2l1.5 12h13l1.5-8h-16z"></path>
+            </svg>
+          </div>
+          <div style="font-weight:700;color:#333;margin-bottom:6px;" class="">Your cart is empty</div>
+          <div style="color:#777;font-size:0.95rem;" class="">Add products to see them here.</div>
+        </div>
+      </li></ul>
+    <button class="order-btn" onclick="placeOrder()" style="opacity: 0.6; cursor: not-allowed;" disabled="">Place Order</button>
+  </div>
+  <!-- Help / quick contact section inserted by script: collects name, email, mobile (optional), country, message -->
+  <style>
+    /* Help form responsive styles (use rem units) */
+    .help-form {
+      gap: 0.9rem;
+      width: 100%;
+      max-width: 100%;
+      grid-template-columns: 1fr 1fr;
+      box-sizing: border-box;
+    }
+    .help-form .help-input {
+      padding: 0.55rem;
+      border: 0.0625rem solid #ddd;
+      border-radius: 0.5rem;
+      background: #fff;
+      font-size: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
+      display: block;
+    }
+    .help-form select.help-input,
+    .help-form textarea.help-input,
+    .help-form input.help-input {
+      width: 100%;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+    /* .full spans both columns by default */
+    .help-form .full { grid-column: 1 / -1; }
+  .help-form .help-submit-btn {
+      background: linear-gradient(90deg,#ffb347,#ff8800);
+      color: #181a20;
+      border: 0;
+      padding: 0.55rem 0.9rem;
+      border-radius: 0.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    /* Use rem breakpoint instead of pixels: 44rem ~ 704px */
+    @media (max-width:44rem) {
+      .help-form { grid-template-columns: 1fr !important; }
+      .help-form .full { grid-column: 1 / -1 !important; }
+  #helpContact .container { padding: 0 0.5rem; }
+      /* Stack the two columns so the right info panel moves under the form */
+      #helpContact .container { flex-direction: column; align-items: stretch; }
+      #helpContact .container > div { flex: 1 1 100% !important; min-width: auto !important; }
+  #helpContact .container > div:last-child { order: 2; margin-top: 1rem; }
+      /* Ensure submit button stretches nicely on small screens if desired */
+      .help-form .help-submit-btn { width: auto; }
+    }
+    </style>
+  <section id="helpContact" class="section" style="background:linear-gradient(180deg,#fff,#f9fafb);padding:1.25rem 1rem;border-top:0.0625rem solid #eee;margin-top:1.5rem;">
+    <div class="container" style="max-width:var(--container-max);display:flex;gap:0.75rem;align-items:flex-start;flex-wrap:wrap;">
+      <div style="flex:1 1 22.5rem;min-width:15rem;">
+        <h3 style="margin:0 0 0.35rem;color:#111;font-size:1.05rem;">Need help? Contact us</h3>
+        <p style="margin:0 0 0.6rem;color:#555;font-size:0.95rem;">Fill this short form and our support team will reach out. Name and email recommended; mobile and country optional.</p>
+        <div class="card">
+        <form id="helpForm" class="help-form">
+          <input id="help_name" name="name" placeholder="Your name (optional)" class="help-input full" autocomplete="name" />
+          <input id="help_email" name="email" type="email" placeholder="Email (recommended)" required class="help-input full" autocomplete="email" />
+          <input id="help_mobile" name="mobile" placeholder="Mobile (optional)" pattern="[0-9+ \-()]{6,20}" class="help-input" autocomplete="tel" />
+          <select id="help_country" name="country" class="help-input" autocomplete="country">
+            <option value="">Country (optional)</option>
+            <option>United States</option>
+            <option>United Kingdom</option>
+            <option>Canada</option>
+            <option>Australia</option>
+            <option>India</option>
+            <option>Germany</option>
+            <option>France</option>
+            <option>Netherlands</option>
+            <option>United Arab Emirates</option>
+            <option>Other</option>
+          </select>
+          <select id="help_category" name="category" class="help-input full">
+            <option value="">Category (select)</option>
+            <option>Bulk order</option>
+            <option>Product availability</option>
+            <option>Pricing / Quote</option>
+            <option>Shipping</option>
+            <option>Returns / Refunds</option>
+            <option>Website issue</option>
+            <option>Custom order / Request</option>
+            <option>Other</option>
+          </select>
+          <textarea id="help_message" name="message" placeholder="Short message (optional)" rows="3" class="help-input full"></textarea>
+          <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.95rem;" class="full"><input id="help_newsletter" type="checkbox"> Subscribe me to newsletter</label>
+          <div class="full" style="display:flex;gap:0.5rem;align-items:center;">
+            <button id="help_submit" type="button" class="btn help-submit-btn btn-primary">Send request</button>
+            <div id="help_status"  class="u-hidden"></div>
+          </div>
+        </form>
+        </div>
+      </div>
+      <div style="flex:0 0 16.25rem;min-width:12.5rem;background:#fff;border-radius:0.5rem;padding:0.7rem;border:0.0625rem solid #f0f0f0;box-shadow:0 0.375rem 1.125rem rgba(0,0,0,0.03);">
+        <h4 style="margin:0 0 0.5rem;color:#111;font-size:0.98rem;">What we need</h4>
+        <ul style="margin:0;color:#555;font-size:0.93rem;padding-left:0.7rem;">
+          <li>Brief message about your issue</li>
+          <li>Email so we can reply</li>
+          <li>Mobile only if you want a call or WhatsApp</li>
+        </ul>
+  <div style="margin-top:0.6rem;color:#777;font-size:0.86rem;">We aim to reply within 24 hours.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-column">
+      <h4 class="">CONTACT INFO</h4>
+      <p class="">ADDRESS: 1661 W Little York Rd, Houston, TX, 77084 USA</p>
+      <p class="">PHONE: +1 713-985-0457</p>
+      <p class="">
+        EMAIL:
+        <a href="mailto:prime07edge@gmail.com" style="color:#ffcc00;text-decoration:underline;" class="">
+          prime07edge@gmail.com
+        </a>
+      </p>
+      <p class="">WORKING DAYS/HOURS: Mon - Sun | 24/7</p>
+    </div>
+    <div class="footer-column">
+      <h4 class="">HELPFUL LINKS</h4>
+      <a href="about.html" class="">About</a>
+      <a href="blog.html" class="">Blog</a>
+      <a href="shipping.html" class="">Shipping</a>
+      <a href="payments.html" class="">Payments</a>
+    </div>
+    <div class="footer-column">
+      <h4 class="">POLICIES</h4>
+      <a href="privacy.html" class="">Privacy</a>
+      <a href="returns.html" class="">Returns</a>
+      <a href="terms.html" class="">Terms</a>
+      <a href="contact.html" class="">Contact</a>
+    </div>
+    <div class="footer-column social-icons">
+      <h4 class="">FOLLOW US</h4>
+  <a href="https://facebook.com/damascus._.products" target="_blank" aria-label="Facebook" class="">
+        <svg width="24" height="24" fill="#f0f0f0" viewBox="0 0 24 24"><path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.408.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.408 24 22.674V1.326C24 .592 23.406 0 22.675 0"></path></svg>
+      </a>
+      <a href="https://www.instagram.com/damascus._.products?igsh=MXBianZqY3BxM3loeA==" target="_blank" aria-label="Instagram" class="">
+        <svg width="24" height="24" fill="#f0f0f0" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.334 3.608 1.308.974.974 1.246 2.241 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.062 1.366-.334 2.633-1.308 3.608-.974.974-2.241 1.246-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.062-2.633-.334-3.608-1.308-.974-.974-1.246-2.241-1.308-3.608C2.175 15.647 2.163 15.267 2.163 12s.012-3.584.07-4.85c.062-1.366.334-2.633 1.308-3.608.974-.974 2.241-1.246 3.608-1.308C8.416 2.175 8.796 2.163 12 2.163zm0-2.163C8.741 0 8.332.013 7.052.072 5.771.131 4.659.396 3.678 1.378 2.696 2.36 2.431 3.472 2.372 4.753.013 8.332 0 8.741 0 12c0 3.259.013 3.668.072 4.948.059 1.281.324 2.393 1.306 3.375.982.982 2.094 1.247 3.375 1.306C8.332 23.987 8.741 24 12 24c3.259 0 3.668-.013 4.948-.072 1.281-.059 2.393-.324 3.375-1.306.982-.982 1.247-2.094 1.306-3.375.059-1.28.072-1.689.072-4.948 0-3.259-.013-3.668-.072-4.948-.059-1.281-.324-2.393-1.306-3.375-.982-.982-2.094-1.247-3.375-1.306C15.668.013 15.259 0 12 0zm0 5.838A6.162 6.162 0 0 0 5.838 12 6.162 6.162 0 0 0 12 18.162 6.162 6.162 0 0 0 18.162 12 6.162 6.162 0 0 0 12 5.838zm0 10.162A3.999 3.999 0 1 1 12 8a3.999 3.999 0 0 1 0 7.999zm6.406-11.845a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"></path></svg>
+      </a>
+  <a href="https://www.tiktok.com/@damascus._.products" target="_blank" aria-label="TikTok" class="">
+        <svg width="24" height="24" fill="#f0f0f0" viewBox="0 0 24 24"><path d="M12.75 2v12.25a2.25 2.25 0 1 1-2.25-2.25h.75V9.5h-.75A4.75 4.75 0 1 0 15.25 14.25V7.5c.69.44 1.5.7 2.37.7V5.82c-.87-.01-1.68-.27-2.37-.7V2h-2.5z"></path></svg>
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    let slideIndex = 0;
+    const slides = document.getElementById('slides');
+    const dots = document.getElementsByClassName('dot');
+    const totalSlides = dots.length;
+
+    function showSlides() {
+      slideIndex++;
+      if (slideIndex >= totalSlides) slideIndex = 0;
+      updateSlide();
+    }
+
+    function updateSlide() {
+      slides.style.transform = `translateX(-${slideIndex * 100}%)`;
+      for (let i = 0; i < dots.length; i++) {
+        dots[i].classList.remove('active');
+      }
+      dots[slideIndex].classList.add('active');
+    }
+
+    function currentSlide(n) {
+      slideIndex = n;
+      updateSlide();
+    }
+
+    setInterval(showSlides, 2500); // Change slide every 2.5 seconds
+    updateSlide();
+
+    function openMenu() {
+      document.getElementById('sidebar').classList.add('open');
+      document.getElementById('sidebarOverlay').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    function openCatalogue() {
+  document.getElementById('catalogue').classList.add('open');
+}
+function closeCatalogue() {
+  document.getElementById('catalogue').classList.remove('open');
+}
+
+    function getSavedProducts() {
+  try {
+    return JSON.parse(localStorage.getItem('catalogue')) || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+// Save product to catalogue (call this from gallery or album pages)
+// If called from gallery: pass {title, desc, price, img, album, quantity: 1}
+// If called from album: pass {title, desc, price, img, album, quantity: userQuantity}
+function saveProductToCatalogue(product) {
+  let catalogue = getSavedProducts();
+  // If already exists, update quantity (for album), else add new
+  const idx = catalogue.findIndex(p => p.title === product.title);
+  if (idx > -1) {
+    // If from album, update quantity; if from gallery, keep as 1
+    if (product.quantity && product.quantity > 1) {
+      catalogue[idx].quantity = product.quantity;
+    }
+  // Always update price and sale metadata to keep pricing accurate
+  catalogue[idx].price = (product.price !== undefined && product.price !== null) ? product.price : catalogue[idx].price;
+  if (product.sale !== undefined) catalogue[idx].sale = product.sale;
+  } else {
+    catalogue.push(product);
+  }
+  localStorage.setItem('catalogue', JSON.stringify(catalogue));
+}
+
+// Render catalogue with image, description, details, thumbnails, quantity, and clickable product
+function renderCatalogue() {
+  const list = document.getElementById('catalogueList');
+  const orderBtn = document.querySelector('.order-btn');
+  const savedProducts = getSavedProducts();
+  list.innerHTML = '';
+  // Local price formatter for catalogue display
+  function fmt(n){ return '$' + Number(n || 0).toFixed(2); }
+  if (!savedProducts || savedProducts.length === 0) {
+    list.innerHTML = `
+      <li style="list-style:none;">
+        <div style="background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,0.12);">
+          <div style="display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;background:#f4f6f8;margin-bottom:12px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1.5"></circle>
+              <circle cx="19" cy="21" r="1.5"></circle>
+              <path d="M2.5 6h2l1.5 12h13l1.5-8h-16z"></path>
+            </svg>
+          </div>
+          <div style="font-weight:700;color:#333;margin-bottom:6px;">Your cart is empty</div>
+          <div style="color:#777;font-size:0.95rem;">Add products to see them here.</div>
+        </div>
+      </li>`;
+    if (orderBtn) orderBtn.disabled = true;
+    if (orderBtn) orderBtn.style.opacity = "0.6";
+    if (orderBtn) orderBtn.style.cursor = "not-allowed";
+    return;
+  }
+  savedProducts.forEach((product, idx) => {
+    // Album page link: use explicit album property only
+    let albumLink = product.album;
+    if (albumLink && !/\.html?(?:$|\?)/i.test(albumLink)) {
+      albumLink = albumLink + '.html';
+    }
+  const quantity = product.quantity ? product.quantity : 1;
+    const li = document.createElement('li');
+    li.style.cursor = "pointer";
+    li.onclick = () => {
+  let target = albumLink && albumLink !== "#" ? albumLink : (product.album ? product.album : (product.id ? ('album_template.html?id=' + encodeURIComponent(product.id)) : null));
+      if (target) {
+        const url = target + (target.includes('?') ? '&' : '?') + 'from=catalogue';
+        window.location.href = url;
+      }
+    };
+    // Show main image (or fallback to img), description, price, details, and thumbnails
+    const imageSrc = product.mainImage || product.img || (Array.isArray(product.galleryImages) && product.galleryImages.length ? product.galleryImages[0] : '');
+    let detailHtml = '';
+    if (product.details) {
+      detailHtml = `<div class='product-detail' style='font-size:0.93em;color:#b0b3b8;margin:0.2em 0;'>
+        <b>Blade:</b> ${product.details.blade || ''}<br>
+        <b>Handle:</b> ${product.details.handle || ''}<br>
+        <b>Length:</b> ${product.details.length || ''}<br>
+        <b>Weight:</b> ${product.details.weight || ''}<br>
+        <b>Features:</b> ${product.details.features || ''}
+      </div>`;
+    }
+    let thumbsHtml = '';
+    if (Array.isArray(product.galleryImages) && product.galleryImages.length) {
+      const t = product.galleryImages.slice(0, 6).map(src => `<img src="${src}" alt="thumb">`).join('');
+      thumbsHtml = `<div class="catalogue-thumbs">${t}</div>`;
+    }
+    // Prefer active sale price for display and totals; show struck original when available
+    const isOnSale = product && product.sale && product.sale.active && (product.sale.price !== undefined && product.sale.price !== null);
+    const salePriceVal = isOnSale ? Number(product.sale.price) : 0;
+    const origPriceVal = (isOnSale && product.sale && product.sale.prevPrice && Number(product.sale.prevPrice) > 0) ? Number(product.sale.prevPrice) : Number(product.price || 0);
+    let priceHtml = '';
+    if (isOnSale) {
+      priceHtml = `<div class="product-price">${fmt(origPriceVal)} <span style="text-decoration:line-through;color:#999;margin-left:0.6rem;margin-right:0.6rem">&nbsp;</span><span style="background:#fff;color:#000;padding:0.18rem 0.5rem;border-radius:0.4rem;font-weight:700">${fmt(salePriceVal)}</span> <span style="color:#ffcc00;font-size:0.98em;">&times; ${quantity}</span></div>`;
+    } else {
+      priceHtml = `<div class="product-price">${fmt(Number(product.price||0))} <span style="color:#ffcc00;font-size:0.98em;">&times; ${quantity}</span></div>`;
+    }
+
+    li.innerHTML = `
+      <span class="remove-product" title="Remove" onclick="event.stopPropagation();removeProduct(${idx})" style="float:right;cursor:pointer;font-size:1.3em;color:#ff4444;font-weight:bold;">&times;</span>
+      ${imageSrc ? `<img src="${imageSrc}" alt="${product.name || product.title}" style="width:70px;height:70px;object-fit:cover;border-radius:8px;margin-bottom:8px;display:block;">` : ''}
+      <div class="product-title">${product.name || product.title}</div>
+      ${detailHtml}
+      ${thumbsHtml}
+      ${priceHtml}
+    `;
+    list.appendChild(li);
+  });
+  if (orderBtn) orderBtn.disabled = false;
+  if (orderBtn) orderBtn.style.opacity = "1";
+  if (orderBtn) orderBtn.style.cursor = "pointer";
+}
+    function removeProduct(idx) {
+      let savedProducts = getSavedProducts();
+      savedProducts.splice(idx, 1);
+      localStorage.setItem('catalogue', JSON.stringify(savedProducts));
+      renderCatalogue();
+    }
+    function placeOrder() {
+      // Save all catalogue details (full payload) to localStorage for order page; do not clear catalogue yet
+      const catalogue = getSavedProducts();
+      if (!catalogue || catalogue.length === 0) {
+        alert('Catalogue is empty');
+        return;
+      }
+      // Normalize items to ensure full set of fields is present on order page
+      const orderItems = catalogue.map(p => ({
+          id: p.id,
+          title: p.title || p.name || 'Untitled',
+          name: p.name || p.title || 'Untitled',
+          desc: p.desc || '',
+          // Prefer active sale price when present
+          // Accept numeric strings for sale.price as well — coerce to Number
+          price: (p && p.sale && p.sale.active && Number(p.sale.price) > 0) ? Number(p.sale.price) : (p.price || 0),
+          quantity: p.quantity && p.quantity > 0 ? p.quantity : 1,
+          album: p.album || '',
+          mainImage: p.mainImage || p.img || (Array.isArray(p.galleryImages) && p.galleryImages.length ? p.galleryImages[0] : ''),
+          img: p.img || p.mainImage || '',
+          galleryImages: Array.isArray(p.galleryImages) ? p.galleryImages : (Array.isArray(p.thumbnails) ? p.thumbnails : null),
+          details: p.details || p.specs || null,
+          sale: p.sale || null
+        }));
+  localStorage.setItem('orderDetails', JSON.stringify(orderItems));
+  // Keep a backup of current catalogue to restore if order isn't completed
+  try { localStorage.setItem('catalogueBackup', JSON.stringify(catalogue)); } catch(_){ }
+  // Do NOT clear catalogue here; it will be cleared on successful payment
+      window.location.href = "order.html";
+    }
+
+    // Always render catalogue on page load
+window.addEventListener('DOMContentLoaded', function() {
+  renderCatalogue();
+  
+  // Handle hash-based navigation for opening sidebars
+  if (window.location.hash === '#openWishlist') {
+    openLikedSidebar();
+    try { history.replaceState(null, document.title, window.location.pathname + window.location.search); } catch (e) {}
+  } else if (window.location.hash === '#openCatalogue') {
+    openCatalogue();
+    try { history.replaceState(null, document.title, window.location.pathname + window.location.search); } catch (e) {}
+  }
+});
+
+// Help form handling
+(function(){
+  function $(id){ return document.getElementById(id); }
+  function showHelpStatus(msg, ok){ const s = $('help_status'); if(!s) return; s.style.display='inline-block'; s.style.color = ok ? '#2b7a2b' : '#b33'; s.textContent = msg; setTimeout(()=>{ try{s.style.display='none';}catch{} }, 6000); }
+  function validateEmail(v){ return /\S+@\S+\.\S+/.test(String(v||'')); }
+  document.addEventListener('DOMContentLoaded', function(){
+    const submit = $('help_submit'); if(!submit) return;
+    submit.addEventListener('click', async function(){
+      const name = ($('help_name')?.value || '').trim();
+      const email = ($('help_email')?.value || '').trim();
+      let mobile = ($('help_mobile')?.value || '').trim();
+      let country = ($('help_country')?.value || '').trim();
+      const message = ($('help_message')?.value || '').trim();
+      const newsletterOpt = !!document.getElementById('help_newsletter')?.checked;
+
+      // Client-side validation with helpful messages
+      if (!name) { showHelpStatus('Please provide your name', false); return; }
+      if (!email) { showHelpStatus('Please provide an email', false); return; }
+      if (!validateEmail(email)) { showHelpStatus('Email looks invalid', false); return; }
+      // Ensure required server fields are present; use sensible defaults instead of letting server reject
+      if (!country) country = 'Other';
+      if (!mobile) mobile = 'N/A';
+      if (!message || message.length < 10) { showHelpStatus('Message must be at least 10 characters', false); return; }
+
+      const category = ($('help_category')?.value || '').trim();
+      const payload = { name, email, phone: mobile, country, inquiryType: category || 'general', message, newsletter: newsletterOpt };
+
+      try {
+        // store locally (backup)
+        try {
+          const arr = JSON.parse(localStorage.getItem('helpRequests') || '[]');
+          arr.push(payload);
+          localStorage.setItem('helpRequests', JSON.stringify(arr));
+        } catch (e) {
+          console.warn('Failed to persist help request locally', e);
+        }
+
+        // send to backend support endpoint
+        const baseOk = (location.origin && location.origin !== 'null' && location.protocol.startsWith('http'));
+        const url = (baseOk ? location.origin : 'http://localhost:3025') + '/api/support/contact';
+        let r;
+        try {
+          r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        } catch (networkErr) {
+          console.error('Network error sending support request:', networkErr);
+          showHelpStatus('Saved locally (server unavailable)', true);
+          // keep form values so user can retry
+          return;
+        }
+
+        // Surface server responses clearly
+        if (r.ok) {
+          try { const d = await r.json(); } catch(_){}
+          showHelpStatus('Request sent — we will contact you shortly', true);
+          // Clear only the text fields but keep country if user prefers
+          $('help_message').value = '';
+          $('help_name').value = '';
+          $('help_mobile').value = '';
+          $('help_email').value = '';
+        } else {
+          // Try to read server-provided error message
+          let text = '';
+          try { const ct = r.headers.get('content-type') || ''; if (ct.includes('application/json')) { const j = await r.json(); text = j.error || j.message || JSON.stringify(j); } else { text = await r.text(); } } catch (e) { text = ''; }
+          console.warn('Support endpoint returned error', r.status, text);
+          showHelpStatus(text ? `Saved locally (server error: ${text})` : 'Saved locally (server responded with error)', false);
+        }
+
+      } catch (e) {
+        console.error('help form save failed', e);
+        showHelpStatus('Failed to save request', false);
+      }
+    });
+  });
+})();
+
+function toggleSubMenu(e, id) {
+    e.preventDefault();
+    var sub = document.getElementById(id);
+    if (sub.style.display === "block") {
+      sub.style.display = "none";
+    } else {
+      sub.style.display = "block";
+    }
+}
+</script>
+<script src="site.js"></script>
+
+
+<div id="dm-admin-bar"  class="u-hidden" class=""><span style="font-weight:700;color:#ffb347;margin-left:6px" class="">Admin</span>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;margin-right:8px">
+        <input id="dm-admin-toggle" type="checkbox"> Mode
+      </label>
+      <button id="dm-hide" title="Hide" style="border:1px solid #384152;background:#232737;color:#c9d1d9;border-radius:999px;padding:4px 10px;cursor:pointer" class="">Hide</button>
+      <button id="dm-logout" title="Logout" style="border:1px solid #384152;background:#232737;color:#c9d1d9;border-radius:999px;padding:4px 10px;cursor:pointer" class="">Logout</button></div>
+</body>
+</html>

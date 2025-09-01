@@ -1,0 +1,91 @@
+/* Card Theme for Galleries (card.css)
+   Use this CSS to style product/gallery cards across all gallery pages. */
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  text-align: center;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 350px;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+}
+
+.card img {
+  width: 100%;
+  max-width: 12.5rem;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0 auto 1rem auto;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.card:hover img {
+  transform: scale(1.05);
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  color: #1f2937;
+  text-align: center;
+}
+
+.card p {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0 0 0.7rem 0;
+  color: #4b5563;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.card .price-tag {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: linear-gradient(90deg, #2E7D32 0%, #4CAF50 100%);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  box-shadow: 0 4px 8px rgba(46, 125, 50, 0.3);
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+  }
+  .card img {
+    max-width: 10rem;
+  }
+  .card .price-tag {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 0.75rem;
+  }
+  .card h3 {
+    font-size: 1.125rem;
+  }
+  .card p {
+    font-size: 0.875rem;
+  }
+}

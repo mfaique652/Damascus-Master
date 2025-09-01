@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Two-Factor Authentication - Damascus Master</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    body {
+      background: #fff;
+      color: #222;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    .twofa-container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(255,179,71,0.13), 0 1.5px 8px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+      max-width: 400px;
+      margin: 40px auto;
+      border: 1.5px solid #f5d7a1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .twofa-container h2 {
+      color: #222;
+      font-size: 1.5em;
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+
+    .twofa-container label {
+      color: #b88a00;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      display: block;
+      text-align: center;
+    }
+
+    .twofa-container input[type="text"], .twofa-container input[type="number"] {
+      width: 220px;
+      height: 38px;
+      font-size: 1em;
+      color: #222;
+      background: #fff;
+      border: 1.5px solid #f5d7a1;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 16px;
+      padding: 0 12px;
+      text-align: center;
+    }
+
+    .twofa-container input::placeholder {
+      color: #b0b8c1;
+      opacity: 0.55;
+      font-size: 1em;
+    }
+
+    .twofa-container button {
+      width: 240px;
+      height: 44px;
+      font-size: 1.1em;
+      background: #ffb347;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin: 18px auto 0 auto;
+      display: block;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .twofa-container .error {
+      color: #d32f2f;
+      margin-top: 8px;
+      font-size: 0.98em;
+      text-align: center;
+    }
+
+    .twofa-container .success {
+      color: #388e3c;
+      margin-top: 8px;
+      font-size: 0.98em;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .twofa-container {
+        padding: 2rem 1.5rem;
+        margin: 1rem;
+      }
+      
+      .twofa-container h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="twofa-container">
+    <h2>Two-Factor Authentication</h2>
+    <p class="subtitle">Please enter the 6-digit code sent to your email</p>
+    
+    <div class="email-display" id="email-display"></div>
+    
+    <form id="twofa-form">
+      <div class="form-group">
+        <label for="verification-code">Verification Code</label>
+        <input type="text" id="verification-code" name="code" maxlength="6" placeholder="000000" required>
+      </div>
+      
+      <button type="submit" class="submit-btn">Verify & Login</button>
+    </form>
+    
+    <button type="button" class="back-btn" onclick="goBack()">← Back to Login</button>
+    
+    <div class="timer" id="timer"></div>
+    <a href="javascript:void(0)" class="resend-link" onclick="resendCode()" id="resend-link">Didn't receive code? Resend</a>
+    
+    <div id="result" class="result"></div>
+    
+    <div class="security-info">
+      🛡️ <strong>Security Notice:</strong> Never share this code with anyone. Damascus Master will never ask for your verification code.
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const email = urlParams.get('email');
+    let countdown = 600; // 10 minutes in seconds
+
+    document.addEventListener('DOMContentLoaded', function() {
+      if (!email) {
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      document.getElementById('email-display').textContent = email;
+      startTimer();
+      
+      // Apply saved theme
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      
+      document.getElementById('twofa-form').addEventListener('submit', verify2FA);
+      
+      // Auto-format input
+      const codeInput = document.getElementById('verification-code');
+      codeInput.addEventListener('input', function(e) {
+        e.target.value = e.target.value.replace(/\D/g, '');
+        if (e.target.value.length === 6) {
+          document.getElementById('twofa-form').dispatchEvent(new Event('submit'));
+        }
+      });
+    });
+
+    function startTimer() {
+      const timerEl = document.getElementById('timer');
+      const resendLink = document.getElementById('resend-link');
+      
+      const updateTimer = () => {
+        const minutes = Math.floor(countdown / 60);
+        const seconds = countdown % 60;
+        timerEl.textContent = `Code expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (countdown <= 0) {
+          timerEl.textContent = 'Code has expired';
+          resendLink.style.display = 'inline-block';
+          return;
+        }
+        
+        countdown--;
+        setTimeout(updateTimer, 1000);
+      };
+      
+      updateTimer();
+    }
+
+    async function verify2FA(event) {
+      event.preventDefault();
+      
+      const code = document.getElementById('verification-code').value.trim();
+      const resultDiv = document.getElementById('result');
+      const submitBtn = document.querySelector('.submit-btn');
+      
+      if (!code || code.length !== 6) {
+        showResult('Please enter a valid 6-digit code', 'error');
+        return;
+      }
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
+      
+      try {
+        const response = await fetch('http://localhost:3025/api/auth/2fa/verify-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email,
+            code: code
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          showResult('✅ Verification successful! Logging you in...', 'success');
+          
+          // Store auth data
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+          
+          // Redirect to account or home page
+          setTimeout(() => {
+            window.location.href = 'account.html';
+          }, 1500);
+        } else {
+          showResult(data.error || 'Verification failed. Please try again.', 'error');
+        }
+      } catch (error) {
+        console.error('2FA verification error:', error);
+        showResult('Unable to verify code. Please check your connection.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Verify & Login';
+      }
+    }
+
+    async function resendCode() {
+      const resendLink = document.getElementById('resend-link');
+      resendLink.style.display = 'none';
+      
+      try {
+        const response = await fetch('http://localhost:3025/api/auth/2fa/send-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email })
+        });
+        
+        if (response.ok) {
+          showResult('New code sent to your email', 'success');
+          countdown = 600; // Reset timer
+          startTimer();
+        } else {
+          const data = await response.json();
+          showResult(data.error || 'Failed to resend code', 'error');
+          resendLink.style.display = 'inline-block';
+        }
+      } catch (error) {
+        showResult('Failed to resend code. Please try again.', 'error');
+        resendLink.style.display = 'inline-block';
+      }
+    }
+
+    function showResult(message, type) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = message;
+      resultDiv.className = `result ${type}`;
+      resultDiv.style.display = 'block';
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          resultDiv.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    function goBack() {
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

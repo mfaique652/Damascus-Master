@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product</title>
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    body{font-family:Montserrat, Roboto, Arial, sans-serif;margin:0;background:#fff;color:#111}
+    .container{max-width:1100px;margin:1.5rem auto;padding:1rem}
+    .back{margin-bottom:1rem;display:block;color:#1b6fbf;text-decoration:none;font-weight:600}
+    .product-detail { background:#fff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="#" class="back" onclick="(function(e){e.preventDefault(); try{ const params=new URLSearchParams(window.location.search); const from=params.get('from'); if(from==='wishlist'){ window.location.href='index.html?open=wishlist'; } else if(from==='catalogue'||from==='cart'){ window.location.href='index.html?open=catalogue'; } else if(from==='order'){ window.location.href='order.html'; } else if(window.history.length>1){ window.history.back(); } else { window.location.href='index.html'; } }catch(err){ if(window.history.length>1) window.history.back(); else window.location.href='index.html'; } })(event)">← Back</a>
+    <div class="product-detail"></div>
+  </div>
+  <script src="site.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      if (typeof renderProductDetailFromQuery === 'function') renderProductDetailFromQuery();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Login - Damascus Master</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    :root{
+      --bg: #fffaf0; /* soft cream page bg */
+      --card: #ffffff; /* white card */
+      --accent-gold: #d4a76a; /* subtle gold/cream accent */
+      --muted: #6b6b6b; /* muted text */
+      --text: #1b1b1b;
+      --input-border: #f0e6d6;
+    }
+    html,body{height:100%;margin:0}
+    body{background:var(--bg);font-family:Montserrat,Roboto,system-ui,Segoe UI,Arial;color:var(--text);display:flex;align-items:center;justify-content:center;padding:32px}
+    .login-container{
+      width:100%;max-width:420px;background:var(--card);border-radius:12px;padding:30px 24px;box-shadow:0 8px 20px rgba(27,27,27,0.06);border:1px solid var(--input-border);
+    }
+    .login-brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+    .login-brand img{width:44px;height:44px}
+    .login-title{font-size:1.45rem;margin:0;color:var(--accent-gold);letter-spacing:0.02em}
+    label{display:block;margin-top:12px;margin-bottom:6px;color:var(--muted);font-size:0.95rem}
+    .field{display:block}
+    input[type=email], input[type=password]{width:100%;padding:12px 44px 12px 12px;border-radius:8px;border:1px solid var(--input-border);background:transparent;color:var(--text);font-size:1rem;box-sizing:border-box}
+    input::placeholder{color:rgba(27,27,27,0.38)}
+    .password-container{position:relative}
+    .password-toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:32px;width:32px;border-radius:6px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center}
+    .password-toggle:hover{color:var(--text)}
+  .u-hidden{display:none !important}
+    button[type=submit]{width:100%;margin-top:18px;padding:12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--accent-gold),#c7924f);color:#fff;font-weight:700;font-size:1.05rem;cursor:pointer;box-shadow:0 8px 18px rgba(199,137,81,0.12)}
+    .meta-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+    .forgot-password a{color:var(--accent-gold);text-decoration:none}
+    .forgot-password a:hover{text-decoration:underline}
+    .error{color:#d9534f;text-align:center;margin-top:10px}
+    .success{color:#3c9b6f;text-align:center;margin-top:10px}
+    @media (max-width:480px){.login-container{padding:18px}}
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm" autocomplete="off" onsubmit="event.preventDefault(); loginUser();">
+      <div class="login-brand"><img src="logo.png" alt="logo"><div><div class="login-title">Damascus Master</div><div style="font-size:0.85rem;color:var(--muted)">Secure member login</div></div></div>
+      <label for="login-email">Email</label>
+      <div class="field"><input type="email" id="login-email" required placeholder="you@domain.com"></div>
+      <label for="login-password">Password</label>
+      <div class="password-container">
+        <input type="password" id="login-password" required placeholder="Enter your password">
+      </div>
+  <div class="meta-row"><div class="forgot-password"><a href="#" onclick="showForgotPassword();return false;">Forgot password?</a></div></div>
+      <button type="submit">Login</button>
+      <div class="error" id="login-error"></div>
+      <div class="success" id="login-success"></div>
+  </form>
+    <div class="info" style="margin-top:1.5rem;">Don't have an account? <a href="register.html" style="color:#ffb347;">Register</a></div>
+  </div>
+  <script>
+  const SERVER_URL = (location.origin && location.origin !== 'null' && location.protocol && location.protocol.startsWith('http')) ? location.origin : 'http://localhost:3025';
+
+    // If already logged in, redirect to account immediately
+    (function(){
+      try {
+        const t = localStorage.getItem('authToken');
+        if (t) {
+          location.replace('account.html');
+        }
+      } catch(e){}
+    })();
+
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const eyeSpan = document.getElementById('eye-' + inputId);
+      // Use open-eye glyph and combine with U+0338 (combining long solidus overlay) for slashed effect
+      const openEye = '&#128065;';
+      const slashedEye = '&#128065;&#x0338;';
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (eyeSpan) eyeSpan.innerHTML = openEye; // visible
+          // keep text alignment unchanged so text position is fixed
+        } else {
+          input.type = 'password';
+          if (eyeSpan) eyeSpan.innerHTML = slashedEye; // slashed eye when masked
+        }
+    }
+
+    function showForgotPassword() {
+      // Hide main login parts
+      try { document.getElementById('loginForm').style.display = 'none'; } catch(e){}
+      try { document.querySelector('.forgot-password').style.display = 'none'; } catch(e){}
+      try { document.querySelector('.info').style.display = 'none'; } catch(e){}
+
+      // Remove existing reset form if present
+      try { const existing = document.getElementById('reset-form'); if (existing) existing.remove(); } catch(e){}
+
+      const container = document.querySelector('.login-container');
+      const resetForm = document.createElement('div');
+      resetForm.id = 'reset-form';
+      resetForm.style.marginTop = '8px';
+
+      const title = document.createElement('h2');
+      title.textContent = 'Reset Password';
+      resetForm.appendChild(title);
+
+      // Step 1 (email)
+      const step1 = document.createElement('div');
+      step1.id = 'reset-step-1';
+
+      const lblEmail = document.createElement('label'); lblEmail.setAttribute('for','reset-email'); lblEmail.textContent = 'Email';
+      const inpEmail = document.createElement('input'); inpEmail.type = 'email'; inpEmail.id = 'reset-email'; inpEmail.required = true;
+      const sendWrap = document.createElement('div'); sendWrap.style.marginTop = '10px';
+      const sendBtn = document.createElement('button'); sendBtn.id = 'send-reset-btn'; sendBtn.type = 'button'; sendBtn.textContent = 'Send Reset Code';
+      sendWrap.appendChild(sendBtn);
+      const err1 = document.createElement('div'); err1.className = 'error'; err1.id = 'reset-error-1';
+      const suc1 = document.createElement('div'); suc1.className = 'success'; suc1.id = 'reset-success-1';
+
+      step1.appendChild(lblEmail);
+      step1.appendChild(inpEmail);
+      step1.appendChild(sendWrap);
+      step1.appendChild(err1);
+      step1.appendChild(suc1);
+
+      resetForm.appendChild(step1);
+
+      // Step 2 (verify + new password) - hidden initially
+      const step2 = document.createElement('div'); step2.id = 'reset-step-2'; step2.classList.add('u-hidden');
+
+      const verifySection = document.createElement('div'); verifySection.id = 'verify-section';
+      const lblCode = document.createElement('label'); lblCode.setAttribute('for','reset-code'); lblCode.textContent = '6-Digit Code';
+      const inpCode = document.createElement('input'); inpCode.type = 'text'; inpCode.id = 'reset-code'; inpCode.maxLength = 6;
+      const verifyWrap = document.createElement('div'); verifyWrap.style.marginTop = '10px';
+      const verifyBtn = document.createElement('button'); verifyBtn.id = 'verify-code-btn'; verifyBtn.type = 'button'; verifyBtn.textContent = 'Verify Code';
+      verifyWrap.appendChild(verifyBtn);
+      const err2 = document.createElement('div'); err2.className = 'error'; err2.id = 'reset-error-2';
+      const suc2 = document.createElement('div'); suc2.className = 'success'; suc2.id = 'reset-success-2';
+      verifySection.appendChild(lblCode); verifySection.appendChild(inpCode); verifySection.appendChild(verifyWrap); verifySection.appendChild(err2); verifySection.appendChild(suc2);
+
+      const newPassSection = document.createElement('div'); newPassSection.id = 'newpass-section'; newPassSection.classList.add('u-hidden');
+      const lblNew = document.createElement('label'); lblNew.setAttribute('for','new-password'); lblNew.textContent = 'New Password';
+      const newWrap = document.createElement('div'); newWrap.className = 'password-container';
+      const inpNew = document.createElement('input'); inpNew.type = 'password'; inpNew.id = 'new-password'; inpNew.required = true; inpNew.placeholder = 'New Password';
+      const toggleNew = document.createElement('button'); toggleNew.type='button'; toggleNew.className='password-toggle'; toggleNew.setAttribute('aria-label','Show password'); toggleNew.tabIndex = -1;
+      const eyeNew = document.createElement('span'); eyeNew.id='eye-new-password'; eyeNew.style.pointerEvents='none'; eyeNew.style.fontSize='1.05rem'; eyeNew.innerHTML='&#128065;';
+      toggleNew.appendChild(eyeNew); newWrap.appendChild(inpNew); newWrap.appendChild(toggleNew);
+
+      const lblConfirm = document.createElement('label'); lblConfirm.setAttribute('for','confirm-password'); lblConfirm.textContent = 'Confirm Password';
+      const confirmWrap = document.createElement('div'); confirmWrap.className = 'password-container';
+      const inpConfirm = document.createElement('input'); inpConfirm.type='password'; inpConfirm.id='confirm-password'; inpConfirm.required=true; inpConfirm.placeholder='Confirm Password';
+      const toggleConfirm = document.createElement('button'); toggleConfirm.type='button'; toggleConfirm.className='password-toggle'; toggleConfirm.setAttribute('aria-label','Show password'); toggleConfirm.tabIndex=-1;
+      const eyeConfirm = document.createElement('span'); eyeConfirm.id='eye-confirm-password'; eyeConfirm.style.pointerEvents='none'; eyeConfirm.style.fontSize='1.05rem'; eyeConfirm.innerHTML='&#128065;';
+      toggleConfirm.appendChild(eyeConfirm); confirmWrap.appendChild(inpConfirm); confirmWrap.appendChild(toggleConfirm);
+
+      const saveWrap = document.createElement('div'); saveWrap.style.marginTop='10px';
+      const saveBtn = document.createElement('button'); saveBtn.id='save-new-password-btn'; saveBtn.type='button'; saveBtn.textContent='Save New Password';
+      saveWrap.appendChild(saveBtn);
+
+      newPassSection.appendChild(lblNew); newPassSection.appendChild(newWrap);
+      newPassSection.appendChild(lblConfirm); newPassSection.appendChild(confirmWrap);
+      newPassSection.appendChild(saveWrap);
+
+      step2.appendChild(verifySection); step2.appendChild(newPassSection);
+      resetForm.appendChild(step2);
+
+      // Back link
+      const backDiv = document.createElement('div'); backDiv.style.textAlign='center'; backDiv.style.marginTop='1rem';
+      const backLink = document.createElement('a'); backLink.href='#'; backLink.style.color='var(--accent-gold)'; backLink.textContent='Back to Login';
+      backLink.addEventListener('click', function(e){ e.preventDefault(); showLogin(); });
+      backDiv.appendChild(backLink);
+      resetForm.appendChild(backDiv);
+
+      container.appendChild(resetForm);
+
+      // Wire events
+      sendBtn.addEventListener('click', sendResetCode);
+      verifyBtn.addEventListener('click', verifyResetCode);
+      saveBtn.addEventListener('click', resetPassword);
+      toggleNew.addEventListener('click', function(){ togglePassword('new-password'); });
+      toggleConfirm.addEventListener('click', function(){ togglePassword('confirm-password'); });
+    }
+
+    function showLogin() {
+      document.getElementById('reset-form')?.remove();
+      document.getElementById('loginForm').style.display = 'block';
+      document.querySelector('.forgot-password').style.display = 'block';
+      document.querySelector('.info').style.display = 'block';
+      clearMessages();
+    }
+
+    function clearMessages() {
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('login-success').textContent = '';
+    }
+
+    async function sendResetCode() {
+      const email = document.getElementById('reset-email').value.trim();
+      const errorDiv = document.getElementById('reset-error-1');
+      const successDiv = document.getElementById('reset-success-1');
+      
+      errorDiv.textContent = '';
+      successDiv.textContent = '';
+      
+      if (!email) {
+        errorDiv.textContent = 'Please enter your email.';
+        return;
+      }
+
+      try {
+        const btn = document.getElementById('send-reset-btn') || document.querySelector('#reset-step-1 button');
+        if (!btn) {
+          errorDiv.textContent = 'Internal error: send button not found.';
+          return;
+        }
+        const key = `dm_reset_${String(email).toLowerCase()}`;
+        const existing = parseInt(localStorage.getItem(key) || '0', 10);
+        const now = Date.now();
+        function updateResetBtn(expiresAt){
+          const left = Math.max(0, Math.floor((expiresAt - Date.now())/1000));
+          if (left <= 0){ btn.disabled = false; btn.textContent = 'Send Reset Code'; if (btn._dm_interval){ clearInterval(btn._dm_interval); btn._dm_interval = null; } return; }
+          const mins = Math.floor(left/60), secs = left%60;
+          btn.textContent = `Send Reset Code (${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')})`;
+          btn.disabled = true;
+        }
+
+        if (existing && existing > now){
+          // resume: show verify step
+          document.getElementById('reset-step-1')?.classList.add('u-hidden');
+          document.getElementById('reset-step-2')?.classList.remove('u-hidden');
+          document.getElementById('verify-section')?.classList.remove('u-hidden');
+          document.getElementById('newpass-section')?.classList.add('u-hidden');
+          successDiv.textContent = 'Reset code sent to your email!';
+          btn.disabled = true; updateResetBtn(existing); btn._dm_interval = setInterval(()=> updateResetBtn(existing), 1000);
+          return;
+        }
+
+        const response = await fetch(`${SERVER_URL}/api/auth/forgot-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email.toLowerCase() })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          errorDiv.textContent = errorData.error || 'Failed to send reset code.';
+          return;
+        }
+
+  // success - persist expiry and move forward to verification step
+  const expiresAt = Date.now() + 10*60*1000;
+  localStorage.setItem(key, String(expiresAt));
+  successDiv.textContent = 'Reset code sent to your email!';
+  document.getElementById('reset-step-1')?.classList.add('u-hidden');
+  document.getElementById('reset-step-2')?.classList.remove('u-hidden');
+  document.getElementById('verify-section')?.classList.remove('u-hidden');
+  document.getElementById('newpass-section')?.classList.add('u-hidden');
+  btn.disabled = true; updateResetBtn(expiresAt); btn._dm_interval = setInterval(()=> updateResetBtn(expiresAt), 1000);
+        
+      } catch (error) {
+        console.error('Reset code error:', error);
+        errorDiv.textContent = 'Unable to connect to server.';
+      }
+    }
+
+    async function resetPassword() {
+  const email = document.getElementById('reset-email').value.trim();
+  // At this point the code should have been verified; ensure new pass section is visible
+  const newPassword = document.getElementById('new-password').value;
+  const confirmPassword = document.getElementById('confirm-password').value;
+      const errorDiv = document.getElementById('reset-error-2');
+      const successDiv = document.getElementById('reset-success-2');
+      
+      errorDiv.textContent = '';
+      successDiv.textContent = '';
+      
+
+      if (!newPassword || !confirmPassword) {
+        errorDiv.textContent = 'Please fill in all fields.';
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        errorDiv.textContent = 'Passwords do not match.';
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        errorDiv.textContent = 'Password must be at least 6 characters long.';
+        return;
+      }
+
+      try {
+        // Call reset endpoint — server will validate prior code; include email and newPassword
+        const response = await fetch(`${SERVER_URL}/api/auth/reset-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            email: email.toLowerCase(), 
+            code: document.getElementById('reset-code').value.trim(),
+            newPassword: newPassword 
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          errorDiv.textContent = errorData.error || 'Failed to reset password.';
+          return;
+        }
+
+        successDiv.textContent = 'Password reset successfully! Redirecting to login...';
+        setTimeout(() => {
+          try { localStorage.removeItem(`dm_reset_${String(email).toLowerCase()}`); } catch(e){}
+          showLogin();
+        }, 2000);
+        
+      } catch (error) {
+        console.error('Password reset error:', error);
+        errorDiv.textContent = 'Unable to connect to server.';
+      }
+    }
+
+    // Verify reset code step — called when user clicks "Verify Code"
+    async function verifyResetCode() {
+      const email = document.getElementById('reset-email').value.trim();
+      const code = document.getElementById('reset-code').value.trim();
+      const errorDiv = document.getElementById('reset-error-2');
+      const successDiv = document.getElementById('reset-success-2');
+      errorDiv.textContent = '';
+      successDiv.textContent = '';
+      if (!email || !code) { errorDiv.textContent = 'Please enter the email and verification code.'; return; }
+
+      try {
+        // Reuse the server verify-code endpoint used elsewhere in the app
+        const resp = await fetch(`${SERVER_URL}/api/auth/verify-reset-code`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.toLowerCase(), code: code })
+        });
+        const j = await resp.json();
+        if (!resp.ok) { errorDiv.textContent = j.error || 'Invalid code'; return; }
+
+  // Verified — show new password inputs
+  successDiv.textContent = 'Code verified. Enter a new password below.';
+  document.getElementById('verify-section')?.classList.add('u-hidden');
+  document.getElementById('newpass-section')?.classList.remove('u-hidden');
+      } catch (e) {
+        console.error('Verify code error', e);
+        errorDiv.textContent = 'Unable to verify code. Try again.';
+      }
+    }
+
+    async function loginUser() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const errorDiv = document.getElementById('login-error');
+      const submitBtn = document.querySelector('button[type="submit"]');
+      
+      // Clear previous errors
+      errorDiv.textContent = '';
+      
+      // Basic validation
+      if (!email || !password) {
+        errorDiv.textContent = 'Please fill in all fields.';
+        return;
+      }
+
+      // Disable button during login
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in...';
+
+      try {
+        console.log('Attempting login for:', email);
+        
+        const response = await fetch(`${SERVER_URL}/api/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email.toLowerCase(), password })
+        });
+
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Server error:', errorText);
+          
+          try {
+            const errorData = JSON.parse(errorText);
+            errorDiv.textContent = errorData.error || 'Login failed. Please try again.';
+          } catch {
+            errorDiv.textContent = `Server error (${response.status}). Please check if server is running.`;
+          }
+          return;
+        }
+
+        const data = await response.json();
+        console.log('Login response:', data);
+
+        // Check if 2FA is required
+        if (data.requires2FA) {
+          // Redirect to 2FA verification page
+          window.location.href = `2fa-verify.html?email=${encodeURIComponent(data.email)}`;
+          return;
+        }
+
+        // Normal login without 2FA
+        if (data.token) {
+          // Store auth token
+          localStorage.setItem('authToken', data.token);
+          // If user profile is present, persist minimal public profile in users map and set currentUser
+          if (data.user) {
+            try {
+              const user = data.user || {};
+              const emailKey = (user.email || user.username || '').toLowerCase();
+              if (emailKey) {
+                if (typeof setUserProfile === 'function') {
+                  setUserProfile(emailKey, { logo: user.logo || '', name: user.name || '', email: user.email || '' });
+                } else {
+                  const users = (typeof getUsersMap === 'function') ? getUsersMap() : JSON.parse(localStorage.getItem('users') || '{}');
+                  users[emailKey] = Object.assign({}, users[emailKey] || {}, user);
+                  users[emailKey].logo = users[emailKey].logo || user.logo || '';
+                  users[emailKey].name = users[emailKey].name || user.name || '';
+                  users[emailKey].email = users[emailKey].email || user.email || '';
+                  localStorage.setItem('users', JSON.stringify(users));
+                }
+                localStorage.setItem('currentUser', emailKey);
+                localStorage.setItem('userLoggedIn', 'true');
+                localStorage.setItem('profileUpdatedAt', String(Date.now()));
+              } else {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.setItem('userLoggedIn', 'true');
+              }
+            } catch (e) { console.warn('Failed to persist user in localStorage', e); localStorage.setItem('currentUser', JSON.stringify(data.user)); }
+          }
+
+          // Success! Replace current history entry and go to account page (prevents back to login)
+          location.replace('account.html');
+        } else {
+          errorDiv.textContent = 'Login response missing required data.';
+        }
+        
+      } catch (error) {
+        console.error('Login error:', error);
+        try {
+          errorDiv.textContent = `Unable to connect to server. Please check if the server is running at ${SERVER_URL}.`;
+        } catch(e) {
+          errorDiv.textContent = 'Unable to connect to server.';
+        }
+      } finally {
+        // Re-enable button
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Login';
+      }
+    }
+
+  // No client-side credential prefill. Credentials must be entered manually for security.
+  </script>
+<script src="site.js"></script>
+</body>
+</html>

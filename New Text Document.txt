@@ -1,0 +1,9 @@
+saveProductToCatalogue({
+  title: "Sword 1",
+  desc: "Classic Damascus Swords...",
+  price: "$350",
+  img: "sw1.png",
+  album: "awalbum1.html", // <-- Make sure this is set!
+  quantity: 1
+});
+Using '*' activation is usually a bad idea as it impacts performance.

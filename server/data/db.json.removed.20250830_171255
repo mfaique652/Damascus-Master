@@ -1,0 +1,1071 @@
+{
+  "users": [
+    {
+      "id": "c33a3156-7cd9-4adf-9ee6-d5f996bae62f",
+      "email": "test@example.com",
+      "password": "$2a$10$R8YOBA4Etbva3jug15Fgvu5Z3zpSIyV7Aa673xQz5rXUyhGtIkHQi",
+      "name": "Test User",
+      "username": "testuser",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "darkMode": true,
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-12T17:48:00.969Z",
+      "updatedAt": "2025-08-12T17:48:00.969Z",
+      "lastLogin": "2025-08-12T17:48:11.610Z"
+    },
+    {
+      "id": "c84ae8cc-930f-4744-968b-150ddaa5cc79",
+      "email": "newuser@example.com",
+      "password": "$2a$10$FZSnBirYMeogS8IfCHApaeZSpy8iVR9Sx6FXqdxbVQGe0ZmxZxL2W",
+      "name": "New Customer",
+      "username": "newcustomer",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "darkMode": true,
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-12T17:53:01.007Z",
+      "updatedAt": "2025-08-12T17:53:01.007Z"
+    },
+    {
+      "id": "7deaad8a-2dcf-48c5-89c9-4bf1c11d4481",
+      "email": "abdulmoiz6136@gmail.com",
+      "password": "$2a$10$sB4zktxd/eXUO3tTBBxYy.4j5I64t8siynMfagdwE1KjTZSYjFbPm",
+      "name": "abdulmoiz",
+      "username": "moiz",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "darkMode": true,
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-13T13:39:48.000Z",
+      "updatedAt": "2025-08-13T13:39:48.000Z"
+    },
+    {
+      "id": "33c84483-d3db-4051-a4d2-d12aff22c38a",
+      "email": "faiqsajjad652@gmail.com",
+      "name": "Faiq Sajjad",
+      "username": "faiqsajjad652",
+      "role": "admin",
+      "password": "$2a$10$0dyf9gLp6V.j9okroc7Q4./26WYgEDTtzKm4n45ss07ky2siwipNa",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "axes.png",
+      "preferences": {
+        "compactLayout": true,
+        "orderEmails": true,
+        "marketingEmails": true,
+        "newsletter": true,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [
+        {
+          "id": "kn1",
+          "title": "Hand Forged Damascus Steel 5 Pcs Rosewood Handle Chef Knife Set",
+          "price": 280,
+          "img": "/uploads/1755371443467-1.png",
+          "album": "hand_forged_damascus_steel_5_pcs_rosewood_handle_chef_knife_set.html?from=gallery&cat=kitchen-knives",
+          "addedAt": "2025-08-18T01:30:17.469Z"
+        }
+      ],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-17T05:57:12.065Z",
+      "updatedAt": "2025-08-30T10:53:04.631Z",
+      "lastLogin": "2025-08-30T11:57:32.320Z",
+      "knownIps": [
+        "127.0.0.1"
+      ],
+      "tokensRevokedAt": 1756490943805
+    },
+    {
+      "id": "b50ca015-69ba-4c55-9d9d-b40531fab3e1",
+      "email": "tmpuser_1755446594@example.com",
+      "password": "$2a$10$s1zxRWhQhxKTU2qPEU7xr.lOrWYEbjs5H.jN9x/h4oql3oizM0Boq",
+      "name": "Tmp User",
+      "username": "Tmp User",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-17T11:03:16.905Z",
+      "updatedAt": "2025-08-17T11:03:16.905Z"
+    },
+    {
+      "id": "590ce3ec-a23a-4126-ad45-cc5e15e8b8b7",
+      "email": "tmpuser_1755446612@example.com",
+      "password": "$2a$10$FrsiMEtIQE2eKxJLqD76x.WPgTDTmuKCh6WvdLCn5zLtBW9WwbFW.",
+      "name": "Tmp User",
+      "username": "Tmp User",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-17T11:03:32.320Z",
+      "updatedAt": "2025-08-17T11:03:32.320Z"
+    },
+    {
+      "id": "1d5cb96c-3d42-473f-bab8-0cfb7249ceaa",
+      "email": "tmpuser_1755446637@example.com",
+      "password": "$2a$10$SGeU06a.sShPapKd4L/YMu25mRQlhokxXzvO1ZNZ2fHGNYkso5eN.",
+      "name": "Tmp User",
+      "username": "Tmp User",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-17T11:03:57.521Z",
+      "updatedAt": "2025-08-17T11:03:57.521Z"
+    },
+    {
+      "id": "7fddbf52-fd03-4aaf-8562-aa73f5e6d060",
+      "email": "tmpuser_1755446647@example.com",
+      "password": "$2a$10$s5Z6PLEmyNBYXKkMagJcCeZVieJAVBJB8l73FTKUzaS8EVb9sPHPe",
+      "name": "Tmp User",
+      "username": "Tmp User",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-17T11:04:06.958Z",
+      "updatedAt": "2025-08-17T11:04:06.958Z"
+    },
+    {
+      "id": "5c553cbb-b45b-4aea-9d25-024a490553c3",
+      "email": "tmpuser_1755446976@example.com",
+      "password": "$2a$10$./CXsA8AWDmBdul.wT9kAOqGSMQm2k3T9pXLvLe66DrP1an2WtApW",
+      "name": "Tmp User",
+      "username": "Tmp User",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "/uploads/avatars/1755428978914-1755371443467-1.png",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-17T11:09:38.652Z",
+      "updatedAt": "2025-08-17T11:09:38.942Z"
+    },
+    {
+      "id": "0f9f69b3-d263-43b2-b8d7-41b59fe1f684",
+      "email": "muhammadalihussainhashmi@gmail.com",
+      "password": "$2a$10$R3/EyLEHq6LV8aX9HYnYpO33DsZhXJ0Ag9e2yJIBIIdQOXBSgHBHK",
+      "name": "Muhammad Ali Hussain",
+      "username": "hussain",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": true,
+        "loginNotifications": true
+      },
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-20T10:16:56.856Z",
+      "updatedAt": "2025-08-20T10:17:15.956Z",
+      "lastLogin": "2025-08-20T10:22:03.499Z"
+    },
+    {
+      "id": "796c99f8-b9df-41d9-849e-6722a483ea98",
+      "email": "faiqfreefire43@gmail.com",
+      "password": "$2a$10$/xw2cdjnDpbxnwj9pSfl1eQ1nJJTRUtdATqHVYQPw1Ewj.DcD01LG",
+      "name": "Muhammad Faique",
+      "username": "faiq_yes@nks",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "/uploads/avatars/1755373694651-HUNTING_BOWIE_KNIFE_Gift_for_men__Handmade_Chef_knives__Kitchen_knives__Chef_knives__Anniversar__1_.webp",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "knownIps": [
+        "127.0.0.1",
+        "223.123.42.49"
+      ],
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-20T19:34:14.607Z",
+      "updatedAt": "2025-08-29T09:27:39.584Z",
+      "lastLogin": "2025-08-29T09:27:23.017Z"
+    },
+    {
+      "id": "7de66b09-adaa-4ca4-8725-21e44aa270e9",
+      "email": "faiqtestsubject@gmail.com",
+      "password": "$2a$10$VgGix6G3LjArb7JIah40sOP2.nvLwKz.cfs1lu62rguwdrHdnaINS",
+      "name": "Muhammad Faique",
+      "username": "faiq8571",
+      "phone": "",
+      "address": "",
+      "city": "",
+      "state": "",
+      "zip": "",
+      "country": "",
+      "logo": "",
+      "preferences": {
+        "compactLayout": false,
+        "orderEmails": true,
+        "marketingEmails": false,
+        "newsletter": false,
+        "twoFactorAuth": false,
+        "loginNotifications": true
+      },
+      "knownIps": [
+        "127.0.0.1"
+      ],
+      "orders": [],
+      "wishlist": [],
+      "totalSpent": 0,
+      "memberSince": 2025,
+      "createdAt": "2025-08-29T19:01:32.391Z",
+      "updatedAt": "2025-08-29T19:01:32.391Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "cf47d358-a124-4b3a-8624-b9664bf049fc",
+      "title": "Pocket Knives for men and women All in One",
+      "price": 123,
+      "desc": "JNjwqbdubaskjca",
+      "album": "pocket-knives",
+      "category": "pocket-knives",
+      "page": "pocket_knives_for_men_and_women_all_in_one.html",
+      "details": {
+        "0": "c",
+        "1": "e",
+        "2": "s",
+        "3": "v",
+        "4": "d",
+        "5": "g",
+        "6": "f",
+        "7": "b",
+        "8": "g",
+        "9": "b",
+        "10": "f",
+        "11": "d",
+        "12": "d",
+        "13": "f",
+        "14": "f",
+        "15": "f",
+        "16": "f",
+        "17": "f",
+        "18": "f",
+        "19": "f",
+        "20": "f",
+        "21": "f",
+        "22": "f",
+        "23": "f",
+        "24": "f",
+        "25": "f",
+        "26": "f",
+        "27": "f",
+        "28": "f",
+        "29": "f",
+        "displayId": "pn1"
+      },
+      "images": [
+        "/uploads/1756554628505-pic1.png",
+        "/uploads/1756554628526-pic2.png",
+        "/uploads/1756554628528-pic3.png",
+        "/uploads/1756554628547-pic5.png",
+        "/uploads/1756554628549-pocketknife.png",
+        "/uploads/1756554628566-rings.png"
+      ],
+      "position": 1,
+      "createdAt": 1756554630429,
+      "topSeller": false,
+      "sale": {
+        "active": true,
+        "price": 12,
+        "prevPrice": 123
+      },
+      "updatedAt": 1756554743966
+    },
+    {
+      "id": "e858cd41-b9f3-4638-b5ef-c2ae6d799aa6",
+      "title": "Kitchen Hunter",
+      "price": 230,
+      "desc": "sadfghfdsa",
+      "album": "kitchen-knives",
+      "category": "kitchen-knives",
+      "page": "kitchen_hunter.html",
+      "details": {
+        "0": "a",
+        "1": "s",
+        "2": "f",
+        "3": "d",
+        "4": "g",
+        "5": "h",
+        "6": "g",
+        "7": "f",
+        "8": "d",
+        "9": "s",
+        "displayId": "kn1"
+      },
+      "images": [
+        "/uploads/1756555070946-logo.png",
+        "/uploads/1756555070947-pic1.png",
+        "/uploads/1756555070953-pic2.png",
+        "/uploads/1756555070955-pic3.png"
+      ],
+      "position": 2,
+      "createdAt": 1756555078632,
+      "topSeller": false,
+      "sale": {
+        "active": true,
+        "price": 200,
+        "prevPrice": 230
+      },
+      "updatedAt": 1756555088790
+    },
+    {
+      "id": "94abd42f-e074-47c7-a3ac-751c2d98bc7a",
+      "title": "Hunting knives",
+      "price": 234,
+      "desc": "drxcfgvybhuinjkmbn c",
+      "album": "hunting-knives",
+      "category": "hunting-knives",
+      "page": "hunting_knives.html",
+      "details": {
+        "0": "y",
+        "1": "h",
+        "2": "u",
+        "3": "i",
+        "4": "j",
+        "5": "o",
+        "6": "l",
+        "7": "m",
+        "8": "k",
+        "9": "g",
+        "10": "c",
+        "11": "f",
+        "displayId": "hn1"
+      },
+      "images": [
+        "/uploads/1756555125445-pic2.png",
+        "/uploads/1756555125445-pic3.png",
+        "/uploads/1756555125461-pocketknife.png",
+        "/uploads/1756555125476-rings.png"
+      ],
+      "position": 3,
+      "createdAt": 1756555125604,
+      "topSeller": false,
+      "sale": {
+        "active": true,
+        "price": 200,
+        "prevPrice": 234
+      },
+      "updatedAt": 1756555136084
+    },
+    {
+      "id": "16c2231c-9569-4115-9e56-b0c95a6d6a6e",
+      "title": "skdnasads",
+      "price": 233,
+      "desc": "dasdas",
+      "album": "kitchen-knives",
+      "category": "kitchen-knives",
+      "page": "skdnasads.html",
+      "details": {
+        "0": "d",
+        "1": "a",
+        "2": "s",
+        "3": "d",
+        "4": "a",
+        "5": "s",
+        "6": "d",
+        "displayId": "kn2"
+      },
+      "images": [
+        "/uploads/1756555716058-pic4.png",
+        "/uploads/1756555716062-pic5.png",
+        "/uploads/1756555716065-pocketknife.png",
+        "/uploads/1756555716075-swords.png"
+      ],
+      "position": 4,
+      "createdAt": 1756555717437,
+      "topSeller": false
+    }
+  ],
+  "albums": [],
+  "supportMessages": [
+    {
+      "id": "60febded-0782-4fc8-aea8-fb08778b4cb7",
+      "name": "Muhammad  Faique",
+      "email": "faiqsajjad652@gmail.com",
+      "country": "Other",
+      "phone": "03026265603",
+      "inquiryType": "Other",
+      "message": "i love uhhh",
+      "newsletter": true,
+      "submittedAt": "2025-08-16T21:43:05.225Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "eaacbf5e-2ca3-4c1d-8430-01e6aae4ada4",
+      "name": "Muhammad  Faique",
+      "email": "faiqsajjad652@gmail.com",
+      "country": "Other",
+      "phone": "03026265603",
+      "inquiryType": "Other",
+      "message": "i love uhhh",
+      "newsletter": true,
+      "submittedAt": "2025-08-16T21:43:06.028Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "34d56b67-3c9b-4a89-a86d-0a89511762ce",
+      "name": "Muhammad  Faique",
+      "email": "faiqsajjad652@gmail.com",
+      "country": "Other",
+      "phone": "03026265603",
+      "inquiryType": "Other",
+      "message": "i love uhhh",
+      "newsletter": true,
+      "submittedAt": "2025-08-16T21:43:08.609Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "35a8aa53-7509-4da3-b19d-e5e0b27b417d",
+      "name": "Test User",
+      "email": "testuser@example.com",
+      "country": "Other",
+      "phone": "+1234567890",
+      "inquiryType": "Other",
+      "message": "This is a test support message to reproduce the error.",
+      "newsletter": false,
+      "submittedAt": "2025-08-16T21:46:00.344Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "7aa37ee0-cce6-47cb-9869-ffce2761be80",
+      "name": "Automated Test",
+      "email": "auto-test@example.com",
+      "country": "Other",
+      "phone": "+10000000000",
+      "inquiryType": "Other",
+      "message": "This is an automated test of the support/contact endpoint to reproduce the user error.",
+      "newsletter": false,
+      "submittedAt": "2025-08-16T21:47:23.040Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "37de1924-98a6-417c-a5a1-0dfc5d5c933c",
+      "name": "Humera Sajjad",
+      "email": "humerasajjad71@gmail.com",
+      "country": "United States",
+      "phone": "03026265603",
+      "inquiryType": "Product availability",
+      "message": "yes dude how are you i am fine",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:27:33.244Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "787b7c58-d7f6-4b3a-afc1-59b4e2fe2a38",
+      "name": "Humera Sajjad",
+      "email": "humerasajjad71@gmail.com",
+      "country": "United States",
+      "phone": "03026265603",
+      "inquiryType": "Product availability",
+      "message": "yes dude how are you i am fine",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:27:36.478Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "aa4c9c5f-8c0f-4de4-830b-de02be189aae",
+      "name": "Humera Sajjad",
+      "email": "humerasajjad71@gmail.com",
+      "country": "United States",
+      "phone": "03026265603",
+      "inquiryType": "Product availability",
+      "message": "yes dude how are you i am fine",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:27:39.669Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "3391ebd2-b7d5-4c56-9feb-d0232c6818a2",
+      "name": "Humera Sajjad",
+      "email": "admin@example.com",
+      "country": "Other",
+      "phone": "N/A",
+      "inquiryType": "general",
+      "message": "kjfbkjsbfklas csdnnfokwel fews",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:37:13.612Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "7d729f34-6312-4968-8045-474a297527b8",
+      "name": "Humera Sajjad",
+      "email": "admin@example.com",
+      "country": "Other",
+      "phone": "N/A",
+      "inquiryType": "general",
+      "message": "kjfbkjsbfklas csdnnfokwel fews",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:37:19.631Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "2630eb2d-a310-4158-a062-ae4abf081726",
+      "name": "Humera Sajjad",
+      "email": "faiqsajjad652@gmail.com",
+      "country": "Other",
+      "phone": "N/A",
+      "inquiryType": "general",
+      "message": "i am here to test the admin help center",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:37:52.952Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "77ecf8ef-56c6-42a6-8f2d-13b1ebec7550",
+      "name": "Humera Sajjad",
+      "email": "faiqsajjad652@gmail.com",
+      "country": "Other",
+      "phone": "N/A",
+      "inquiryType": "general",
+      "message": "i am here to test the admin help center",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:37:59.069Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "2b6314f0-54ba-46b9-b2d9-7e27670bfe6f",
+      "name": "Humera Sajjad",
+      "email": "faiqsajjad652@gmail.com",
+      "country": "Other",
+      "phone": "N/A",
+      "inquiryType": "general",
+      "message": "i love you my son very much",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T08:45:51.199Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "a0b4f1d1-6c29-4fa9-ad15-5f0c6819b993",
+      "name": "Humera Sajjad",
+      "email": "faiqsajjad652@gmail.com",
+      "country": "Other",
+      "phone": "N/A",
+      "inquiryType": "general",
+      "message": "sdnqkjcn wckjwenciowmecoiw cwe",
+      "newsletter": false,
+      "submittedAt": "2025-08-17T09:10:57.236Z",
+      "status": "new",
+      "priority": "normal"
+    },
+    {
+      "id": "b936496a-86c2-482e-ab1f-c66decbe3159",
+      "name": "andsla asdas",
+      "email": "damascus.store.1@gmail.com",
+      "country": "Other",
+      "phone": "N/A",
+      "inquiryType": "general",
+      "message": "jkewbfkjwenfklwe",
+      "newsletter": false,
+      "submittedAt": "2025-08-29T19:02:14.374Z",
+      "status": "new",
+      "priority": "normal"
+    }
+  ],
+  "newsletters": [
+    {
+      "id": "f681bba1-4850-4e35-b281-1621828ae49e",
+      "email": "faiqsajjad652@gmail.com",
+      "preferences": {
+        "offers": true,
+        "craftsmanship": true
+      },
+      "subscribedAt": "2025-08-16T21:43:05.226Z",
+      "active": true,
+      "source": "support_form"
+    },
+    {
+      "id": "a3bba47f-17f4-4d18-b227-5fe2ab2e23a0",
+      "email": "areejfatima0216@gmail.com",
+      "preferences": {
+        "offers": true,
+        "craftsmanship": true
+      },
+      "subscribedAt": "2025-08-17T18:21:41.719Z",
+      "active": true,
+      "source": "support_form"
+    }
+  ],
+  "domain": "localhost:3025",
+  "rateLimits": [
+    {
+      "ip": "127.0.0.1",
+      "count": 3,
+      "reset": 1756494084554
+    }
+  ],
+  "verificationCodes": [
+    {
+      "key": "talalcheema109@gmail.com",
+      "code": "326649",
+      "expires": 1756395924568
+    },
+    {
+      "key": "checkmy368@gmail.com",
+      "code": "289840",
+      "expires": 1756493632627
+    },
+    {
+      "key": "testsubjectfaiq@gmail.com",
+      "code": "118503",
+      "expires": 1756494624563
+    }
+  ],
+  "trash": {
+    "inquiries": [],
+    "customers": [],
+    "reviews": [],
+    "products": [
+      {
+        "id": "f4a81d16-0a0d-4588-b864-3349fcea871a",
+        "removedAt": 1756406358767,
+        "item": {
+          "id": "f4a81d16-0a0d-4588-b864-3349fcea871a",
+          "title": "344",
+          "desc": "dcscsd",
+          "album": "hunting-knives",
+          "category": "hunting-knives",
+          "page": "344.html",
+          "details": {
+            "0": "c",
+            "1": "s",
+            "2": "d",
+            "3": "c",
+            "4": "d",
+            "5": "s",
+            "displayId": "hn4"
+          },
+          "images": [
+            "/uploads/1756148756467-1755251249399-4.png",
+            "/uploads/1756148756468-1755251249400-7.png",
+            "/uploads/1756148756469-1755251249402-8.png",
+            "/uploads/1756148756510-1755251249406-9.png"
+          ],
+          "orders": [],
+          "createdAt": 1756148757983,
+          "topSeller": false,
+          "sale": {
+            "active": true,
+            "price": 200,
+            "prevPrice": 213
+          },
+          "updatedAt": 1756399054512
+        },
+        "trashDir": "1756406358764",
+        "fileList": [
+          "344.html"
+        ]
+      },
+      {
+        "id": "e21f0474-9e40-4dd0-8194-4d66337c0cda",
+        "removedAt": 1756406864808,
+        "item": {
+          "id": "e21f0474-9e40-4dd0-8194-4d66337c0cda",
+          "title": "Axes max",
+          "price": 234,
+          "desc": "sxwxe3",
+          "album": "Gallery",
+          "category": "Axe",
+          "page": "axes_max.html",
+          "position": 4,
+          "images": [
+            "/uploads/1756406783897-2.png",
+            "/uploads/1756406783901-3.png",
+            "/uploads/1756406783903-4.png",
+            "/uploads/1756406783906-7.png",
+            "/uploads/1756406783908-8.png"
+          ],
+          "topSeller": true,
+          "createdAt": 1756406786244,
+          "details": {
+            "displayId": "Ax6"
+          }
+        },
+        "trashDir": "1756406864803",
+        "fileList": [
+          "axes_max.html"
+        ]
+      },
+      {
+        "id": "5956d685-a2d0-4228-af51-cfbc300fb521",
+        "removedAt": 1756552809245,
+        "item": {
+          "id": "5956d685-a2d0-4228-af51-cfbc300fb521",
+          "title": "my check",
+          "desc": "ewfdvhbnmgfdgsfdqfgh",
+          "album": "hunting-knives",
+          "category": "hunting-knives",
+          "page": "my_check.html",
+          "details": {
+            "0": "s",
+            "1": "e",
+            "2": "g",
+            "3": "r",
+            "4": "d",
+            "5": "h",
+            "6": "t",
+            "7": "f",
+            "8": "g",
+            "9": "y",
+            "10": "j",
+            "11": "k",
+            "12": "h",
+            "13": "u",
+            "14": "g",
+            "15": "y",
+            "16": "j",
+            "17": "f",
+            "18": "h",
+            "19": "d",
+            "20": "f",
+            "21": "g",
+            "22": "s",
+            "23": "f",
+            "24": "a",
+            "displayId": "hn5"
+          },
+          "images": [
+            "/uploads/1756373988719-1755251249399-4.png",
+            "/uploads/1756373988720-1755251249400-7.png",
+            "/uploads/1756373988723-1755251249402-8.png",
+            "/uploads/1756373988728-1755251249406-9.png"
+          ],
+          "position": 3,
+          "createdAt": 1756373990006,
+          "topSeller": true,
+          "sale": {
+            "active": true,
+            "price": 1,
+            "prevPrice": 234
+          },
+          "updatedAt": 1756552300551,
+          "price": 234
+        },
+        "trashDir": "1756552809243",
+        "fileList": [
+          "my_check.html"
+        ]
+      },
+      {
+        "id": "dfa73e50-9211-474c-add6-f02fbe757b7c",
+        "removedAt": 1756555054512,
+        "item": {
+          "id": "dfa73e50-9211-474c-add6-f02fbe757b7c",
+          "title": "ffvd",
+          "desc": "fvfdbvdfv",
+          "album": "kitchen-knives",
+          "category": "kitchen-knives",
+          "page": "ffvd.html",
+          "details": {
+            "0": "f",
+            "1": "d",
+            "2": "v",
+            "3": "d",
+            "4": "f",
+            "displayId": "kn3"
+          },
+          "images": [
+            "/uploads/1756147057609-logo.png"
+          ],
+          "position": 1,
+          "createdAt": 1756147057708,
+          "topSeller": true,
+          "sale": {
+            "active": true,
+            "price": 23,
+            "prevPrice": 123
+          },
+          "updatedAt": 1756552199847,
+          "price": 123
+        },
+        "trashDir": "1756555054508",
+        "fileList": [
+          "ffvd.html"
+        ]
+      },
+      {
+        "id": "8b17d2d1-112c-4c33-bea4-c2b4ca9247cd",
+        "removedAt": 1756555102957,
+        "item": {
+          "id": "8b17d2d1-112c-4c33-bea4-c2b4ca9247cd",
+          "title": "HUNTING BOWIE KNIFE Gift for men",
+          "desc": "— Warranty: Manufacturer's 90 Day\n— 9\" 4340 + 1095 Damascus Steel Blade\n— Bird's Eye Pattern\n— 5\" Olive & Rose Wood Handle",
+          "album": "hunting-knives",
+          "category": "hunting-knives",
+          "page": "hunting_bowie_knife_gift_for_men.html",
+          "details": {
+            "0": "C",
+            "1": "o",
+            "2": "l",
+            "3": "o",
+            "4": "r",
+            "5": " ",
+            "6": "B",
+            "7": "r",
+            "8": "o",
+            "9": "w",
+            "10": "n",
+            "11": "\n",
+            "12": "M",
+            "13": "a",
+            "14": "t",
+            "15": "e",
+            "16": "r",
+            "17": "i",
+            "18": "a",
+            "19": "l",
+            "20": "s",
+            "21": " ",
+            "22": "D",
+            "23": "a",
+            "24": "m",
+            "25": "a",
+            "26": "s",
+            "27": "c",
+            "28": "u",
+            "29": "s",
+            "30": " ",
+            "31": "S",
+            "32": "t",
+            "33": "e",
+            "34": "e",
+            "35": "l",
+            "36": "\n",
+            "37": "M",
+            "38": "e",
+            "39": "a",
+            "40": "s",
+            "41": "u",
+            "42": "r",
+            "43": "e",
+            "44": "m",
+            "45": "e",
+            "46": "n",
+            "47": "t",
+            "48": "s",
+            "49": " ",
+            "50": "1",
+            "51": "4",
+            "52": "\"",
+            "53": "L",
+            "54": " ",
+            "55": "x",
+            "56": " ",
+            "57": "2",
+            "58": "\"",
+            "59": "W",
+            "60": " ",
+            "61": "x",
+            "62": " ",
+            "63": "0",
+            "64": ".",
+            "65": "7",
+            "66": "5",
+            "67": "\"",
+            "68": "H",
+            "displayId": "hn1"
+          },
+          "images": [
+            "/uploads/1755373694646-HUNTING_BOWIE_KNIFE_Gift_for_men__Handmade_Chef_knives__Kitchen_knives__Chef_knives__Anniversar__2_.webp",
+            "/uploads/1755373694651-HUNTING_BOWIE_KNIFE_Gift_for_men__Handmade_Chef_knives__Kitchen_knives__Chef_knives__Anniversar__1_.webp",
+            "/uploads/1755373694656-HUNTING_BOWIE_KNIFE_Gift_for_men__Handmade_Chef_knives__Kitchen_knives__Chef_knives__Anniversar.webp"
+          ],
+          "position": 1,
+          "createdAt": 1755373696118,
+          "topSeller": true,
+          "updatedAt": 1756552293543,
+          "sale": {
+            "active": true,
+            "price": 20,
+            "prevPrice": 180
+          },
+          "price": 180
+        },
+        "trashDir": "1756555102936",
+        "fileList": [
+          "hunting_bowie_knife_gift_for_men.html"
+        ]
+      }
+    ],
+    "orders": []
+  },
+  "paypalClientId": "",
+  "paypalClientSecret": "",
+  "paypalEmail": "",
+  "paypalEnv": "sandbox",
+  "cardConfig": {
+    "provider": "",
+    "publishableKey": "",
+    "secretKey": "",
+    "webhookSecret": "",
+    "mode": "test"
+  },
+  "emailUser": "dmdamascusmaster@gmail.com",
+  "emailPass": "zbsq byqz dmhb myvv"
+}

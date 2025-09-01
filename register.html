@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Register - Damascus Master</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    body {
+      background: #fff;
+      color: #222;
+    }
+    .register-container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 24px rgba(255,179,71,0.13), 0 1.5px 8px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+      max-width: 400px;
+      margin: 40px auto;
+      border: 1.5px solid #f5d7a1;
+    }
+    h2 {
+      color: #ffb347;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    label {
+      color: #ffcc00;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border-radius: 0.4rem;
+      border: none;
+      background: #f5f6fa;
+      color: #222;
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      box-sizing: border-box;
+    }
+    button {
+      background: #ffb347;
+      color: #232323;
+      border: none;
+      border-radius: 0.4rem;
+      padding: 0.7rem 1.3rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    button:hover {
+      background: #ff8800;
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    .info {
+      color: #00e6d0;
+      font-size: 0.98rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .error {
+      color: #ff4444;
+      font-size: 0.98rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .register-container {
+        padding: 1.2rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="register-container">
+    <h2>Create Account</h2>
+    <form id="registerForm" autocomplete="off">
+      <div class="step step-1 active">
+        <label for="reg-email">Email</label>
+        <input type="email" id="reg-email" required>
+        <button type="button" onclick="sendCode()">Send Verification Code</button>
+        <div class="error" id="reg-step1-error"></div>
+      </div>
+      
+      <div class="step step-2">
+        <label for="reg-code">Enter 6-Digit Code</label>
+        <input type="text" id="reg-code" maxlength="6" required placeholder="000000">
+        <div class="info" style="margin-bottom:0.5em;">
+          A 6-digit verification code has been sent to your email address.<br>
+          Please check your inbox and spam folder.
+        </div>
+        <button type="button" onclick="verifyCode()">Verify Code</button>
+        <div class="info" id="reg-step2-info"></div>
+        <div class="error" id="reg-step2-error"></div>
+      </div>
+      
+      <div class="step step-3">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" minlength="4" required>
+        
+        <label for="reg-name">Full Name</label>
+        <input type="text" id="reg-name" required>
+        
+        <label for="reg-username">Username</label>
+        <input type="text" id="reg-username" minlength="2" maxlength="18" required>
+        
+        <button type="button" onclick="completeRegistration()">Create Account</button>
+        <div class="error" id="reg-step3-error"></div>
+      </div>
+    </form>
+    <div class="info" style="margin-top:1.5rem;">Already have an account? <a href="login.html" style="color:#ffb347;">Login</a></div>
+  </div>
+  <script>
+    let verifiedEmail = '';
+
+    function _reg2FAKey(email){ return `dm_reg_2fa_${String(email||'').toLowerCase()}`; }
+    function _now(){ return Date.now(); }
+    function _updateRegBtn(btn, expiresAt){
+      const left = Math.max(0, Math.floor((expiresAt - _now())/1000));
+      if (left <= 0){ btn.disabled = false; btn.textContent = 'Send Verification Code'; if (btn._dm_interval){ clearInterval(btn._dm_interval); btn._dm_interval = null; } return; }
+      const mins = Math.floor(left/60), secs = left%60; btn.textContent = `Send Verification Code (${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')})`; btn.disabled = true;
+    }
+
+    async function sendCode() {
+      const email = document.getElementById('reg-email').value.trim();
+      
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('reg-step1-error').textContent = 'Please enter a valid email address.';
+        return;
+      }
+      
+      document.getElementById('reg-step1-error').textContent = '';
+      
+      try {
+        const btn = document.querySelector('.step-1 button');
+        // check persisted expiry
+        const key = _reg2FAKey(email);
+        const existing = parseInt(localStorage.getItem(key) || '0', 10);
+        if (existing && existing > _now()){
+          // already sent recently - resume step 2 and countdown
+          document.querySelector('.step-1').classList.remove('active');
+          document.querySelector('.step-2').classList.add('active');
+          document.getElementById('reg-step2-info').textContent = `Code sent to ${email}`;
+          verifiedEmail = email;
+          btn.disabled = true; _updateRegBtn(btn, existing); btn._dm_interval = setInterval(()=> _updateRegBtn(btn, existing), 1000);
+          return;
+        }
+
+        const response = await fetch('/api/auth/send-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Move to step 2
+          document.querySelector('.step-1').classList.remove('active');
+          document.querySelector('.step-2').classList.add('active');
+          document.getElementById('reg-step2-info').textContent = `Code sent to ${email}`;
+          verifiedEmail = email;
+          // persist expiry and start countdown
+          const expiresAt = _now() + 10*60*1000;
+          localStorage.setItem(key, String(expiresAt));
+          btn.disabled = true; _updateRegBtn(btn, expiresAt); btn._dm_interval = setInterval(()=> _updateRegBtn(btn, expiresAt), 1000);
+        } else {
+          document.getElementById('reg-step1-error').textContent = data.error || 'Failed to send verification code';
+        }
+      } catch (error) {
+        console.error('Send code error:', error);
+        document.getElementById('reg-step1-error').textContent = 'Unable to connect to server. Please try again.';
+      }
+    }
+
+    async function verifyCode() {
+      const code = document.getElementById('reg-code').value.trim();
+      
+      if (!code || code.length !== 6) {
+        document.getElementById('reg-step2-error').textContent = 'Please enter the 6-digit code.';
+        return;
+      }
+      
+      document.getElementById('reg-step2-error').textContent = '';
+      
+      try {
+        const response = await fetch('/api/auth/verify-code', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            email: verifiedEmail,
+            code: code 
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Move to step 3
+          document.querySelector('.step-2').classList.remove('active');
+          document.querySelector('.step-3').classList.add('active');
+          // clear persisted code expiry for this email
+          try { localStorage.removeItem(_reg2FAKey(verifiedEmail)); } catch(e){}
+        } else {
+          document.getElementById('reg-step2-error').textContent = data.error || 'Invalid verification code';
+        }
+      } catch (error) {
+        console.error('Verify code error:', error);
+        document.getElementById('reg-step2-error').textContent = 'Unable to connect to server. Please try again.';
+      }
+    }
+
+    async function completeRegistration() {
+      const password = document.getElementById('reg-password').value;
+      const name = document.getElementById('reg-name').value.trim();
+      const username = document.getElementById('reg-username').value.trim();
+      
+      // Validate inputs
+      if (password.length < 4) {
+        document.getElementById('reg-step3-error').textContent = 'Password must be at least 4 characters.';
+        return;
+      }
+      
+      if (!name || name.length < 2) {
+        document.getElementById('reg-step3-error').textContent = 'Please enter your full name.';
+        return;
+      }
+      
+      if (!username || username.length < 2) {
+        document.getElementById('reg-step3-error').textContent = 'Username must be at least 2 characters.';
+        return;
+      }
+      
+      document.getElementById('reg-step3-error').textContent = '';
+      
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: verifiedEmail,
+            password: password,
+            name: name,
+            username: username
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          // Registration successful
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('currentUser', JSON.stringify(data.user));
+          
+          // Redirect to account page
+          window.location.href = 'account.html';
+        } else {
+          document.getElementById('reg-step3-error').textContent = data.error || 'Registration failed. Please try again.';
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        document.getElementById('reg-step3-error').textContent = 'Unable to connect to server. Please try again.';
+      }
+    }
+  </script>
+<script src="site.js"></script>
+</body>
+</html>

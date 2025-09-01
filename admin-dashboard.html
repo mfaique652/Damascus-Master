@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Damascus Master</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme.css">
+  <style>
+    .admin-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    
+    .admin-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .admin-header h1 {
+      color: var(--accent-gold);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .stat-card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+    
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      display: block;
+    }
+    
+    .stat-label {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .admin-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+      gap: 2rem;
+    }
+    
+    .admin-section {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    
+    .section-header {
+      background: var(--accent-gold);
+      color: var(--button-text);
+      padding: 1.5rem;
+      font-weight: 600;
+      font-size: 1.3rem;
+    }
+    
+    .section-content {
+      padding: 1.5rem;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    
+    .order-item,
+    .inquiry-item {
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      background: var(--bg-secondary);
+    }
+    
+    .order-item:last-child,
+    .inquiry-item:last-child {
+      margin-bottom: 0;
+    }
+    
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .order-id,
+    .inquiry-id {
+      font-weight: 600;
+      color: var(--accent-gold);
+    }
+    
+    .order-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    
+    .status-pending {
+      background: #ffeaa7;
+      color: #d63031;
+    }
+    
+    .status-processing {
+      background: #74b9ff;
+      color: #2d3436;
+    }
+    
+    .status-completed {
+      background: #00b894;
+      color: #ffffff;
+    }
+    
+    .item-details {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    .refresh-btn {
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    }
+    
+    .no-data {
+      text-align: center;
+      color: var(--text-secondary);
+      padding: 2rem;
+      font-style: italic;
+    }
+    
+    .timestamp {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+    
+    @media (max-width: 768px) {
+      .admin-sections {
+        grid-template-columns: 1fr;
+      }
+      
+      .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+
+    #undo-toast { display:none; position:fixed; right:20px; bottom:20px; background:#222; color:#fff; padding:12px 14px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,.25); z-index:99999; font-family: sans-serif; }
+    #undo-toast button { margin-left:8px; background:transparent; color:#9cf; border:1px solid rgba(255,255,255,0.12); padding:6px 8px; border-radius:4px; cursor:pointer; }
+    #undo-toast .close { margin-left:8px; color:#fff; opacity:0.6; }
+  </style>
+  <script src="tools/admin-auth.js"></script>
+  <script>
+    // Client-side guard: if not authenticated as admin redirect to login with redirect hint
+    (async function(){
+      try{
+        if (!window.adminAuth || typeof window.adminAuth.verifyAdminToken !== 'function') return;
+        const prof = await window.adminAuth.verifyAdminToken();
+        if (!prof) {
+          // redirect to unified admin login and indicate target
+          window.location.href = 'admin.html?redirect=dashboard';
+        }
+      }catch(e){
+        window.location.href = 'admin.html?redirect=dashboard';
+      }
+    })();
+  </script>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <h1>🗡️ Damascus Master - Admin</h1>
+    </div>
+    <nav>
+  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  <button class="refresh-btn" style="margin-left:8px;background:#4fc3f7;color:#08121a;border:0;padding:.5rem .9rem;border-radius:6px;cursor:pointer" onclick="window.location.href='visual-editor.html'">📝 Page Editor</button>
+  <button class="refresh-btn" id="header-gateway-btn" style="margin-left:8px;background:#25a87a;color:#fff;border:0;padding:.5rem .9rem;border-radius:6px;cursor:pointer" onclick="goToGateway()">💳 Payment Gateway</button>
+  <script src="scripts/admin-switch.js"></script>
+    </nav>
+  </header>
+
+  <div class="admin-container">
+    <div class="admin-header">
+      <h1>Admin Dashboard</h1>
+      <p>Manage orders and customer inquiries</p>
+      <button class="refresh-btn" onclick="refreshData()">🔄 Refresh Data</button>
+    </div>
+
+    <div class="admin-stats">
+      <div class="stat-card">
+        <span class="stat-number" id="totalOrders">0</span>
+        <div class="stat-label">Total Orders</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="pendingOrders">0</span>
+        <div class="stat-label">Pending Orders</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="totalInquiries">0</span>
+        <div class="stat-label">Customer Inquiries</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number" id="todayOrders">0</span>
+        <div class="stat-label">Today's Orders</div>
+      </div>
+    </div>
+
+    <div class="admin-sections">
+      <div class="admin-section">
+        <div class="section-header">Recent Orders</div>
+          <div class="section-content">
+            <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+              <button class="refresh-btn" onclick="fetchOrders()">🔄 Refresh</button>
+              <button class="refresh-btn" onclick="exportOrdersCSV()" id="exportOrdersBtn" style="background:#333;color:#fff;">⬇️ Export CSV</button>
+              <input id="ordersSearch" placeholder="Search orders by id, customer, email..." style="flex:1;padding:6px;border-radius:6px;border:1px solid var(--border-color)" oninput="searchOrders(this.value)">
+              <div id="ordersStatus" style="margin-left:auto;color:var(--text-secondary);font-size:0.9rem"></div>
+            </div>
+            <div id="ordersContent"><div class="no-data">Loading orders...</div></div>
+          </div>
+      </div>
+
+      <div class="admin-section">
+    <div class="section-header">Customer Inquiries <button title="Delete all inquiries" style="float:right;background:transparent;border:none;color:var(--button-text);font-size:1rem;cursor:pointer" onclick="deleteAllInquiries()">🗑️</button></div>
+        <div class="section-content">
+          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+            <button class="refresh-btn" onclick="fetchInquiries()">🔄 Refresh</button>
+            <button class="refresh-btn" onclick="exportInquiriesCSV()" id="exportInquiriesBtn" style="background:#333;color:#fff;">⬇️ Export CSV</button>
+            <input id="inquiriesSearch" placeholder="Search inquiries by name, email, subject..." style="flex:1;padding:6px;border-radius:6px;border:1px solid var(--border-color)" oninput="searchInquiries(this.value)">
+            <div id="inquiriesStatus" style="margin-left:auto;color:var(--text-secondary);font-size:0.9rem"></div>
+          </div>
+          <div id="inquiriesContent"><div class="no-data">Loading inquiries...</div></div>
+        </div>
+      </div>
+
+      <div class="admin-section">
+    <div class="section-header">Customers <button title="Delete all non-admin customers" style="float:right;background:transparent;border:none;color:var(--button-text);font-size:1rem;cursor:pointer" onclick="deleteAllCustomers()">🗑️</button></div>
+        <div class="section-content">
+          <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+            <button class="refresh-btn" onclick="fetchCustomers()">🔄 Refresh</button>
+            <button class="refresh-btn" onclick="exportCustomersCSV()" id="exportCustomersBtn" style="background:#333;color:#fff;">⬇️ Export CSV</button>
+            <div id="customersStatus" style="margin-left:auto;color:var(--text-secondary);font-size:0.9rem"></div>
+          </div>
+          <div id="customersContent"><div class="no-data">Loading customers...</div></div>
+        </div>
+      </div>
+
+      <div class="admin-section">
+    <div class="section-header">Reviews Moderation <button title="Delete all reviews" style="float:right;background:transparent;border:none;color:var(--button-text);font-size:1rem;cursor:pointer" onclick="deleteAllReviews()">🗑️</button></div>
+        <div class="section-content" id="reviewsModeration">
+          <div class="no-data">Loading reviews...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme management
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      
+      const themeToggle = document.querySelector('.theme-toggle');
+      themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // Load saved theme
+    function loadTheme() {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      
+      const themeToggle = document.querySelector('.theme-toggle');
+      themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+    }
+
+    // Fetch orders data
+    async function fetchOrders() {
+      try {
+        const response = await fetch('/api/admin/orders', { headers: getAuthHeaders() });
+        if (response.ok) {
+          const orders = await response.json();
+          displayOrders(orders);
+          updateOrderStats(orders);
+        } else {
+          if (response.status === 401 || response.status === 403) {
+            document.getElementById('ordersContent').innerHTML = '<div class="no-data">Access denied — please <a href="admin.html">sign in as an admin</a>.</div>';
+            return;
+          }
+          console.error('Failed to fetch orders');
+          document.getElementById('ordersContent').innerHTML = '<div class="no-data">Failed to load orders</div>';
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        document.getElementById('ordersContent').innerHTML = '<div class="no-data">No orders data available</div>';
+      }
+    }
+
+    // Fetch inquiries data
+    async function fetchInquiries() {
+      try {
+        const response = await fetch('/api/admin/inquiries', { headers: getAuthHeaders() });
+        if (response.ok) {
+          const inquiries = await response.json();
+          displayInquiries(inquiries);
+          updateInquiryStats(inquiries);
+        } else {
+          if (response.status === 401 || response.status === 403) {
+            document.getElementById('inquiriesContent').innerHTML = '<div class="no-data">Access denied — please <a href="admin.html">sign in as an admin</a>.</div>';
+            return;
+          }
+          console.error('Failed to fetch inquiries');
+          document.getElementById('inquiriesContent').innerHTML = '<div class="no-data">Failed to load inquiries</div>';
+        }
+      } catch (error) {
+        console.error('Error fetching inquiries:', error);
+        document.getElementById('inquiriesContent').innerHTML = '<div class="no-data">No inquiries data available</div>';
+      }
+    }
+
+    // Read token from localStorage and return headers for admin requests
+    function getAuthHeaders() {
+      const headers = { 'Content-Type': 'application/json' };
+      try {
+        const t = localStorage.getItem('adm_token') || '';
+        if (t) headers['Authorization'] = 'Bearer ' + t;
+      } catch (e) { /* ignore */ }
+      return headers;
+    }
+
+    // Small HTML-escape helper used when rendering server data
+    function escapeHtml(s){
+      return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+  // Display orders (raw renderer)
+  function _rawDisplayOrders(orders) {
+      const container = document.getElementById('ordersContent');
+      
+      if (!orders || orders.length === 0) {
+        container.innerHTML = '<div class="no-data">No orders found</div>';
+        return;
+      }
+
+      const ordersHTML = orders.map(order => `
+        <div class="order-item">
+          <div class="item-header">
+            <span class="order-id">#${order.id || 'N/A'}</span>
+            <span class="order-status status-${order.status || 'pending'}">${order.status || 'Pending'}</span>
+          </div>
+          <div class="item-details">
+            <strong>Customer:</strong> ${order.customerName || 'N/A'}<br>
+            <strong>Email:</strong> ${order.customerEmail || 'N/A'}<br>
+            <strong>Total:</strong> $${order.total || '0.00'}<br>
+            <strong>Items:</strong> ${order.itemCount || '0'} items<br>
+            <div class="timestamp">Ordered: ${new Date(order.createdAt || Date.now()).toLocaleString()}</div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="refresh-btn" onclick='showDetailModal("Order ${escapeHtml(order.id||"")}", ${JSON.stringify(order).replace(/</g,"\\u003c")})'>Details</button>
+              <select onchange="changeOrderStatus('${escapeHtml(order.id||'')}', this.value)" style="padding:6px;border-radius:6px;border:1px solid var(--border-color)">
+                <option value="pending" ${order.status==='pending'?'selected':''}>Pending</option>
+                <option value="processing" ${order.status==='processing'?'selected':''}>Processing</option>
+                <option value="completed" ${order.status==='completed'?'selected':''}>Completed</option>
+                <option value="cancelled" ${order.status==='cancelled'?'selected':''}>Cancelled</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = ordersHTML;
+    }
+
+  // Display inquiries (raw renderer)
+  function _rawDisplayInquiries(inquiries) {
+      const container = document.getElementById('inquiriesContent');
+      
+      if (!inquiries || inquiries.length === 0) {
+        container.innerHTML = '<div class="no-data">No inquiries found</div>';
+        return;
+      }
+
+      const inquiriesHTML = inquiries.map(inquiry => `
+        <div class="inquiry-item">
+          <div class="item-header">
+            <span class="inquiry-id">Inquiry #${inquiry.id || 'N/A'}</span>
+          </div>
+          <div class="item-details">
+            <strong>Name:</strong> ${inquiry.name || 'N/A'}<br>
+            <strong>Email:</strong> ${inquiry.email || 'N/A'}<br>
+            <strong>Subject:</strong> ${inquiry.subject || 'N/A'}<br>
+            <strong>Message:</strong> ${inquiry.message || 'N/A'}<br>
+            <div class="timestamp">Received: ${new Date(inquiry.createdAt || Date.now()).toLocaleString()}</div>
+            <div style="margin-top:8px;display:flex;gap:8px">
+              <button class="refresh-btn" onclick='showDetailModal("Inquiry ${escapeHtml(inquiry.id||"")}", ${JSON.stringify(inquiry).replace(/</g,"\\u003c")})'>Details</button>
+              <button class="refresh-btn" style="background:#ff6b6b;color:#fff" onclick="deleteInquiry('${escapeHtml(inquiry.id||'')}')">🗑️ Bin</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      container.innerHTML = inquiriesHTML;
+    }
+
+    // Update order statistics
+    function updateOrderStats(orders) {
+      const total = orders.length;
+      const pending = orders.filter(order => order.status === 'pending').length;
+      const today = orders.filter(order => {
+        const orderDate = new Date(order.createdAt || Date.now());
+        const today = new Date();
+        return orderDate.toDateString() === today.toDateString();
+      }).length;
+
+      document.getElementById('totalOrders').textContent = total;
+      document.getElementById('pendingOrders').textContent = pending;
+      document.getElementById('todayOrders').textContent = today;
+    }
+
+    // Update inquiry statistics
+    function updateInquiryStats(inquiries) {
+      const total = inquiries.length;
+      document.getElementById('totalInquiries').textContent = total;
+    }
+
+    // Refresh all data
+    function refreshData() {
+  fetchOrders();
+  fetchInquiries();
+  fetchCustomers();
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadTheme();
+      refreshData();
+      
+      // Auto-refresh every 30 seconds
+      setInterval(refreshData, 30000);
+    });
+    
+    // Fetch customers for dashboard
+    let customersCache = [];
+    async function fetchCustomers(){
+      const el = document.getElementById('customersContent');
+      const status = document.getElementById('customersStatus'); if(status) status.textContent = 'Loading...';
+      try{
+        const resp = await fetch('/api/admin/customers', { headers: getAuthHeaders() });
+        if(!resp.ok){
+          if (resp.status === 401 || resp.status === 403) {
+            if(status) status.textContent = 'Access denied';
+            el.innerHTML = '<div class="no-data">Access denied — please <a href="/admin.html?redirect=admin-dashboard">sign in as an admin</a>.</div>';
+            return;
+          }
+          if(status) status.textContent = 'Failed';
+          el.innerHTML = '<div class="no-data">Failed to load customers</div>';
+          return;
+        }
+        const arr = await resp.json();
+        customersCache = Array.isArray(arr) ? arr : [];
+        if(!Array.isArray(arr) || arr.length===0){ if(status) status.textContent = 'No customers'; el.innerHTML = '<div class="no-data">No customers found</div>'; return; }
+        el.innerHTML = customersCache.map(c=>`<div class="inquiry-item"><div class="item-header"><div><strong>${escapeHtml(c.email||c.name||'—')}</strong><div class="timestamp">${c.createdAt? new Date(c.createdAt).toLocaleString():''}</div></div><div style="text-align:right"><div class="muted">Orders: ${Number(c.orderCount||0)}</div></div></div><div class="item-details">Phone: ${escapeHtml(c.phone||'—')} • ${escapeHtml(c.address? (c.address.line||c.address):'')}</div></div>`).join('');
+        if(status) status.textContent = `Loaded ${customersCache.length}`;
+      }catch(e){ console.warn('fetchCustomers failed', e); if(status) status.textContent = 'Error'; el.innerHTML = '<div class="no-data">Error loading customers</div>'; }
+    }
+
+    function exportCustomersCSV(){
+      if(!customersCache || !customersCache.length){ alert('No customers to export'); return; }
+      const rows = [];
+      const header = ['email','name','phone','orders','createdAt','address'];
+      rows.push(header.join(','));
+      customersCache.forEach(c=>{
+        const addr = c.address ? (c.address.line || JSON.stringify(c.address)) : '';
+        const line = [c.email||'', c.name||'', c.phone||'', Number(c.orderCount||0), c.createdAt||'', addr].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',');
+        rows.push(line);
+      });
+      const csv = rows.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'customers.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // Reviews moderation
+    async function fetchReviewsModeration(){
+      const container = document.getElementById('reviewsModeration');
+      try{
+        const resp = await fetch('/api/admin/reviews', { headers: getAuthHeaders() });
+        if(!resp.ok) {
+          container.innerHTML = '<div class="no-data">Failed to load reviews</div>';
+          return;
+        }
+        const data = await resp.json();
+        if(!Array.isArray(data) || data.length===0){ container.innerHTML = '<div class="no-data">No reviews found</div>'; return; }
+        const html = data.map(p=>{
+          const reviewItems = (p.reviews||[]).map(r=>`<div style="padding:10px;border:1px solid var(--border-color);border-radius:6px;margin-bottom:8px;background:var(--bg-secondary);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><strong>${p.title || p.page || p.productId}</strong>
+                <div style="display:flex;gap:8px">
+                  ${r.flagged ? `<button data-reviewid="${r.id}" class="approve-review-btn" style="background:#2ecc71;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;">Approve</button>` : ''}
+                  <button data-reviewid="${r.id}" data-productid="${p.productId}" class="delete-review-btn" style="background:#ff6b6b;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;">Delete</button>
+                </div>
+              </div>
+              <div style="font-size:13px;color:#555;margin-bottom:6px;"><strong>${r.name}</strong> — ${r.rating}/5 ${r.flagged?'<span style="color:#b36"> • FLAGGED</span>':''}</div>
+              <div style="color:#333;margin-bottom:6px;">${(r.comment||'').replace(/</g,'&lt;')}</div>
+              <div style="font-size:12px;color:var(--text-secondary);">${new Date(r.createdAt||Date.now()).toLocaleString()}</div>
+            </div>`).join('');
+          return `<div style="margin-bottom:12px;"><div style="font-weight:700;color:var(--accent-gold);margin-bottom:6px;">${p.title || p.page}</div>${reviewItems}</div>`;
+        }).join('');
+        container.innerHTML = html;
+        // bind delete (with Undo)
+        document.querySelectorAll('.delete-review-btn').forEach(btn=> btn.addEventListener('click', async function(){
+          const id = this.dataset.reviewid;
+          const productId = this.dataset.productid;
+          if(!confirm('Delete this review? You can undo this action from Trash for a short time.')) return;
+          try{
+            const dresp = await fetch('/api/admin/reviews/' + encodeURIComponent(id), { method: 'DELETE', headers: getAuthHeaders() });
+            if(!dresp.ok) throw new Error('delete failed');
+            fetchReviewsModeration();
+            // also refresh other panels
+            refreshData();
+            // Show undo toast; server stores productId in trash so undo should work
+            showUndoToast('Review deleted', 'reviews', id);
+          }catch(e){ alert('Failed to delete review'); console.error(e); }
+        }));
+        // bind approve
+        document.querySelectorAll('.approve-review-btn').forEach(btn=> btn.addEventListener('click', async function(){
+          const id = this.dataset.reviewid;
+          if(!confirm('Approve (unflag) this review?')) return;
+          try{
+            const presp = await fetch('/api/admin/reviews/' + encodeURIComponent(id), { method: 'PUT', headers: getAuthHeaders(), body: JSON.stringify({ action: 'approve' }) });
+            if(!presp.ok) throw new Error('approve failed');
+            fetchReviewsModeration();
+            refreshData();
+          }catch(e){ alert('Failed to approve review'); console.error(e); }
+        }));
+      }catch(e){ container.innerHTML = '<div class="no-data">Error loading reviews</div>'; console.error(e); }
+    }
+    
+    // ------- Orders & Inquiries helpers (caches, search, export, detail modal)
+    let ordersCache = [];
+    let inquiriesCache = [];
+
+  // store orders when fetched
+  const _origDisplayOrders = _rawDisplayOrders;
+  function displayOrders(orders){ ordersCache = Array.isArray(orders)? orders : []; _origDisplayOrders(orders); }
+
+  // store inquiries when fetched
+  const _origDisplayInquiries = _rawDisplayInquiries;
+  function displayInquiries(inquiries){ inquiriesCache = Array.isArray(inquiries)? inquiries : []; _origDisplayInquiries(inquiries); }
+
+    function searchOrders(q){
+      const s = String(q||'').trim().toLowerCase();
+      const container = document.getElementById('ordersContent');
+      if(!s) return displayOrders(ordersCache);
+      const filtered = (ordersCache||[]).filter(o => (o.id||'').toString().toLowerCase().includes(s) || (o.customerName||'').toLowerCase().includes(s) || (o.customerEmail||'').toLowerCase().includes(s));
+      if(!filtered || filtered.length===0){ container.innerHTML = '<div class="no-data">No matching orders</div>'; return; }
+      _origDisplayOrders(filtered);
+    }
+
+    function searchInquiries(q){
+      const s = String(q||'').trim().toLowerCase();
+      const container = document.getElementById('inquiriesContent');
+      if(!s) return displayInquiries(inquiriesCache);
+      const filtered = (inquiriesCache||[]).filter(i => (i.id||'').toString().toLowerCase().includes(s) || (i.name||'').toLowerCase().includes(s) || (i.email||'').toLowerCase().includes(s) || (i.subject||'').toLowerCase().includes(s));
+      if(!filtered || filtered.length===0){ container.innerHTML = '<div class="no-data">No matching inquiries</div>'; return; }
+      _origDisplayInquiries(filtered);
+    }
+
+    function exportOrdersCSV(){
+      if(!ordersCache || !ordersCache.length){ alert('No orders to export'); return; }
+      const rows = [];
+      const header = ['id','customerName','customerEmail','total','itemCount','status','createdAt'];
+      rows.push(header.join(','));
+      ordersCache.forEach(o=>{
+        const line = [o.id||'', o.customerName||'', o.customerEmail||'', o.total||'', o.itemCount||'', o.status||'', o.createdAt||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',');
+        rows.push(line);
+      });
+      const csv = rows.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'orders.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    function exportInquiriesCSV(){
+      if(!inquiriesCache || !inquiriesCache.length){ alert('No inquiries to export'); return; }
+      const rows = [];
+      const header = ['id','name','email','subject','message','createdAt'];
+      rows.push(header.join(','));
+      inquiriesCache.forEach(i=>{
+        const line = [i.id||'', i.name||'', i.email||'', i.subject||'', (i.message||'').replace(/"/g,'""'), i.createdAt||''].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',');
+        rows.push(line);
+      });
+      const csv = rows.join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'inquiries.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // Simple detail modal for viewing a JSON payload
+    function showDetailModal(title, obj){
+      let modal = document.getElementById('adminDetailModal');
+      if(!modal){
+        modal = document.createElement('div'); modal.id = 'adminDetailModal';
+        modal.style.position = 'fixed'; modal.style.inset = '0'; modal.style.background = 'rgba(0,0,0,0.6)'; modal.style.display='flex'; modal.style.alignItems='center'; modal.style.justifyContent='center'; modal.style.zIndex='100000';
+        modal.innerHTML = `<div style="max-width:900px;width:96%;background:var(--card-bg);border-radius:10px;padding:18px;color:var(--text-primary);box-shadow:var(--shadow);max-height:90vh;overflow:auto;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><strong id="adminDetailTitle"></strong><button id="adminDetailClose" style="background:#ff6b6b;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer">Close</button></div><pre id="adminDetailBody" style="white-space:pre-wrap;word-break:break-word;background:var(--bg-secondary);padding:12px;border-radius:8px;border:1px solid var(--border-color);"></pre></div>`;
+        document.body.appendChild(modal);
+        document.getElementById('adminDetailClose').addEventListener('click', ()=> modal.style.display='none');
+      }
+      document.getElementById('adminDetailTitle').textContent = title || ''; document.getElementById('adminDetailBody').textContent = JSON.stringify(obj, null, 2);
+      modal.style.display = 'flex';
+    }
+
+    // Admin actions that call new server endpoints
+    async function changeOrderStatus(orderId, status){
+      try {
+        const prev = (ordersCache || []).find(o => String(o.id) === String(orderId))?.status;
+        const res = await fetch(`/api/admin/orders/${orderId}`, {
+          method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders()),
+          body: JSON.stringify({ status })
+        });
+        const j = await res.json().catch(()=>({}));
+        if (!res.ok) throw new Error(j.error || 'Update failed');
+        await fetchOrders();
+        // provide undo which re-applies previous status
+        showUndoToast('Order status updated', 'orders', orderId, async () => {
+          if (typeof prev === 'undefined') throw new Error('Previous status unknown');
+          const r2 = await fetch(`/api/admin/orders/${orderId}`, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders()), body: JSON.stringify({ status: prev }) });
+          const j2 = await r2.json().catch(()=>({}));
+          if (!r2.ok) throw new Error(j2.error || 'Revert failed');
+          await fetchOrders();
+        });
+      } catch (e) {
+        console.error(e);
+        alert('Failed to update order status: ' + (e.message || e));
+      }
+    }
+
+    async function deleteInquiry(id){
+      try {
+        const res = await fetch(`/api/admin/inquiries/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+        const j = await res.json().catch(()=>({}));
+        if (!res.ok) throw new Error(j.error || 'Delete failed');
+        await fetchInquiries();
+        showUndoToast('Inquiry deleted', 'inquiries', id);
+      } catch (e) {
+        console.error(e);
+        alert('Failed to delete inquiry: ' + (e.message || e));
+      }
+    }
+
+    async function deleteAllInquiries(){ if(!confirm('Delete ALL inquiries and support messages? This cannot be undone.')) return; try{ const r = await fetch('/api/admin/inquiries', { method: 'DELETE', headers: getAuthHeaders() }); if(!r.ok) return alert('Failed'); await fetchInquiries(); }catch(e){ console.error(e); alert('Failed'); } }
+
+    async function deleteCustomer(id){
+      if(!id) return;
+      if(!confirm('Delete this customer account? You can undo this action from Trash for a short time.')) return;
+      try{
+        const r = await fetch('/api/admin/customers/' + encodeURIComponent(id), { method: 'DELETE', headers: getAuthHeaders() });
+        if(!r.ok) {
+          const j = await r.json().catch(()=>({}));
+          return alert('Failed to delete customer: ' + (j.error || r.statusText || 'unknown'));
+        }
+        await fetchCustomers();
+        // show undo option
+        showUndoToast('Customer deleted', 'customers', id);
+      }catch(e){ console.error(e); alert('Failed to delete customer: ' + (e && e.message || e)); }
+    }
+
+    async function deleteAllCustomers(){ if(!confirm('Delete ALL non-admin customers? This cannot be undone.')) return; try{ const r = await fetch('/api/admin/customers', { method: 'DELETE', headers: getAuthHeaders() }); if(!r.ok) return alert('Failed'); await fetchCustomers(); }catch(e){ console.error(e); alert('Failed'); } }
+
+    async function deleteAllReviews(){ if(!confirm('Delete ALL reviews across all products?')) return; try{ const r = await fetch('/api/admin/reviews', { method: 'DELETE', headers: getAuthHeaders() }); if(!r.ok) return alert('Failed'); await fetchReviewsModeration(); }catch(e){ console.error(e); alert('Failed'); } }
+    // integrate into refresh flow — ensure all panels are refreshed together
+    function refreshData(){
+      fetchOrders();
+      fetchInquiries();
+      fetchCustomers();
+      fetchReviewsModeration();
+    }
+  </script>
+  <script src="tools/admin-auth.js"></script>
+  <script>
+    // On page load, verify admin token and redirect to login only if missing/invalid.
+    // Use shared helper when available to avoid duplicate logic and race conditions.
+    document.addEventListener('DOMContentLoaded', async function(){
+      try {
+        const token = localStorage.getItem('adm_token') || '';
+        if (!token) {
+          // No token -> redirect to admin login which will present the chooser
+          location.href = '/admin.html?redirect=admin-dashboard';
+          return;
+        }
+
+        if (window.adminAuth && typeof window.adminAuth.verifyAdminToken === 'function') {
+          const prof = await window.adminAuth.verifyAdminToken();
+          if (!prof) {
+            // Token invalid or expired -> redirect to login
+            location.href = '/admin.html?redirect=admin-dashboard';
+            return;
+          }
+          // Token valid, load dashboard data
+          try { if (typeof refreshData === 'function') refreshData(); } catch(e){}
+          return;
+        }
+
+        // Fallback: direct profile check against server
+        try {
+          const resp = await fetch('/api/auth/profile', { headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token } });
+          if (!resp.ok) {
+            // If not authenticated, go to admin.html for login
+            location.href = '/admin.html';
+            return;
+          }
+          try { if (typeof refreshData === 'function') refreshData(); } catch(e){}
+        } catch (e) {
+          location.href = '/admin.html?redirect=admin-dashboard';
+        }
+      } catch (e) {
+        console.warn('Admin dashboard auth check failed', e);
+        try { location.href = '/admin.html?redirect=admin-dashboard'; } catch(_){ }
+      }
+    });
+  </script>
+
+  <!-- Undo toast (appended) -->
+  <div id="undo-toast">
+    <span id="undo-msg">Action done</span>
+    <button id="undo-btn">Undo</button>
+    <button id="undo-close" class="close">✕</button>
+  </div>
+
+  <script>
+  // Undo UI and helpers
+  function showUndoToast(message, type, id, undoCallback) {
+    const toast = document.getElementById('undo-toast');
+    const msg = document.getElementById('undo-msg');
+    const btn = document.getElementById('undo-btn');
+    const close = document.getElementById('undo-close');
+    msg.textContent = message;
+    btn.disabled = false;
+    // wire undo
+    btn.onclick = async () => {
+      btn.disabled = true;
+      try {
+        if (typeof undoCallback === 'function') {
+          await undoCallback();
+        } else {
+          // default: call server undo endpoint
+          await undoDelete(type, id);
+        }
+        toast.style.display = 'none';
+      } catch (err) {
+        console.error('Undo failed', err);
+        alert('Undo failed: ' + (err && err.message ? err.message : JSON.stringify(err)));
+        btn.disabled = false;
+      }
+    };
+    close.onclick = () => { toast.style.display = 'none'; };
+    toast.style.display = 'block';
+    // auto-hide after 15s
+    setTimeout(() => { try { toast.style.display = 'none'; } catch(e){} }, 15000);
+  }
+
+  async function undoDelete(type, id) {
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders());
+    const res = await fetch('/api/admin/undo', { method: 'POST', headers, body: JSON.stringify({ type, id }) });
+    const j = await res.json().catch(()=>({}));
+    if (!res.ok) throw new Error(j.error || 'undo failed');
+    // refresh related data
+    if (type === 'inquiries') await fetchInquiries();
+    else if (type === 'customers') await fetchCustomers();
+    else if (type === 'reviews') await fetchReviewsModeration();
+    else if (type === 'products') await fetchProducts && fetchProducts();
+    return j.restored || j;
+  }
+
+  // Override deleteInquiry to show undo toast after success
+  async function deleteInquiry(id) {
+    try {
+      const res = await fetch(`/api/admin/inquiries/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+      const j = await res.json().catch(()=>({}));
+      if (!res.ok) throw new Error(j.error || 'Delete failed');
+      await fetchInquiries();
+      showUndoToast('Inquiry deleted', 'inquiries', id);
+    } catch (e) {
+      console.error(e);
+      alert('Failed to delete inquiry: ' + (e.message || e));
+    }
+  }
+
+  // Override changeOrderStatus to show undo that reverts to previous status
+  async function changeOrderStatus(orderId, status) {
+    try {
+      const prev = (ordersCache || []).find(o => String(o.id) === String(orderId))?.status;
+      const res = await fetch(`/api/admin/orders/${orderId}`, {
+        method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders()),
+        body: JSON.stringify({ status })
+      });
+      const j = await res.json().catch(()=>({}));
+      if (!res.ok) throw new Error(j.error || 'Update failed');
+      await fetchOrders();
+      // provide undo which re-applies previous status
+      showUndoToast('Order status updated', 'orders', orderId, async () => {
+        if (typeof prev === 'undefined') throw new Error('Previous status unknown');
+        const r2 = await fetch(`/api/admin/orders/${orderId}`, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, getAuthHeaders()), body: JSON.stringify({ status: prev }) });
+        const j2 = await r2.json().catch(()=>({}));
+        if (!r2.ok) throw new Error(j2.error || 'Revert failed');
+        await fetchOrders();
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Failed to update order status: ' + (e.message || e));
+    }
+  }
+  </script>
+</body>
+</html>

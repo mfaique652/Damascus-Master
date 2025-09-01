@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Test - Damascus Steel</title>
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --dark-brown: #1A1612;
+            --medium-brown: #2D251E;
+            --light-brown: #8B4513;
+            --cream: #F5F5DC;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--dark-brown) 0%, var(--medium-brown) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cream);
+        }
+
+        .login-container {
+            background: rgba(26, 22, 18, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            border: 2px solid var(--primary-gold);
+            box-shadow: 0 15px 35px rgba(212, 175, 55, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: var(--primary-gold);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-gold);
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--light-brown);
+            border-radius: 8px;
+            background: var(--medium-brown);
+            color: var(--cream);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-gold) 0%, #B8941F 100%);
+            border: none;
+            border-radius: 8px;
+            color: var(--dark-brown);
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result.success {
+            background: rgba(0, 128, 0, 0.2);
+            border: 1px solid #00ff00;
+            color: #00ff00;
+        }
+
+        .result.error {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            color: #ff0000;
+        }
+
+        .user-info {
+            background: var(--medium-brown);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--primary-gold);
+            margin-top: 15px;
+        }
+
+        .user-info h3 {
+            color: var(--primary-gold);
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            margin: 5px 0;
+            color: var(--cream);
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: var(--primary-gold);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .back-link a:hover {
+            color: var(--cream);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🗡️ Damascus Login Test</h1>
+            <p>Test the authentication system</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                🔐 Test Login
+            </button>
+        </form>
+
+        <div id="result" class="result"></div>
+
+        <div class="back-link">
+            <a href="index.html">← Back to Home</a> | 
+            <a href="account.html">Account Settings</a>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:3025';
+        let authToken = null;
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            const loginBtn = document.getElementById('loginBtn');
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = '🔄 Testing...';
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.token;
+                    localStorage.setItem('authToken', authToken);
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+
+                    resultDiv.className = 'result success';
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <h3>✅ Login Successful!</h3>
+                        <div class="user-info">
+                            <h3>User Information:</h3>
+                            <p><strong>ID:</strong> ${data.user.id}</p>
+                            <p><strong>Name:</strong> ${data.user.name}</p>
+                            <p><strong>Email:</strong> ${data.user.email}</p>
+                            <p><strong>Role:</strong> ${data.user.role}</p>
+                            <p><strong>Token:</strong> ${data.token.substring(0, 20)}...</p>
+                        </div>
+                        <p style="margin-top: 10px;">Token saved to localStorage. You can now access protected features!</p>
+                    `;
+
+                    // Test the /me endpoint
+                    setTimeout(async () => {
+                        try {
+                            const meResponse = await fetch(`${SERVER_URL}/api/auth/me`, {
+                                headers: {
+                                    'Authorization': `Bearer ${authToken}`
+                                }
+                            });
+                            const meData = await meResponse.json();
+                            
+                            if (meResponse.ok) {
+                                resultDiv.innerHTML += `
+                                    <div style="margin-top: 15px; padding: 10px; background: rgba(0, 128, 0, 0.1); border-radius: 5px;">
+                                        <strong>✅ /api/auth/me endpoint test successful!</strong><br>
+                                        User verification: ${meData.name} (${meData.email})
+                                    </div>
+                                `;
+                            }
+                        } catch (error) {
+                            console.error('Me endpoint test failed:', error);
+                        }
+                    }, 1000);
+
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `
+                        <h3>❌ Login Failed</h3>
+                        <p>${data.error || 'Unknown error occurred'}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h3>❌ Connection Error</h3>
+                    <p>Could not connect to server. Make sure the backend is running on port 3025.</p>
+                    <p>Error: ${error.message}</p>
+                `;
+            }
+
+            loginBtn.disabled = false;
+            loginBtn.textContent = '🔐 Test Login';
+        });
+
+        // Check if user is already logged in
+        window.addEventListener('load', () => {
+            const savedToken = localStorage.getItem('authToken');
+            const savedUser = localStorage.getItem('currentUser');
+            
+            if (savedToken && savedUser) {
+                const user = JSON.parse(savedUser);
+                const resultDiv = document.getElementById('result');
+                resultDiv.className = 'result success';
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = `
+                    <h3>🎯 Already Logged In</h3>
+                    <div class="user-info">
+                        <h3>Current Session:</h3>
+                        <p><strong>Name:</strong> ${user.name}</p>
+                        <p><strong>Email:</strong> ${user.email}</p>
+                        <p><strong>Role:</strong> ${user.role}</p>
+                    </div>
+                    <p style="margin-top: 10px;">Your session is active. Token stored in localStorage.</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
