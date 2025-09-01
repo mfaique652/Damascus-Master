@@ -2,8 +2,12 @@
 // Generates an album HTML page for each product using album_template.html
 // Album page is named after the product's title (spaces replaced with underscores, .html)
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const dbPath = path.join(__dirname, 'server', 'data', 'db.json');
 const templatePath = path.join(__dirname, 'album_template.html');
@@ -14,7 +18,7 @@ function sanitizeFilename(name) {
 }
 
 // export helper for tools that may require it programmatically
-if (typeof module !== 'undefined' && module.exports) module.exports.sanitizeFilename = sanitizeFilename;
+export { sanitizeFilename };
 
 function escapeHtml(s) {
   return String(s || '')
@@ -248,4 +252,4 @@ function main() {
   }
 }
 
-if (require.main === module) main();
+if (process.argv[1] === fileURLToPath(import.meta.url)) main();

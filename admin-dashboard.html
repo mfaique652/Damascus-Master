@@ -186,6 +186,24 @@
       }
     }
 
+    /* Additional small-screen polish */
+    @media (max-width: 480px) {
+      .admin-container { margin: 1rem auto; padding: 0 0.5rem; }
+      .admin-header { padding: 1rem; margin-bottom: 1.25rem }
+      .admin-header h1 { font-size: 1.25rem }
+      .admin-stats { gap: 0.8rem }
+      .stat-card { padding: 0.9rem }
+      .stat-number { font-size: 1.4rem }
+      .stat-label { font-size: 0.92rem }
+      .admin-sections { gap: 1rem }
+      .section-header { padding: 0.9rem; font-size: 1rem }
+      .section-content { padding: 0.8rem; max-height: 300px }
+      .refresh-btn { padding: 0.5rem 0.8rem; font-size: 0.92rem }
+      input[placeholder], input { padding: 6px 8px; font-size: 0.95rem }
+      /* make toolbar controls wrap and not overflow */
+      .section-content > div[style] { flex-wrap:wrap; gap:6px }
+    }
+
     #undo-toast { display:none; position:fixed; right:20px; bottom:20px; background:#222; color:#fff; padding:12px 14px; border-radius:6px; box-shadow:0 4px 12px rgba(0,0,0,.25); z-index:99999; font-family: sans-serif; }
     #undo-toast button { margin-left:8px; background:transparent; color:#9cf; border:1px solid rgba(255,255,255,0.12); padding:6px 8px; border-radius:4px; cursor:pointer; }
     #undo-toast .close { margin-left:8px; color:#fff; opacity:0.6; }

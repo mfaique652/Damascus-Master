@@ -17,6 +17,10 @@
       justify-content: center;
       -webkit-tap-highlight-color: transparent;
     }
+
+    /* Prevent admin shortcut flash: hide by default; JS will reveal when appropriate */
+    /* Use plain display:none so page JS can set style.display = 'block' to reveal when needed */
+    #admin-panel-shortcut { display: none; }
     
     .wishlist-heart:hover { 
       background: #fff5f7; 
@@ -1643,7 +1647,7 @@
     <div class="gallery"></div>
   </div>
 
-  <footer style="background:#23262f;color:#f5f6fa;padding:0.75rem 0 0.5rem 0;margin-top:1rem;display:flex;flex-wrap:wrap;justify-content:center;gap:2.5rem;">
+  <footer style="background:#23262f;color:#f5f6fa;padding:0.75rem 1rem 0.5rem 1rem;margin-top:1rem;display:flex;flex-wrap:wrap;justify-content:center;gap:2.5rem;">
 
   <footer class="site-footer">
 
@@ -1679,6 +1683,8 @@
       .site-footer .footer-columns {
         max-width: 1200px;
         margin: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
