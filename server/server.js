@@ -66,15 +66,15 @@ let WEBHOOK_ID = process.env.PAYPAL_WEBHOOK_ID || '';
 // We'll prefer an explicit environment JWT_SECRET. In development, to avoid
 // issued tokens becoming invalid across server restarts (caused by a
 // process-random JWT secret), persist a generated secret into the DB and
-// reuse it. In production, require JWT_SECRET env var for safety.
+// reuse it. In production, if JWT_SECRET is not provided, we'll generate
+// and persist one in the database so admin can configure it later via admin panel.
 let JWT_SECRET = process.env.JWT_SECRET || null;
-if (!JWT_SECRET && String(process.env.NODE_ENV || '').toLowerCase() === 'production') {
-  console.error('Missing JWT_SECRET in production env, aborting');
-  process.exit(1);
-}
 
-// Ensure DB-backed persistent secret for non-production runs so tokens
-// survive server restarts. We'll read DB and create/store a secret if missing.
+// Allow production startup without JWT_SECRET - will use DB-persisted secret
+// This enables deployment first, then admin configuration via web interface
+console.log('JWT_SECRET status:', JWT_SECRET ? 'Provided via environment' : 'Will use/generate database-backed secret');
+
+// Ensure DB-backed persistent secret for all environments if JWT_SECRET not provided
 try {
   await db.read();
   db.data._secrets = db.data._secrets || {};
@@ -82,7 +82,7 @@ try {
     if (!db.data._secrets.jwtSecret) {
       db.data._secrets.jwtSecret = crypto.randomBytes(32).toString('hex');
       await db.write();
-      console.log('Generated and persisted JWT secret in DB for dev use.');
+      console.log('Generated and persisted JWT secret in DB for production use. Admin can update via admin panel.');
     }
     JWT_SECRET = db.data._secrets.jwtSecret;
   }
@@ -4307,16 +4307,17 @@ app.post('/api/auth/refresh', async (req, res) => {
 // Startup environment validation
 function validateEnv() {
   const missing = [];
-  if (!process.env.JWT_SECRET) missing.push('JWT_SECRET');
+  if (!process.env.JWT_SECRET && !JWT_SECRET) missing.push('JWT_SECRET');
   if (!process.env.EMAIL_USER && !db.data?.emailUser) missing.push('EMAIL_USER or DB emailUser');
   if (!process.env.EMAIL_PASS && !db.data?.emailPass) missing.push('EMAIL_PASS or DB emailPass');
   if (!process.env.PAYPAL_CLIENT_ID && !db.data?.paypalClientId) missing.push('PAYPAL_CLIENT_ID');
   if (!process.env.PAYPAL_CLIENT_SECRET && !db.data?.paypalClientSecret) missing.push('PAYPAL_CLIENT_SECRET');
   if (missing.length) {
     console.warn('Missing recommended environment variables:', missing.join(', '));
+    console.warn('These can be configured via the admin panel after deployment.');
+    // Allow production startup - admin can configure via web interface
     if (String(process.env.NODE_ENV || '').toLowerCase() === 'production') {
-      console.error('Critical environment variables missing in production. Aborting startup.');
-      process.exit(1);
+      console.log('Production startup allowed - configure missing variables via admin panel.');
     }
   }
 }
