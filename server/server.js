@@ -4340,6 +4340,26 @@ const serverInstance = app.listen(PORT, '0.0.0.0', () => {
     port = addr.port;
   }
   console.log(`Server listening on http://${host}:${port} (env=${PAYPAL_ENV})`);
+
+  // Keep-alive mechanism for Render free tier
+  if (process.env.NODE_ENV === 'production') {
+    const KEEP_ALIVE_INTERVAL = 14 * 60 * 1000; // 14 minutes
+    const RENDER_URL = process.env.RENDER_EXTERNAL_URL || 'https://damascus-master.onrender.com';
+    
+    setInterval(async () => {
+      try {
+        const response = await fetch(`${RENDER_URL}/api/health`, {
+          method: 'GET',
+          timeout: 30000
+        });
+        console.log(`Keep-alive ping: ${response.status} at ${new Date().toISOString()}`);
+      } catch (error) {
+        console.log(`Keep-alive ping failed: ${error.message} at ${new Date().toISOString()}`);
+      }
+    }, KEEP_ALIVE_INTERVAL);
+    
+    console.log(`Keep-alive enabled: pinging every ${KEEP_ALIVE_INTERVAL / 1000 / 60} minutes`);
+  }
 });
 
 // Log unexpected errors to help diagnose silent exits
