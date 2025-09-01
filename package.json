@@ -12,23 +12,25 @@
     "@vercel/speed-insights": "^1.2.0",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
-    "stripe": "^11.18.0",
-    "express": "^4.21.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "node-fetch": "^3.3.2",
-    "multer": "1.4.5-lts.2",
-    "jsonwebtoken": "^9.0.2",
-    "uuid": "^9.0.1",
-    "zod": "^3.25.76",
-    "lowdb": "^6.1.1",
-    "nodemailer": "^6.10.1",
-    "helmet": "^8.0.0",
     "compression": "^1.7.4",
-    "express-rate-limit": "^7.4.1"
+    "cors": "^2.8.5",
+    "cross-env": "^10.0.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "lowdb": "^6.1.1",
+    "multer": "1.4.5-lts.2",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.10.1",
+    "stripe": "^11.18.0",
+    "uuid": "^9.0.1",
+    "zod": "^3.25.76"
   },
   "scripts": {
-    "start": "NODE_ENV=production node server/server.js",
+    "start": "cross-env NODE_ENV=production node server/server.js",
+    "start:prod": "NODE_ENV=production node server/server.js",
     "dev": "nodemon --watch server --ignore server/data/db.json server/server.js",
     "build": "echo 'Build completed - static files ready'",
     "test:embed": "node server/lib/embed.test.cjs",
@@ -40,11 +42,17 @@
     "postinstall": "echo 'Dependencies installed successfully'"
   },
   "devDependencies": {
+    "@eslint/js": "^9.15.0",
     "eslint": "^8.57.1",
-    "nodemon": "^3.1.10",
-    "@eslint/js": "^9.15.0"
+    "nodemon": "^3.1.10"
   },
-  "keywords": ["ecommerce", "damascus", "knives", "nodejs", "express"],
+  "keywords": [
+    "ecommerce",
+    "damascus",
+    "knives",
+    "nodejs",
+    "express"
+  ],
   "author": "Damascus Master",
   "license": "MIT"
 }
