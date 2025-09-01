@@ -965,7 +965,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://js.stripe.com", "https://www.paypal.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://api.stripe.com", "https://api.paypal.com", "https://api-m.sandbox.paypal.com"]
+      connectSrc: ["'self'", "https:", "https://api.stripe.com", "https://api.paypal.com", "https://api-m.sandbox.paypal.com"]
     }
   }
 }));
